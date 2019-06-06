@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://kaluo-zz.github.io</id>
     <title>Gridea</title>
-    <updated>2019-06-06T13:51:08.205Z</updated>
+    <updated>2019-06-06T13:54:22.592Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://kaluo-zz.github.io"/>
     <link rel="self" href="https://kaluo-zz.github.io/atom.xml"/>
@@ -10,6 +10,21 @@
     <logo>https://kaluo-zz.github.io/images/avatar.png</logo>
     <icon>https://kaluo-zz.github.io/favicon.ico</icon>
     <rights>All rights reserved 2019, Gridea</rights>
+    <entry>
+        <title type="html"><![CDATA[Docker相关命令]]></title>
+        <id>https://kaluo-zz.github.io/post/docker-xiang-guan-ming-ling</id>
+        <link href="https://kaluo-zz.github.io/post/docker-xiang-guan-ming-ling">
+        </link>
+        <updated>2019-06-06T13:53:41.000Z</updated>
+        <content type="html"><![CDATA[<ol>
+<li>查询容器：<code>docker ps -a</code></li>
+<li>终止容器：<code>docker stop $(id)</code></li>
+<li>删除容器：<code>docker rm $(id)</code></li>
+<li>查询镜像：<code>docker images</code></li>
+<li>删除镜像：<code>docker rmi $(id)</code></li>
+</ol>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[搭建服务器并配置相关环境]]></title>
         <id>https://kaluo-zz.github.io/post/da-jian-fu-wu-qi-bing-pei-zhi-xiang-guan-huan-jing</id>
