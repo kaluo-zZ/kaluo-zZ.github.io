@@ -3,7 +3,7 @@
     <meta charset="utf-8" />
 <meta name="description" content="" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Ubuntu18.04下Docker CE安装 | KALUO</title>
+<title>简单多边形顺逆时针判断 | KALUO</title>
 <link rel="shortcut icon" href="https://kaluo-zz.github.io/favicon.ico?v=1560601475577">
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
@@ -74,69 +74,38 @@
         <div class="post-detail">
           <article class="post">
             <h2 class="post-title">
-              Ubuntu18.04下Docker CE安装
+              简单多边形顺逆时针判断
             </h2>
             <div class="post-info">
               <time class="post-time">
-                · 2019-06-06 ·
+                · 2019-06-15 ·
               </time>
               
-                <a href="https://kaluo-zz.github.io/tag/5QDLVaWYn" class="post-tag">
-                  # docker
+                <a href="https://kaluo-zz.github.io/tag/5IwuLmF47" class="post-tag">
+                  # 叉积
+                </a>
+              
+                <a href="https://kaluo-zz.github.io/tag/gYv8tBs9s" class="post-tag">
+                  # 多边形
+                </a>
+              
+                <a href="https://kaluo-zz.github.io/tag/gKuVi5cQQ" class="post-tag">
+                  # 面积
+                </a>
+              
+                <a href="https://kaluo-zz.github.io/tag/1ViRR-SXR" class="post-tag">
+                  # 顺时针
+                </a>
+              
+                <a href="https://kaluo-zz.github.io/tag/-HzodX2-Z" class="post-tag">
+                  # 逆时针
                 </a>
               
             </div>
             
             <div class="post-content">
-              <ol>
-<li>
-<p>更新系统包索引</p>
-<pre><code class="language-bash">sudo apt-get update
-</code></pre>
-</li>
-<li>
-<p>添加HTTPS协议，允许apt从HTTPS安装软件包</p>
-<pre><code class="language-bash">sudo apt-get install  apt-transport-https  ca-certificates curl  software-properties-common
-</code></pre>
-</li>
-<li>
-<p>添加Docker 公共密钥 (Docker中科大源)</p>
-<pre><code class="language-bash">curl -fsSL  https://mirrors.ustc.edu.cn/docker-ce/linux/ubuntu/gpg | sudo apt-key add -
-</code></pre>
-</li>
-<li>
-<p>设置版本库类型（Ubuntu18.04对应版本<strong>bionic</strong>），软件版本包括三种：<strong>stable、edge、test</strong></p>
-<pre><code class="language-bash">sudo add-apt-repository &quot;deb [arch=amd64] https://mirrors.ustc.edu.cn/docker-ce/linux/ubuntu $(lsb_release -cs) stable&quot; 
-</code></pre>
-</li>
-<li>
-<p>更新系统包索引</p>
-<pre><code class="language-bash">sudo apt-get update
-</code></pre>
-</li>
-<li>
-<p>安装最新版Docker CE</p>
-<pre><code class="language-bash">sudo apt-get install docker-ce
-</code></pre>
-</li>
-<li>
-<p>启动docker</p>
-<pre><code class="language-bash">sudo systemctl start docker
-sudo systemctl enable docker
-docker --version
-</code></pre>
-</li>
-<li>
-<p>将用户user加入docker组，以便非root用户启动docker</p>
-<pre><code class="language-bash">sudo usermod -aG docker user
-</code></pre>
-</li>
-<li>
-<p>切换用户组</p>
-<pre><code class="language-bash">newgrp docker
-</code></pre>
-</li>
-</ol>
+              <p>方法1：利用向量叉积求多边形面积，判断多边形面积正负。
+方法2：取多边形最左边一点，判断和之前和之后点构成的向量的叉积符号。</p>
 
             </div>
           </article>
@@ -145,9 +114,9 @@ docker --version
         
           <div class="next-post">
             <div class="next">下一篇</div>
-            <a href="https://kaluo-zz.github.io/post/docker-xiang-guan-ming-ling">
+            <a href="https://kaluo-zz.github.io/post/matlab-du-qu-bing-jie-xi-json-ge-shi-wen-jian">
               <h3 class="post-title">
-                Docker相关命令
+                Matlab读取并解析json格式文件
               </h3>
             </a>
           </div>

@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://kaluo-zz.github.io</id>
     <title>KALUO</title>
-    <updated>2019-06-14T13:00:05.258Z</updated>
+    <updated>2019-06-15T12:24:38.283Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://kaluo-zz.github.io"/>
     <link rel="self" href="https://kaluo-zz.github.io/atom.xml"/>
@@ -10,6 +10,16 @@
     <logo>https://kaluo-zz.github.io/images/avatar.png</logo>
     <icon>https://kaluo-zz.github.io/favicon.ico</icon>
     <rights>All rights reserved 2019, KALUO</rights>
+    <entry>
+        <title type="html"><![CDATA[简单多边形顺逆时针判断]]></title>
+        <id>https://kaluo-zz.github.io/post/jian-dan-duo-bian-xing-shun-ni-shi-zhen-pan-duan</id>
+        <link href="https://kaluo-zz.github.io/post/jian-dan-duo-bian-xing-shun-ni-shi-zhen-pan-duan">
+        </link>
+        <updated>2019-06-15T12:18:18.000Z</updated>
+        <content type="html"><![CDATA[<p>方法1：利用向量叉积求多边形面积，判断多边形面积正负。
+方法2：取多边形最左边一点，判断和之前和之后点构成的向量的叉积符号。</p>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Matlab读取并解析json格式文件]]></title>
         <id>https://kaluo-zz.github.io/post/matlab-du-qu-bing-jie-xi-json-ge-shi-wen-jian</id>
