@@ -4,7 +4,7 @@
 <meta name="description" content="" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Deformable Convolution编译问题 | KALUO</title>
-<link rel="shortcut icon" href="https://kaluo-zz.github.io/favicon.ico?v=1561268824556">
+<link rel="shortcut icon" href="https://kaluo-zz.github.io/favicon.ico?v=1561268894345">
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
 <link rel="stylesheet" href="https://kaluo-zz.github.io/styles/main.css">
@@ -20,7 +20,7 @@
       <div class="main-content">
         <div class="site-header">
   <a href="https://kaluo-zz.github.io">
-  <img class="avatar" src="https://kaluo-zz.github.io/images/avatar.png?v=1561268824556" alt="">
+  <img class="avatar" src="https://kaluo-zz.github.io/images/avatar.png?v=1561268894345" alt="">
   </a>
   <h1 class="site-title">
     KALUO
@@ -92,6 +92,7 @@
 <li>GCC-6.4</li>
 </ol>
 <p>项目地址：https://github.com/CharlesShang/DCNv2</p>
+<p>出错信息：</p>
 <pre><code>build error:error: command '/usr/local/cuda/bin/nvcc' failed with exit status 1
 </code></pre>
 <p>出错原因：CUDA 9.0不支持gcc-6.4。
@@ -102,11 +103,11 @@ sudo rm g++
 sudo ln -s /usr/bin/gcc-5 gcc
 sudo ln -s /usr/bin/g++-5 g++
 
-	cd /usr/local/cuda-9.0/bin
-	sudo rm gcc
-	sudo rm g++
-	sudo ln -s /usr/bin/gcc-5 gcc
-	sudo ln -s /usr/bin/g++-5 g++
+cd /usr/local/cuda-9.0/bin
+sudo rm gcc
+sudo rm g++
+sudo ln -s /usr/bin/gcc-5 gcc
+sudo ln -s /usr/bin/g++-5 g++
 </code></pre>
 <p>然后，将setup.py文件中添加<code>-DCUDA_HOST_COMPILER=/usr/bin/gcc-5</code>：</p>
 <pre><code>if torch.cuda.is_available() and CUDA_HOME is not None:
@@ -123,8 +124,7 @@ sudo ln -s /usr/bin/g++-5 g++
 </code></pre>
 <p>删除之前编译失败的build文件：<code>rm -r build</code>;</p>
 <p>重新编译：`CUDAHOSTCXX=/usr/bin/gcc-5 python3 setup.py build develop</p>
-<p>参考链接：https://github.com/facebookresearch/maskrcnn-benchmark/issues/25
-`</p>
+<p>参考链接：https://github.com/facebookresearch/maskrcnn-benchmark/issues/25</p>
 
             </div>
           </article>
