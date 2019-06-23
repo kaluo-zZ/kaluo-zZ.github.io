@@ -3,7 +3,7 @@
     <meta charset="utf-8" />
 <meta name="description" content="" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Matlab读取并解析json格式文件 | KALUO</title>
+<title>Deformable Convolution编译问题 | KALUO</title>
 <link rel="shortcut icon" href="https://kaluo-zz.github.io/favicon.ico?v=1561268767190">
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
@@ -74,26 +74,56 @@
         <div class="post-detail">
           <article class="post">
             <h2 class="post-title">
-              Matlab读取并解析json格式文件
+              Deformable Convolution编译问题
             </h2>
             <div class="post-info">
               <time class="post-time">
-                · 2019-06-14 ·
+                · 2019-06-23 ·
               </time>
-              
-                <a href="https://kaluo-zz.github.io/tag/Q-fXnNDSO" class="post-tag">
-                  # matlab
-                </a>
-              
-                <a href="https://kaluo-zz.github.io/tag/Ib4sWZB8W" class="post-tag">
-                  # json
-                </a>
               
             </div>
             
             <div class="post-content">
-              <pre><code>jsonData = jsondecode(fileread('file.json'));
+              <p>编译环境：</p>
+<ol>
+<li>Ubuntu 18.04</li>
+<li>CUDA 9.0</li>
+<li>CUDNN 7.5</li>
+<li>GCC-6.4</li>
+</ol>
+<pre><code>build error:error: command '/usr/local/cuda/bin/nvcc' failed with exit status 1
 </code></pre>
+<p>出错原因：CUDA 9.0不支持gcc-6.4。
+解决方法：替换低版本的gcc，如gcc-5。</p>
+<pre><code>cd /usr/bin
+sudo rm gcc
+sudo rm g++
+sudo ln -s /usr/bin/gcc-5 gcc
+sudo ln -s /usr/bin/g++-5 g++
+
+	cd /usr/local/cuda-9.0/bin
+	sudo rm gcc
+	sudo rm g++
+	sudo ln -s /usr/bin/gcc-5 gcc
+	sudo ln -s /usr/bin/g++-5 g++
+</code></pre>
+<p>然后，将setup.py文件中添加<code>-DCUDA_HOST_COMPILER=/usr/bin/gcc-5</code>：</p>
+<pre><code>if torch.cuda.is_available() and CUDA_HOME is not None:
+        extension = CUDAExtension
+        sources += source_cuda
+        define_macros += [(&quot;WITH_CUDA&quot;, None)]
+        extra_compile_args[&quot;nvcc&quot;] = [
+            &quot;-DCUDA_HAS_FP16=1&quot;,
+            &quot;-D__CUDA_NO_HALF_OPERATORS__&quot;,
+            &quot;-D__CUDA_NO_HALF_CONVERSIONS__&quot;,
+            &quot;-D__CUDA_NO_HALF2_OPERATORS__&quot;,
+            &quot;-DCUDA_HOST_COMPILIER=/usr/bin/gcc-5&quot;,
+        ]
+</code></pre>
+<p>删除之前编译失败的build文件：<code>rm -r build</code>;</p>
+<p>重新编译：`CUDAHOSTCXX=/usr/bin/gcc-5 python3 setup.py build develop</p>
+<p>参考链接：https://github.com/facebookresearch/maskrcnn-benchmark/issues/25
+`</p>
 
             </div>
           </article>
@@ -102,9 +132,9 @@
         
           <div class="next-post">
             <div class="next">下一篇</div>
-            <a href="https://kaluo-zz.github.io/post/windows-an-zhuang-cocoapi-shi-chu-xian-cuo-wu">
+            <a href="https://kaluo-zz.github.io/post/jian-dan-duo-bian-xing-shun-ni-shi-zhen-pan-duan">
               <h3 class="post-title">
-                Windows安装cocoapi时出现错误
+                简单多边形顺逆时针判断
               </h3>
             </a>
           </div>
