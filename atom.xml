@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://kaluo-zz.github.io</id>
     <title>KALUO</title>
-    <updated>2019-06-24T03:23:46.172Z</updated>
+    <updated>2019-06-25T08:33:20.442Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://kaluo-zz.github.io"/>
     <link rel="self" href="https://kaluo-zz.github.io/atom.xml"/>
@@ -10,6 +10,42 @@
     <logo>https://kaluo-zz.github.io/images/avatar.png</logo>
     <icon>https://kaluo-zz.github.io/favicon.ico</icon>
     <rights>All rights reserved 2019, KALUO</rights>
+    <entry>
+        <title type="html"><![CDATA[Windows系统+TP-LINK企业级无线路由器(TL-WVR1200L)+HP LaserJet P1007打印机]]></title>
+        <id>https://kaluo-zz.github.io/post/windows-xi-tong-tp-link-qi-ye-ji-wu-xian-lu-you-qi-tl-wvr1200lhp-laserjet-p1007-da-yin-ji</id>
+        <link href="https://kaluo-zz.github.io/post/windows-xi-tong-tp-link-qi-ye-ji-wu-xian-lu-you-qi-tl-wvr1200lhp-laserjet-p1007-da-yin-ji">
+        </link>
+        <updated>2019-06-25T04:22:48.000Z</updated>
+        <content type="html"><![CDATA[<ol>
+<li>在windows上安装HP LaserJet P1007驱动 -&gt; <a href="https://support.hp.com/cn-zh/drivers/selfservice/HP-LaserJet-P1007-Printer/3435678/model/3435679">下载</a></li>
+</ol>
+<p><img src="https://kaluo-zz.github.io/post-images/1561449909277.png" alt=""></p>
+<ol start="2">
+<li>
+<p>下载安装WVR系列路由器打印服务器客户端软件 -&gt; <a href="https://service.tp-link.com.cn/detail_download_2290.html">下载</a></p>
+</li>
+<li>
+<p>进入 <code>控制面板\硬件和声音\设备和打印机</code>，选择<code>添加打印机</code>。</p>
+</li>
+</ol>
+<p>3.1 在弹出窗口中选择<code>我所需的打印机未列出</code></p>
+<p>3.2 选择<code>通过手动设置添加本地打印机或网络打印机</code>，点击<code>下一步</code></p>
+<p>3.3 按下图选择
+<img src="https://kaluo-zz.github.io/post-images/1561451124496.png" alt=""></p>
+<p>3.4
+<img src="https://kaluo-zz.github.io/post-images/1561451151131.png" alt=""></p>
+<p>3.5 选择<code>替换当前的驱动程序</code>，点击<code>下一步</code>；给打印机起名字，点击<code>下一步</code>。</p>
+<p>3.6 选择<code>不共享这台打印机</code>。</p>
+<ol start="4">
+<li>
+<p>打开打印服务器客户端软件，选中 HP LaserJet P1007，选择<code>自动连接打印机/设置自动连接打印机</code>，选择刚才创建的打印机。</p>
+</li>
+<li>
+<p>可以打印了。</p>
+</li>
+</ol>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[外网连接内网服务器]]></title>
         <id>https://kaluo-zz.github.io/post/wai-wang-lian-jie-nei-wang-fu-wu-qi</id>
@@ -875,23 +911,6 @@ sudo rm g++
 <pre><code class="language-bash">sudo ln -s gcc-6 gcc
 sudo ln -s g++-6 g++
 </code></pre>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[浅谈hdf5]]></title>
-        <id>https://kaluo-zz.github.io/post/ce-shi</id>
-        <link href="https://kaluo-zz.github.io/post/ce-shi">
-        </link>
-        <updated>2019-06-06T13:08:34.000Z</updated>
-        <content type="html"><![CDATA[<h2 id="hdf5">HDF5</h2>
-<p>HDF5全称是Hierarchical Data Format version 5，是一种开源文件格式，支持大型、复杂、异构的数据。</p>
-<h3 id="hdf5术语">HDF5术语</h3>
-<p><strong>Group</strong>: HDF5文件中类似于文件夹的元素，其中可能包含其他group或datasets。</p>
-<p><strong>Datasets</strong>: HDF5文件中包含的实际数据。Datasets通常(但不必)存储在文件中的group中。</p>
-<h2 id="hdf5-for-python">HDF5 for Python</h2>
-<h2 id="参考">参考</h2>
-<p>[1] http://docs.h5py.org/en/stable/</p>
-<p>[2] https://www.neonscience.org/about-hdf5</p>
 ]]></content>
     </entry>
 </feed>
