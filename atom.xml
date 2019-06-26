@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://kaluo-zz.github.io</id>
     <title>KALUO</title>
-    <updated>2019-06-25T08:33:20.442Z</updated>
+    <updated>2019-06-26T08:00:49.392Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://kaluo-zz.github.io"/>
     <link rel="self" href="https://kaluo-zz.github.io/atom.xml"/>
@@ -10,6 +10,26 @@
     <logo>https://kaluo-zz.github.io/images/avatar.png</logo>
     <icon>https://kaluo-zz.github.io/favicon.ico</icon>
     <rights>All rights reserved 2019, KALUO</rights>
+    <entry>
+        <title type="html"><![CDATA[Linux挂载新硬盘]]></title>
+        <id>https://kaluo-zz.github.io/post/linux-gua-zai-xin-ying-pan</id>
+        <link href="https://kaluo-zz.github.io/post/linux-gua-zai-xin-ying-pan">
+        </link>
+        <updated>2019-06-26T07:39:25.000Z</updated>
+        <content type="html"><![CDATA[<ol>
+<li>查看新磁盘：<code>sudo fdisk -l</code>，假设要挂载的磁盘为<code>/dev/sdc</code></li>
+<li>创建分区：<code>fdisk /dev/sdc</code></li>
+<li>写入文件系统：<code>mkfs.ext4 /dev/sdc</code></li>
+<li>新建挂载目录：<code>mkdir /mnt/data</code></li>
+<li>挂载：<code>mount /dev/sdc /mnt/data</code></li>
+<li>设置开机自动挂载：</li>
+</ol>
+<pre><code>vi /etc/fstab
+# 在文件末尾添加
+/dev/sdc /mnt/data ext4 defaults 0 0
+</code></pre>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Windows系统+TP-LINK企业级无线路由器(TL-WVR1200L)+HP LaserJet P1007打印机]]></title>
         <id>https://kaluo-zz.github.io/post/windows-xi-tong-tp-link-qi-ye-ji-wu-xian-lu-you-qi-tl-wvr1200lhp-laserjet-p1007-da-yin-ji</id>
@@ -816,101 +836,6 @@ docker --version
 <li>查询镜像：<code>docker images</code></li>
 <li>删除镜像：<code>docker rmi $(id)</code></li>
 </ol>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[搭建服务器并配置相关环境]]></title>
-        <id>https://kaluo-zz.github.io/post/da-jian-fu-wu-qi-bing-pei-zhi-xiang-guan-huan-jing</id>
-        <link href="https://kaluo-zz.github.io/post/da-jian-fu-wu-qi-bing-pei-zhi-xiang-guan-huan-jing">
-        </link>
-        <updated>2019-06-06T13:49:01.000Z</updated>
-        <content type="html"><![CDATA[<p>需要用到的软件如下：</p>
-<ol>
-<li>Ubuntu18.04 Server</li>
-<li>Cuda 9.0</li>
-<li>Cudnn 7</li>
-<li>rufus-3.3p</li>
-</ol>
-<h2 id="安装ubuntu-1804-server版">安装Ubuntu 18.04 Server版</h2>
-<p>有两种安装方式，一种是硬盘安装，另一种是U盘安装。实验室电脑原先系统是Ubuntu 16.04 Desktop版。</p>
-<h3 id="硬盘安装">硬盘安装</h3>
-<p>下载Ubuntu 18.04 Server iso镜像文件，放置于系统根目录下。重启电脑，按‘c’键进入grub2（按‘Esc’退出grub2命令行模式）。输入命令：</p>
-<pre><code class="language-bash">loopback loop (hd3, gpt2)/ubuntu.iso
-set root=(loop)
-linux /casper/vmlinuz boot=casper iso-scan/filename=/ubuntu.iso
-initrd /casper/initrd
-boot
-</code></pre>
-<p>参考<a href="http://forum.ubuntu.org.cn/viewtopic.php?t=347622">用grub2引导ISO硬盘安装ubuntu</a>。</p>
-<p>注意事项：单系统ubuntu启动默认不显示grub菜单，想要显示请参考<a href="https://blog.csdn.net/Q1302182594/article/details/51967772">开机显示grub选择菜单</a>。命令 <code>ls -l</code> 列出所有的硬盘，<code>(hd3, gpt2)</code>是我ubuntu系统所在的分区。</p>
-<h3 id="u盘安装">U盘安装</h3>
-<p>利用rufus制作u盘启动盘。</p>
-<h2 id="配置有线无线环境">配置有线/无线环境</h2>
-<p>Ubuntu18.04系统中<code>/etc/network/interface</code>已经被舍弃，取而代之的是<code>/etc/netplan</code>。</p>
-<p>运行命令，安装<code>wpasupplicant</code>以及<code>network-manager</code></p>
-<pre><code class="language-bash">sudo apt-get install wpasupplicant
-sudo apt-get install network-manager
-</code></pre>
-<p>打开<code>/etc/netplan/01-netcfg.yaml</code>，将内容替换为：</p>
-<pre><code class="language-bash"># This file describes the network interfaces available on your system
-# For more information, see netplan(5).
-network:
-  version: 2
-  renderer: NetworkManager
-  ethernets:
-          eno1:
-                  dhcp4: no
-                  addresses: [192.168.0.244/24]
-                  gateway4: 192.168.0.1
-                  nameservers:
-                          addresses: [202.38.64.1]
-  wifis:
-          wlx286c07973140:
-                  dhcp4: no
-                  addresses: [192.168.31.93/24]
-                  gateway4: 192.168.31.1
-                  nameservers:
-                         addresses: [xxx.xxx.xxx.xxx]
-                  access-points:
-                          &quot;WIFI Name&quot;:
-                                  password: 'password'
-</code></pre>
-<p>保存退出，在命令行中运行：</p>
-<pre><code class="language-bash">sudo netplan apply
-</code></pre>
-<p>使配置生效，然后重启电脑。</p>
-<p>参考链接：<a href="https://steemit.com/network/@oflyhigh/ubuntu-server-18-04-wifi">Ubuntu Server 18.04 设置WIFI上网</a></p>
-<h2 id="安装python2">安装python2</h2>
-<p>Ubuntu 18.04默认没有python2，输入以下命令安装：</p>
-<pre><code class="language-bash">sudo apt update
-sudo apt-get install python
-sudo apt install python-pip
-sudo apt install python3-pip
-</code></pre>
-<h2 id="安装open-ssh">安装open-ssh</h2>
-<pre><code class="language-bash">sudo apt-get install openssh-server
-</code></pre>
-<h2 id="挂载u盘">挂载U盘</h2>
-<p>查看所有磁盘信息：</p>
-<pre><code class="language-bash">sudo fdisk -l
-</code></pre>
-<p>挂载U盘：</p>
-<p>对于FAT32格式，<code>mount -t vfat /dev/sda /media</code></p>
-<p>对于NTFS格式，<code>mount -t nfs /dev/sda /media</code></p>
-<p>卸载U盘：<code>sudo umount /media</code></p>
-<h2 id="安装tensorflow-gpu">安装TensorFlow-GPU</h2>
-<p>参考<a href="https://blog.csdn.net/shenquanyue/article/details/82774348#_23">ubuntu18.04 安装tensoflow-gpu</a></p>
-<p>注意事项：在装NVIDIA显卡驱动之前，先禁用Ubuntu系统自带的nouveau驱动。<a href="https://blog.csdn.net/u012442845/article/details/78855573">禁用 nouveau 安装 nvidia显卡驱动</a></p>
-<p>**注意事项：**安装cuda和caffe时，要将环境变量写在<code>/etc/profile</code>中。如果写在<code>./bashrc</code>中，只能当前用户使用，其他用户无法使用。参考<a href="https://blog.csdn.net/ithomer/article/details/6322892">Linux 之 /etc/profile、~/.bash_profile 等几个文件的执行过程</a>。</p>
-<h4 id="切换gcc版本">切换gcc版本</h4>
-<p>NVIDIA驱动安装时可能会遇到gcc版本不匹配问题，到/usr/bin目录下删除原有的gcc和g++软链接：</p>
-<pre><code class="language-bash">sudo rm gcc
-sudo rm g++
-</code></pre>
-<p>如果要将gcc版本从7切换到6（当然，前提是已经安装了gcc-6），执行命令：</p>
-<pre><code class="language-bash">sudo ln -s gcc-6 gcc
-sudo ln -s g++-6 g++
-</code></pre>
 ]]></content>
     </entry>
 </feed>
