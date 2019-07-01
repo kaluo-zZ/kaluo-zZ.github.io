@@ -1,0 +1,164 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Pytorch计算图内存释放问题 | KALUO</title>
+<link rel="shortcut icon" href="https://kaluo-zz.github.io/favicon.ico?v=1561969140948">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://kaluo-zz.github.io/styles/main.css">
+
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/moment.js/2.23.0/moment.min.js"></script>
+
+
+
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://kaluo-zz.github.io">
+  <img class="avatar" src="https://kaluo-zz.github.io/images/avatar.png?v=1561969140948" alt="">
+  </a>
+  <h1 class="site-title">
+    KALUO
+  </h1>
+  <p class="site-description">
+    温故而知新
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/post/about" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              Pytorch计算图内存释放问题
+            </h2>
+            <div class="post-info">
+              <time class="post-time">
+                · 2019-07-01 ·
+              </time>
+              
+                <a href="https://kaluo-zz.github.io/tag/rT7AxA2VY" class="post-tag">
+                  # pytorch
+                </a>
+              
+                <a href="https://kaluo-zz.github.io/tag/-AEi1Fqbq" class="post-tag">
+                  # 计算图
+                </a>
+              
+            </div>
+            
+            <div class="post-content">
+              <p>pytoch构建的计算图是动态图，为了节约内存，所以每次一轮迭代完之后计算图就被在内存释放，所以当你想要多次<strong>backward</strong>时候就会报如下错：</p>
+<pre><code class="language-python">&gt;&gt;&gt; from torch import nn
+&gt;&gt;&gt; net = nn.Linear(3, 4)
+&gt;&gt;&gt; input = Variable(torch.randn(2, 3), requires_grad=True)
+&gt;&gt;&gt; output = net(input)
+&gt;&gt;&gt; loss = torch.sum(output)
+&gt;&gt;&gt; loss.backward()  # 到这计算图已经结束，计算图被释放了
+&gt;&gt;&gt; loss.backward()
+Traceback (most recent call last):
+  File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;
+  File &quot;/home/kaluo/.local/lib/python2.7/site-packages/torch/tensor.py&quot;, line 93, in backward
+    torch.autograd.backward(self, gradient, retain_graph, create_graph)
+  File &quot;/home/kaluo/.local/lib/python2.7/site-packages/torch/autograd/__init__.py&quot;, line 90, in backward
+    allow_unreachable=True)  # allow_unreachable flag
+RuntimeError: Trying to backward through the graph a second time, but the buffers have already been freed. Specify retain_graph=True when calling backward the first time.
+</code></pre>
+<p>之所以会报这个错，因为计算图在内存中已经被释放。但是，如果你需要多次<strong>backward</strong>只需要在第一次反向传播时候添加一个标识，如下：</p>
+<pre><code class="language-python">&gt;&gt;&gt; input = Variable(torch.randn(2, 3), requires_grad=True)
+&gt;&gt;&gt; output = net(input)
+&gt;&gt;&gt; loss = torch.sum(output)
+&gt;&gt;&gt; loss.backward(retain_graph=True) # 添加retain_graph=True标识，让计算图不被立即释放
+&gt;&gt;&gt; loss.backward()
+
+</code></pre>
+<p>经过多次backward后的叶节点梯度会直接累加，所以我们一般会将其清零。</p>
+<pre><code class="language-python">&gt;&gt;&gt; x = Variable(torch.FloatTensor([[1, 2]]), requires_grad=True)
+&gt;&gt;&gt; y = Variable(torch.FloatTensor([[3, 4],
+...                                 [5, 6]]))
+&gt;&gt;&gt; loss = torch.mm(x, y)
+&gt;&gt;&gt; loss.backward(torch.FloatTensor([[1, 0]]), retain_graph=True)
+&gt;&gt;&gt; print(x.grad.data)
+tensor([[3., 5.]])
+&gt;&gt;&gt; x.grad.data.zero_() # 最后的梯度会累加到叶节点，所以叶节点清零
+tensor([[0., 0.]])
+&gt;&gt;&gt; loss.backward(torch.FloatTensor([[0, 1]]))
+&gt;&gt;&gt; print(x.grad.data)
+tensor([[4., 6.]])
+
+</code></pre>
+
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://kaluo-zz.github.io/post/linux-gua-zai-xin-ying-pan">
+              <h3 class="post-title">
+                Linux挂载新硬盘
+              </h3>
+            </a>
+          </div>
+        
+
+        
+
+        <div class="site-footer">
+  Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | 
+  <a class="rss" href="https://kaluo-zz.github.io/atom.xml" target="_blank">RSS</a>
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+
+      </div>
+    </div>
+  </body>
+</html>
