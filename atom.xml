@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://kaluo-zz.github.io</id>
     <title>KALUO</title>
-    <updated>2019-07-03T09:24:27.223Z</updated>
+    <updated>2019-07-03T11:14:49.495Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://kaluo-zz.github.io"/>
     <link rel="self" href="https://kaluo-zz.github.io/atom.xml"/>
@@ -10,6 +10,16 @@
     <logo>https://kaluo-zz.github.io/images/avatar.png</logo>
     <icon>https://kaluo-zz.github.io/favicon.ico</icon>
     <rights>All rights reserved 2019, KALUO</rights>
+    <entry>
+        <title type="html"><![CDATA[Windows创建软链接]]></title>
+        <id>https://kaluo-zz.github.io/post/windows-chuang-jian-ruan-lian-jie</id>
+        <link href="https://kaluo-zz.github.io/post/windows-chuang-jian-ruan-lian-jie">
+        </link>
+        <updated>2019-07-03T11:11:49.000Z</updated>
+        <content type="html"><![CDATA[<p>打开cmd，在当前目录下创建链接到<code>D:\Files\COCO\images</code>的软链接：
+<code>mklink /J images D:\Files\COCO\images</code></p>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Pytorch中文文档]]></title>
         <id>https://kaluo-zz.github.io/post/pytorch-zhong-wen-wen-dang</id>
@@ -470,56 +480,6 @@ tensor([[4., 6.]])
         <updated>2019-06-23T12:34:15.000Z</updated>
         <content type="html"><![CDATA[<p><img src="https://kaluo-zz.github.io/post-images/1561344158423.jpg" alt=""></p>
 <p>参考：https://www.cnblogs.com/kwongtai/p/6903420.html</p>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Deformable Convolution编译问题]]></title>
-        <id>https://kaluo-zz.github.io/post/deformable-convolution-bian-yi-wen-ti</id>
-        <link href="https://kaluo-zz.github.io/post/deformable-convolution-bian-yi-wen-ti">
-        </link>
-        <updated>2019-06-23T05:32:52.000Z</updated>
-        <content type="html"><![CDATA[<p>编译环境：</p>
-<ol>
-<li>Ubuntu 18.04</li>
-<li>CUDA 9.0</li>
-<li>CUDNN 7.5</li>
-<li>GCC-6.4</li>
-</ol>
-<p>项目地址：https://github.com/CharlesShang/DCNv2</p>
-<p>出错信息：</p>
-<pre><code>build error:error: command '/usr/local/cuda/bin/nvcc' failed with exit status 1
-</code></pre>
-<p>出错原因：CUDA 9.0不支持gcc-6.4。
-解决方法：替换低版本的gcc，如gcc-5。</p>
-<pre><code>cd /usr/bin
-sudo rm gcc
-sudo rm g++
-sudo ln -s /usr/bin/gcc-5 gcc
-sudo ln -s /usr/bin/g++-5 g++
-
-cd /usr/local/cuda-9.0/bin
-sudo rm gcc
-sudo rm g++
-sudo ln -s /usr/bin/gcc-5 gcc
-sudo ln -s /usr/bin/g++-5 g++
-</code></pre>
-<p>然后，将setup.py文件中添加<code>-DCUDA_HOST_COMPILER=/usr/bin/gcc-5</code>：</p>
-<pre><code>if torch.cuda.is_available() and CUDA_HOME is not None:
-        extension = CUDAExtension
-        sources += source_cuda
-        define_macros += [(&quot;WITH_CUDA&quot;, None)]
-        extra_compile_args[&quot;nvcc&quot;] = [
-            &quot;-DCUDA_HAS_FP16=1&quot;,
-            &quot;-D__CUDA_NO_HALF_OPERATORS__&quot;,
-            &quot;-D__CUDA_NO_HALF_CONVERSIONS__&quot;,
-            &quot;-D__CUDA_NO_HALF2_OPERATORS__&quot;,
-            &quot;-DCUDA_HOST_COMPILIER=/usr/bin/gcc-5&quot;,
-        ]
-</code></pre>
-<p>删除之前编译失败的build文件：<code>rm -r build</code>;</p>
-<p>重新编译：`CUDAHOSTCXX=/usr/bin/gcc-5 python3 setup.py build develop</p>
-<p>注：如果是在普通用户下编译，可能出现权限问题，此时可以在编译命令后面加上<code>--user</code>。</p>
-<p>参考链接：https://github.com/facebookresearch/maskrcnn-benchmark/issues/25</p>
 ]]></content>
     </entry>
 </feed>
