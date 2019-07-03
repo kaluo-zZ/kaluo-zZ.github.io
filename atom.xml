@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://kaluo-zz.github.io</id>
     <title>KALUO</title>
-    <updated>2019-07-02T00:31:50.560Z</updated>
+    <updated>2019-07-03T09:24:27.223Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://kaluo-zz.github.io"/>
     <link rel="self" href="https://kaluo-zz.github.io/atom.xml"/>
@@ -10,6 +10,15 @@
     <logo>https://kaluo-zz.github.io/images/avatar.png</logo>
     <icon>https://kaluo-zz.github.io/favicon.ico</icon>
     <rights>All rights reserved 2019, KALUO</rights>
+    <entry>
+        <title type="html"><![CDATA[Pytorch中文文档]]></title>
+        <id>https://kaluo-zz.github.io/post/pytorch-zhong-wen-wen-dang</id>
+        <link href="https://kaluo-zz.github.io/post/pytorch-zhong-wen-wen-dang">
+        </link>
+        <updated>2019-07-03T09:23:26.000Z</updated>
+        <content type="html"><![CDATA[<p>Pytorch中文文档：<a href="https://pytorch-cn.readthedocs.io/zh/latest/package_references/torch/">-&gt;</a></p>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Jupyter notebook快捷键]]></title>
         <id>https://kaluo-zz.github.io/post/jupyter-notebook-kuai-jie-jian</id>
@@ -511,16 +520,6 @@ sudo ln -s /usr/bin/g++-5 g++
 <p>重新编译：`CUDAHOSTCXX=/usr/bin/gcc-5 python3 setup.py build develop</p>
 <p>注：如果是在普通用户下编译，可能出现权限问题，此时可以在编译命令后面加上<code>--user</code>。</p>
 <p>参考链接：https://github.com/facebookresearch/maskrcnn-benchmark/issues/25</p>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[简单多边形顺逆时针判断]]></title>
-        <id>https://kaluo-zz.github.io/post/jian-dan-duo-bian-xing-shun-ni-shi-zhen-pan-duan</id>
-        <link href="https://kaluo-zz.github.io/post/jian-dan-duo-bian-xing-shun-ni-shi-zhen-pan-duan">
-        </link>
-        <updated>2019-06-15T12:18:18.000Z</updated>
-        <content type="html"><![CDATA[<p>方法1：利用向量叉积求多边形面积，判断多边形面积正负。
-方法2：取多边形最左边一点，判断和之前和之后点构成的向量的叉积符号。</p>
 ]]></content>
     </entry>
 </feed>
