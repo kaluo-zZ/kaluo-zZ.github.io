@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://kaluo-zz.github.io</id>
     <title>KALUO</title>
-    <updated>2019-07-03T13:43:15.076Z</updated>
+    <updated>2019-07-03T13:47:41.586Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://kaluo-zz.github.io"/>
     <link rel="self" href="https://kaluo-zz.github.io/atom.xml"/>
@@ -18,10 +18,11 @@
         <updated>2019-07-03T13:21:28.000Z</updated>
         <content type="html"><![CDATA[<ol>
 <li><code>__getattr__(self, name)</code>：访问不存在的属性时调用</li>
-<li><code>__getattribute__(self, name)</code>：访问存在的属性时调用（先调用该方法，查看是否存在该属性，若不存在，调用<code>__getattr__</code>。若重载了<code>__getattribute__</code>方法，则不会自动调用<code>__getattr__</code>方法，需在最后手动添加一行<code>object.__getattribute__(name)</code>。）。</li>
+<li><code>__getattribute__(self, name)</code>：访问存在的属性时调用（先调用该方法，查看是否存在该属性，若不存在，调用<code>__getattr__</code>。若重载了<code>__getattribute__</code>方法，则不会自动调用<code>__getattr__</code>方法，需在最后手动添加一行<code>object.__getattribute__(self, name)</code>。）。</li>
 <li><code>__setattr__(self, name)</code>：设置实例对象的一个新的属性时调用</li>
 <li><code>__delattr__(self, name)</code>：删除一个实例对象的属性时调用</li>
 </ol>
+<p>（python中无论实例还是类，都是用<code>__dict__</code>来存储属性和方法）</p>
 ]]></content>
     </entry>
     <entry>

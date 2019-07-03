@@ -4,7 +4,7 @@
 <meta name="description" content="" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Python属性访问 | KALUO</title>
-<link rel="shortcut icon" href="https://kaluo-zz.github.io/favicon.ico?v=1562161391974">
+<link rel="shortcut icon" href="https://kaluo-zz.github.io/favicon.ico?v=1562161659147">
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
 <link rel="stylesheet" href="https://kaluo-zz.github.io/styles/main.css">
@@ -20,7 +20,7 @@
       <div class="main-content">
         <div class="site-header">
   <a href="https://kaluo-zz.github.io">
-  <img class="avatar" src="https://kaluo-zz.github.io/images/avatar.png?v=1562161391974" alt="">
+  <img class="avatar" src="https://kaluo-zz.github.io/images/avatar.png?v=1562161659147" alt="">
   </a>
   <h1 class="site-title">
     KALUO
@@ -90,10 +90,11 @@
             <div class="post-content">
               <ol>
 <li><code>__getattr__(self, name)</code>：访问不存在的属性时调用</li>
-<li><code>__getattribute__(self, name)</code>：访问存在的属性时调用（先调用该方法，查看是否存在该属性，若不存在，调用<code>__getattr__</code>。若重载了<code>__getattribute__</code>方法，则不会自动调用<code>__getattr__</code>方法，需在最后手动添加一行<code>object.__getattribute__(name)</code>。）。</li>
+<li><code>__getattribute__(self, name)</code>：访问存在的属性时调用（先调用该方法，查看是否存在该属性，若不存在，调用<code>__getattr__</code>。若重载了<code>__getattribute__</code>方法，则不会自动调用<code>__getattr__</code>方法，需在最后手动添加一行<code>object.__getattribute__(self, name)</code>。）。</li>
 <li><code>__setattr__(self, name)</code>：设置实例对象的一个新的属性时调用</li>
 <li><code>__delattr__(self, name)</code>：删除一个实例对象的属性时调用</li>
 </ol>
+<p>（python中无论实例还是类，都是用<code>__dict__</code>来存储属性和方法）</p>
 
             </div>
           </article>
