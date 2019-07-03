@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://kaluo-zz.github.io</id>
     <title>KALUO</title>
-    <updated>2019-07-03T13:52:04.230Z</updated>
+    <updated>2019-07-03T14:14:19.799Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://kaluo-zz.github.io"/>
     <link rel="self" href="https://kaluo-zz.github.io/atom.xml"/>
@@ -59,6 +59,59 @@
 <code>H</code> 查询命令行
 <code>Y</code> 从markdown切换到单元格
 <code>M</code> 从单元格切换到markdown</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[pytorch之数据维度变换]]></title>
+        <id>https://kaluo-zz.github.io/post/pytorch-zhi-shu-ju-wei-du-bian-huan</id>
+        <link href="https://kaluo-zz.github.io/post/pytorch-zhi-shu-ju-wei-du-bian-huan">
+        </link>
+        <updated>2019-07-01T13:43:30.000Z</updated>
+        <content type="html"><![CDATA[<ol>
+<li><code>torch.cat(inputs, dimension=0) → Tensor</code>：在给定的维度上进行张量序列的拼接。</li>
+</ol>
+<pre><code>import torch
+
+x = torch.rand((71, 32, 1))
+# x.shape = torch.Size([71, 32, 1])
+px = torch.cat((torch.zeros(29, 32, 1, dtype=x.dtype, device=x.device), x), 0)
+# px.shape = torch.Size([100, 32, 1])
+</code></pre>
+<ol start="2">
+<li><code>view(*args) -&gt; Tensor</code>：返回一个有相同数据但尺寸不同的tensor。操作的tensor必须是连续的（<code>contiguous()</code>）。</li>
+</ol>
+<pre><code>&gt;&gt;&gt; x = torch.randn(4, 4)
+&gt;&gt;&gt; x.size()
+torch.Size([4, 4])
+&gt;&gt;&gt; y = x.view(16)
+&gt;&gt;&gt; y.size()
+torch.Size([16])
+&gt;&gt;&gt; z = x.view(-1, 8)  # the size -1 is inferred from other dimensions
+&gt;&gt;&gt; z.size()
+torch.Size([2, 8])
+</code></pre>
+<ol start="3">
+<li><code>permute(dims)</code>：将tensor的维度换位。</li>
+</ol>
+<pre><code>&gt;&gt;&gt; x = torch.randn(2, 3, 5)
+&gt;&gt;&gt; x.size()
+torch.Size([2, 3, 5])
+&gt;&gt;&gt; x.permute(2, 0, 1).size()
+torch.Size([5, 2, 3])
+</code></pre>
+<ol start="4">
+<li><code>repeat(*sizes)</code>：沿着指定的维度重复tensor（sizes (torch.Size ot int...)-沿着每一维重复的次数）。</li>
+</ol>
+<pre><code>&gt;&gt;&gt; x = torch.Tensor([1, 2, 3])
+&gt;&gt;&gt; x.repeat(4, 2) # 沿着维度0重复4次，沿着维度1重复2次
+ 1  2  3  1  2  3
+ 1  2  3  1  2  3
+ 1  2  3  1  2  3
+ 1  2  3  1  2  3
+[torch.FloatTensor of size 4x6]
+&gt;&gt;&gt; x.repeat(4, 2, 1).size()
+torch.Size([4, 2, 3])
+</code></pre>
 ]]></content>
     </entry>
     <entry>
@@ -449,42 +502,6 @@ tensor([[4., 6.]])
 # 在文件末尾添加
 /dev/sdc /mnt/data ext4 defaults 0 0
 </code></pre>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Windows系统+TP-LINK企业级无线路由器(TL-WVR1200L)+HP LaserJet P1007打印机]]></title>
-        <id>https://kaluo-zz.github.io/post/windows-xi-tong-tp-link-qi-ye-ji-wu-xian-lu-you-qi-tl-wvr1200lhp-laserjet-p1007-da-yin-ji</id>
-        <link href="https://kaluo-zz.github.io/post/windows-xi-tong-tp-link-qi-ye-ji-wu-xian-lu-you-qi-tl-wvr1200lhp-laserjet-p1007-da-yin-ji">
-        </link>
-        <updated>2019-06-25T04:22:48.000Z</updated>
-        <content type="html"><![CDATA[<ol>
-<li>在windows上安装HP LaserJet P1007驱动 -&gt; <a href="https://support.hp.com/cn-zh/drivers/selfservice/HP-LaserJet-P1007-Printer/3435678/model/3435679">下载</a></li>
-</ol>
-<p><img src="https://kaluo-zz.github.io/post-images/1561449909277.png" alt=""></p>
-<ol start="2">
-<li>
-<p>下载安装WVR系列路由器打印服务器客户端软件 -&gt; <a href="https://service.tp-link.com.cn/detail_download_2290.html">下载</a></p>
-</li>
-<li>
-<p>进入 <code>控制面板\硬件和声音\设备和打印机</code>，选择<code>添加打印机</code>。</p>
-</li>
-</ol>
-<p>3.1 在弹出窗口中选择<code>我所需的打印机未列出</code></p>
-<p>3.2 选择<code>通过手动设置添加本地打印机或网络打印机</code>，点击<code>下一步</code></p>
-<p>3.3 按下图选择
-<img src="https://kaluo-zz.github.io/post-images/1561451124496.png" alt=""></p>
-<p>3.4
-<img src="https://kaluo-zz.github.io/post-images/1561451151131.png" alt=""></p>
-<p>3.5 选择<code>替换当前的驱动程序</code>，点击<code>下一步</code>；给打印机起名字，点击<code>下一步</code>。</p>
-<p>3.6 选择<code>不共享这台打印机</code>。</p>
-<ol start="4">
-<li>
-<p>打开打印服务器客户端软件，选中 HP LaserJet P1007，选择<code>自动连接打印机/设置自动连接打印机</code>，选择刚才创建的打印机。</p>
-</li>
-<li>
-<p>可以打印了。</p>
-</li>
-</ol>
 ]]></content>
     </entry>
 </feed>
