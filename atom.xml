@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://kaluo-zz.github.io</id>
     <title>KALUO</title>
-    <updated>2019-07-10T02:11:31.628Z</updated>
+    <updated>2019-07-10T02:12:56.074Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://kaluo-zz.github.io"/>
     <link rel="self" href="https://kaluo-zz.github.io/atom.xml"/>
@@ -16,11 +16,7 @@
         <link href="https://kaluo-zz.github.io/post/shi-yong-ffmpeg-jiang-yi-zu-tu-xiang-zhuan-huan-wei-shi-pin">
         </link>
         <updated>2019-07-10T02:01:19.000Z</updated>
-        <summary type="html"><![CDATA[<p>当使用<code>ffmpeg</code>压缩视频时，建议使用<code>libx264</code>编解码器。</p>
-]]></summary>
-        <content type="html"><![CDATA[<p>当使用<code>ffmpeg</code>压缩视频时，建议使用<code>libx264</code>编解码器。</p>
-<!--more-->
-<p>当使用<code>ffmpeg</code>压缩视频时，建议使用<code>libx264</code>编解码器。在将图片转换为视频前，建议将图片名称更改为(<code>pic0001.png</code>, <code>pic0002.png</code>)之类的有序形式。相关命令：</p>
+        <content type="html"><![CDATA[<p>当使用<code>ffmpeg</code>压缩视频时，建议使用<code>libx264</code>编解码器。在将图片转换为视频前，建议将图片名称更改为(<code>pic0001.png</code>, <code>pic0002.png</code>)之类的有序形式。相关命令：</p>
 <pre><code>ffmpeg -r 60 image2 -s 1920x1080 -i pic%04d.png -vcodec libx264 -crf 25 -pix_fmt yuv420p test.mp4
 </code></pre>
 <ul>
