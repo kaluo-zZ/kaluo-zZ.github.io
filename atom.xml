@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://kaluo-zz.github.io</id>
     <title>KALUO</title>
-    <updated>2019-07-10T02:12:56.074Z</updated>
+    <updated>2019-07-10T02:21:04.732Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://kaluo-zz.github.io"/>
     <link rel="self" href="https://kaluo-zz.github.io/atom.xml"/>
@@ -24,6 +24,52 @@
 <li><code>-crf</code> 质量，更低意味着更好的质量（一般15-25）</li>
 <li><code>-pix_fmt yuv420p</code> 指定像素格式</li>
 </ul>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Distance Transform]]></title>
+        <id>https://kaluo-zz.github.io/post/distance-transform</id>
+        <link href="https://kaluo-zz.github.io/post/distance-transform">
+        </link>
+        <updated>2019-07-08T12:58:51.000Z</updated>
+        <content type="html"><![CDATA[<p>Distance Transform</p>
+<p>现在有这样一种需求，产生由点构成的曲线段的热图。如何产生呢？</p>
+<p>首先介绍一下Distance transform。距离变换提供了图像中点的分离的度量，它处理的对象是二值图像。其基本思想是每个像素值赋值为其与最近的背景像素点之间的距离（常用的距离度量是欧式距离和曼哈顿距离）。</p>
+<p>下面以一张图像为例。从上到下分别是原图、原图+轮廓点、轮廓点、经过距离变换后的图和经过标准化和阈值化后图。这样就得到了由轮廓点产生的边界线热图。</p>
+<p><img src="https://kaluo-zz.github.io/post-images/1562725172655.png" alt="">
+<img src="https://kaluo-zz.github.io/post-images/1562725181225.png" alt="">
+<img src="https://kaluo-zz.github.io/post-images/1562725185714.png" alt="">
+<img src="https://kaluo-zz.github.io/post-images/1562725226765.png" alt="">
+<img src="https://kaluo-zz.github.io/post-images/1562725230518.png" alt=""></p>
+<p>步骤如下：</p>
+<ol>
+<li>
+<p>获取图像轮廓点；</p>
+</li>
+<li>
+<p>得到与原图大小一样的二值图像B，轮廓点对应位置为0，其余位置为1；</p>
+</li>
+<li>
+<p>使用<code>scipy.ndimage.distance_transform</code>函数来转换二值图像B，得到结果D；</p>
+</li>
+<li>
+<p>将D中的最大值减去D中的每一个元素；</p>
+</li>
+<li>
+<p>对D进行标准化；</p>
+</li>
+<li>
+<p>利用</p>
+<p class='katex-block katex-error' title='Error: Expected node of type ordgroup, but got node of type text'>M(x, y) = \left\{
+\begin{array}
+	\text{exp}(-\frac{D(x, y)^2}{2\sigma^2}), &amp;\text{if}\; D(x, y) &lt; 3\sigma \\
+	0, &amp;\text{otherwise}
+\end{array}
+\right.
+</p>
+<p>对D中的每个像素进行处理。</p>
+</li>
+</ol>
 ]]></content>
     </entry>
     <entry>
@@ -450,53 +496,6 @@ tensor([[0.]])
 &gt;&gt;&gt; print(yGrad)
 tensor([[5.1903]])
 &gt;&gt;&gt;
-</code></pre>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Pytorch计算图内存释放问题]]></title>
-        <id>https://kaluo-zz.github.io/post/pytorch-ji-suan-tu-nei-cun-shi-fang-wen-ti</id>
-        <link href="https://kaluo-zz.github.io/post/pytorch-ji-suan-tu-nei-cun-shi-fang-wen-ti">
-        </link>
-        <updated>2019-07-01T08:16:02.000Z</updated>
-        <content type="html"><![CDATA[<p>pytoch构建的计算图是动态图，为了节约内存，所以每次一轮迭代完之后计算图就被在内存释放，所以当你想要多次<strong>backward</strong>时候就会报如下错：</p>
-<pre><code class="language-python">&gt;&gt;&gt; from torch import nn
-&gt;&gt;&gt; net = nn.Linear(3, 4)
-&gt;&gt;&gt; input = Variable(torch.randn(2, 3), requires_grad=True)
-&gt;&gt;&gt; output = net(input)
-&gt;&gt;&gt; loss = torch.sum(output)
-&gt;&gt;&gt; loss.backward()  # 到这计算图已经结束，计算图被释放了
-&gt;&gt;&gt; loss.backward()
-Traceback (most recent call last):
-  File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;
-  File &quot;/home/kaluo/.local/lib/python2.7/site-packages/torch/tensor.py&quot;, line 93, in backward
-    torch.autograd.backward(self, gradient, retain_graph, create_graph)
-  File &quot;/home/kaluo/.local/lib/python2.7/site-packages/torch/autograd/__init__.py&quot;, line 90, in backward
-    allow_unreachable=True)  # allow_unreachable flag
-RuntimeError: Trying to backward through the graph a second time, but the buffers have already been freed. Specify retain_graph=True when calling backward the first time.
-</code></pre>
-<p>之所以会报这个错，因为计算图在内存中已经被释放。但是，如果你需要多次<strong>backward</strong>只需要在第一次反向传播时候添加一个标识，如下：</p>
-<pre><code class="language-python">&gt;&gt;&gt; input = Variable(torch.randn(2, 3), requires_grad=True)
-&gt;&gt;&gt; output = net(input)
-&gt;&gt;&gt; loss = torch.sum(output)
-&gt;&gt;&gt; loss.backward(retain_graph=True) # 添加retain_graph=True标识，让计算图不被立即释放
-&gt;&gt;&gt; loss.backward()
-
-</code></pre>
-<p>经过多次backward后的叶节点梯度会直接累加，所以我们一般会将其清零。</p>
-<pre><code class="language-python">&gt;&gt;&gt; x = Variable(torch.FloatTensor([[1, 2]]), requires_grad=True)
-&gt;&gt;&gt; y = Variable(torch.FloatTensor([[3, 4],
-...                                 [5, 6]]))
-&gt;&gt;&gt; loss = torch.mm(x, y)
-&gt;&gt;&gt; loss.backward(torch.FloatTensor([[1, 0]]), retain_graph=True)
-&gt;&gt;&gt; print(x.grad.data)
-tensor([[3., 5.]])
-&gt;&gt;&gt; x.grad.data.zero_() # 最后的梯度会累加到叶节点，所以叶节点清零
-tensor([[0., 0.]])
-&gt;&gt;&gt; loss.backward(torch.FloatTensor([[0, 1]]))
-&gt;&gt;&gt; print(x.grad.data)
-tensor([[4., 6.]])
-
 </code></pre>
 ]]></content>
     </entry>

@@ -3,7 +3,7 @@
     <meta charset="utf-8" />
 <meta name="description" content="" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>浅谈hdf5 | KALUO</title>
+<title>Distance Transform | KALUO</title>
 <link rel="shortcut icon" href="https://kaluo-zz.github.io/favicon.ico?v=1562725262923">
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
@@ -74,30 +74,68 @@
         <div class="post-detail">
           <article class="post">
             <h2 class="post-title">
-              浅谈hdf5
+              Distance Transform
             </h2>
             <div class="post-info">
               <time class="post-time">
-                · 2019-06-06 ·
+                · 2019-07-08 ·
               </time>
               
             </div>
             
             <div class="post-content">
-              <h2 id="hdf5">HDF5</h2>
-<p>HDF5全称是Hierarchical Data Format version 5，是一种开源文件格式，支持大型、复杂、异构的数据。</p>
-<h3 id="hdf5术语">HDF5术语</h3>
-<p><strong>Group</strong>: HDF5文件中类似于文件夹的元素，其中可能包含其他group或datasets。</p>
-<p><strong>Datasets</strong>: HDF5文件中包含的实际数据。Datasets通常(但不必)存储在文件中的group中。</p>
-<h2 id="hdf5-for-python">HDF5 for Python</h2>
-<h2 id="参考">参考</h2>
-<p>[1] http://docs.h5py.org/en/stable/</p>
-<p>[2] https://www.neonscience.org/about-hdf5</p>
+              <p>Distance Transform</p>
+<p>现在有这样一种需求，产生由点构成的曲线段的热图。如何产生呢？</p>
+<p>首先介绍一下Distance transform。距离变换提供了图像中点的分离的度量，它处理的对象是二值图像。其基本思想是每个像素值赋值为其与最近的背景像素点之间的距离（常用的距离度量是欧式距离和曼哈顿距离）。</p>
+<p>下面以一张图像为例。从上到下分别是原图、原图+轮廓点、轮廓点、经过距离变换后的图和经过标准化和阈值化后图。这样就得到了由轮廓点产生的边界线热图。</p>
+<p><img src="https://kaluo-zz.github.io/post-images/1562725172655.png" alt="">
+<img src="https://kaluo-zz.github.io/post-images/1562725181225.png" alt="">
+<img src="https://kaluo-zz.github.io/post-images/1562725185714.png" alt="">
+<img src="https://kaluo-zz.github.io/post-images/1562725226765.png" alt="">
+<img src="https://kaluo-zz.github.io/post-images/1562725230518.png" alt=""></p>
+<p>步骤如下：</p>
+<ol>
+<li>
+<p>获取图像轮廓点；</p>
+</li>
+<li>
+<p>得到与原图大小一样的二值图像B，轮廓点对应位置为0，其余位置为1；</p>
+</li>
+<li>
+<p>使用<code>scipy.ndimage.distance_transform</code>函数来转换二值图像B，得到结果D；</p>
+</li>
+<li>
+<p>将D中的最大值减去D中的每一个元素；</p>
+</li>
+<li>
+<p>对D进行标准化；</p>
+</li>
+<li>
+<p>利用</p>
+<p class='katex-block katex-error' title='Error: Expected node of type ordgroup, but got node of type text'>M(x, y) = \left\{
+\begin{array}
+	\text{exp}(-\frac{D(x, y)^2}{2\sigma^2}), &amp;\text{if}\; D(x, y) &lt; 3\sigma \\
+	0, &amp;\text{otherwise}
+\end{array}
+\right.
+</p>
+<p>对D中的每个像素进行处理。</p>
+</li>
+</ol>
 
             </div>
           </article>
         </div>
 
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://kaluo-zz.github.io/post/python-shu-xing-fang-wen">
+              <h3 class="post-title">
+                Python属性访问
+              </h3>
+            </a>
+          </div>
         
 
         
