@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://kaluo-zz.github.io</id>
     <title>KALUO</title>
-    <updated>2019-07-03T14:14:19.799Z</updated>
+    <updated>2019-07-10T02:11:31.628Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://kaluo-zz.github.io"/>
     <link rel="self" href="https://kaluo-zz.github.io/atom.xml"/>
@@ -10,6 +10,26 @@
     <logo>https://kaluo-zz.github.io/images/avatar.png</logo>
     <icon>https://kaluo-zz.github.io/favicon.ico</icon>
     <rights>All rights reserved 2019, KALUO</rights>
+    <entry>
+        <title type="html"><![CDATA[使用ffmpeg将一组图像转换为视频]]></title>
+        <id>https://kaluo-zz.github.io/post/shi-yong-ffmpeg-jiang-yi-zu-tu-xiang-zhuan-huan-wei-shi-pin</id>
+        <link href="https://kaluo-zz.github.io/post/shi-yong-ffmpeg-jiang-yi-zu-tu-xiang-zhuan-huan-wei-shi-pin">
+        </link>
+        <updated>2019-07-10T02:01:19.000Z</updated>
+        <summary type="html"><![CDATA[<p>当使用<code>ffmpeg</code>压缩视频时，建议使用<code>libx264</code>编解码器。</p>
+]]></summary>
+        <content type="html"><![CDATA[<p>当使用<code>ffmpeg</code>压缩视频时，建议使用<code>libx264</code>编解码器。</p>
+<!--more-->
+<p>当使用<code>ffmpeg</code>压缩视频时，建议使用<code>libx264</code>编解码器。在将图片转换为视频前，建议将图片名称更改为(<code>pic0001.png</code>, <code>pic0002.png</code>)之类的有序形式。相关命令：</p>
+<pre><code>ffmpeg -r 60 image2 -s 1920x1080 -i pic%04d.png -vcodec libx264 -crf 25 -pix_fmt yuv420p test.mp4
+</code></pre>
+<ul>
+<li><code>-r</code> 帧率(fps)</li>
+<li><code>-crf</code> 质量，更低意味着更好的质量（一般15-25）</li>
+<li><code>-pix_fmt yuv420p</code> 指定像素格式</li>
+</ul>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Python属性访问]]></title>
         <id>https://kaluo-zz.github.io/post/python-shu-xing-fang-wen</id>
@@ -481,26 +501,6 @@ tensor([[0., 0.]])
 &gt;&gt;&gt; print(x.grad.data)
 tensor([[4., 6.]])
 
-</code></pre>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Linux挂载新硬盘]]></title>
-        <id>https://kaluo-zz.github.io/post/linux-gua-zai-xin-ying-pan</id>
-        <link href="https://kaluo-zz.github.io/post/linux-gua-zai-xin-ying-pan">
-        </link>
-        <updated>2019-06-26T07:39:25.000Z</updated>
-        <content type="html"><![CDATA[<ol>
-<li>查看新磁盘：<code>sudo fdisk -l</code>，假设要挂载的磁盘为<code>/dev/sdc</code></li>
-<li>创建分区：<code>fdisk /dev/sdc</code></li>
-<li>写入文件系统：<code>mkfs.ext4 /dev/sdc</code></li>
-<li>新建挂载目录：<code>mkdir /mnt/data</code></li>
-<li>挂载：<code>mount /dev/sdc /mnt/data</code></li>
-<li>设置开机自动挂载：</li>
-</ol>
-<pre><code>vi /etc/fstab
-# 在文件末尾添加
-/dev/sdc /mnt/data ext4 defaults 0 0
 </code></pre>
 ]]></content>
     </entry>

@@ -1,9 +1,9 @@
 <html>
   <head>
-  <meta charset="utf-8" />
+    <meta charset="utf-8" />
 <meta name="description" content="" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>服务器环境 | KALUO</title>
+<title>使用ffmpeg将一组图像转换为视频 | KALUO</title>
 <link rel="shortcut icon" href="https://kaluo-zz.github.io/favicon.ico?v=1562724689112">
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
@@ -70,47 +70,47 @@
   </div>
 </div>
 
-        <div class="current-tag-container">
-            <h2 class="title">
-                标签：#服务器环境
-            </h2> 
-        </div>
-        <div class="post-container">
-  
-    <article class="post">
-      <a href="https://kaluo-zz.github.io/post/da-jian-fu-wu-qi-bing-pei-zhi-xiang-guan-huan-jing">
-        <h2 class="post-title">搭建服务器并配置相关环境</h2>
-      </a>
-      <div class="post-info">
-        <time class="post-time">
-          · 2019-06-06 ·
-        </time>
-        
-          <a href="https://kaluo-zz.github.io/tag/q7ckOahzm" class="post-tag">
-            # ubuntu18.04
-          </a>
-        
-          <a href="https://kaluo-zz.github.io/tag/-EGjsU52C" class="post-tag">
-            # 服务器环境
-          </a>
-        
-          <a href="https://kaluo-zz.github.io/tag/OX4bnktRr" class="post-tag">
-            # 切换gcc版本
-          </a>
-        
-      </div>
-      
-      <div class="post-abstract">
-        
-      </di>
-    </article>
-  
-</div>
 
-        <div class="pagination-container">
-  
-  
-</div>
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              使用ffmpeg将一组图像转换为视频
+            </h2>
+            <div class="post-info">
+              <time class="post-time">
+                · 2019-07-10 ·
+              </time>
+              
+            </div>
+            
+            <div class="post-content">
+              <p>当使用<code>ffmpeg</code>压缩视频时，建议使用<code>libx264</code>编解码器。</p>
+<!--more-->
+<p>当使用<code>ffmpeg</code>压缩视频时，建议使用<code>libx264</code>编解码器。在将图片转换为视频前，建议将图片名称更改为(<code>pic0001.png</code>, <code>pic0002.png</code>)之类的有序形式。相关命令：</p>
+<pre><code>ffmpeg -r 60 image2 -s 1920x1080 -i pic%04d.png -vcodec libx264 -crf 25 -pix_fmt yuv420p test.mp4
+</code></pre>
+<ul>
+<li><code>-r</code> 帧率(fps)</li>
+<li><code>-crf</code> 质量，更低意味着更好的质量（一般15-25）</li>
+<li><code>-pix_fmt yuv420p</code> 指定像素格式</li>
+</ul>
+
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://kaluo-zz.github.io/post/python-shu-xing-fang-wen">
+              <h3 class="post-title">
+                Python属性访问
+              </h3>
+            </a>
+          </div>
+        
+
+        
 
         <div class="site-footer">
   Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | 
