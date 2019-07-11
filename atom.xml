@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://kaluo-zz.github.io</id>
     <title>KALUO</title>
-    <updated>2019-07-10T02:21:04.732Z</updated>
+    <updated>2019-07-11T11:45:06.190Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://kaluo-zz.github.io"/>
     <link rel="self" href="https://kaluo-zz.github.io/atom.xml"/>
@@ -10,6 +10,55 @@
     <logo>https://kaluo-zz.github.io/images/avatar.png</logo>
     <icon>https://kaluo-zz.github.io/favicon.ico</icon>
     <rights>All rights reserved 2019, KALUO</rights>
+    <entry>
+        <title type="html"><![CDATA[Pytorch可视化之Visdom]]></title>
+        <id>https://kaluo-zz.github.io/post/pytorch-ke-shi-hua-zhi-visdom</id>
+        <link href="https://kaluo-zz.github.io/post/pytorch-ke-shi-hua-zhi-visdom">
+        </link>
+        <updated>2019-07-11T11:29:57.000Z</updated>
+        <content type="html"><![CDATA[<p>Visdom (github主页)[https://github.com/facebookresearch/visdom]</p>
+<p>Visdom旨在(远程)数据的可视化，并强调支持科学实验。</p>
+<p>安装：<code>pip install visdom</code></p>
+<p>启动：<code>python -m visdom.server</code></p>
+<p>使用：</p>
+<p>文件：visdom_plotter.py</p>
+<pre><code>from visdom import Visdom
+import numpy as np
+
+class VisdomPlotter(object):
+    def __init__(self, env_name = 'main'):
+        self.viz = Visdom()
+        self.env = env_name
+        self.plots = {}
+    
+    def plot(self, var_name, split_name, title_name, x, y):
+        if var_name not in self.plots:
+            self.plots[var_name] = self.viz.line(X=np.array([x,x]), Y=np.array([y,y]), env=self.env, opts=dict(
+                legend=[split_name],
+                title=title_name,
+                xlabel='Epochs',
+                ylabel=var_name
+            ))
+        else:
+            self.viz.line(X=np.array([x]), Y=np.array([y]), env=self.env, 
+                            win=self.plots[var_name], name=split_name, update = 'append')
+    
+    def draw_image(self, title_name, img):
+        self.viz.image(img, env=self.env, opts=dict(
+                title = title_name
+            ))
+</code></pre>
+<p>文件main.py</p>
+<pre><code>import numpy as np
+import torch
+from utils.visdom_plotter import VisdomPlotter
+
+visdom_plotter = VisdomPlotter()
+...
+visdom_plotter.draw_image('img_name',  img) # img : C x H x W
+</code></pre>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[使用ffmpeg将一组图像转换为视频]]></title>
         <id>https://kaluo-zz.github.io/post/shi-yong-ffmpeg-jiang-yi-zu-tu-xiang-zhuan-huan-wei-shi-pin</id>
@@ -59,17 +108,16 @@
 <p>对D进行标准化；</p>
 </li>
 <li>
-<p>利用</p>
-<p class='katex-block katex-error' title='Error: Expected node of type ordgroup, but got node of type text'>M(x, y) = \left\{
-\begin{array}
-	\text{exp}(-\frac{D(x, y)^2}{2\sigma^2}), &amp;\text{if}\; D(x, y) &lt; 3\sigma \\
-	0, &amp;\text{otherwise}
-\end{array}
-\right.
-</p>
-<p>对D中的每个像素进行处理。</p>
+<p>利用对D中的每个像素进行处理。</p>
 </li>
 </ol>
+<p class='katex-block katex-error' title='Error: Expected node of type ordgroup, but got node of type text'>   M(x, y) = \left\{
+   \begin{array}
+   	\text{exp}(-\frac{D(x, y)^2}{2\sigma^2}), &amp;\text{if}\; D(x, y) &lt; 3\sigma \\
+   	0, &amp;\text{otherwise}
+   \end{array}
+   \right.
+</p>
 ]]></content>
     </entry>
     <entry>
@@ -435,67 +483,6 @@ Total MemR+W: 502.77MB
 </code></pre>
 <p>退出python虚拟环境</p>
 <pre><code class="language-python">deactivate
-</code></pre>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[pytorch固定网络一部分参数，训练另一部分]]></title>
-        <id>https://kaluo-zz.github.io/post/pytorch-gu-ding-wang-luo-yi-bu-fen-can-shu-xun-lian-ling-yi-bu-fen</id>
-        <link href="https://kaluo-zz.github.io/post/pytorch-gu-ding-wang-luo-yi-bu-fen-can-shu-xun-lian-ling-yi-bu-fen">
-        </link>
-        <updated>2019-07-01T08:19:17.000Z</updated>
-        <content type="html"><![CDATA[<h3 id="requires_grad-false">requires_grad = False</h3>
-<p>如果你想固定网络的一部分参数，训练另一部分，你可以将你想固定参数的<code>requires_grad</code>设置为<code>False</code>。例如，将VGG16卷积部分固定：</p>
-<pre><code class="language-python">model = torchvision.models.vgg16(pretrained=True)
-for param in model.features.parameters():
-    param.requires_grad = False
-</code></pre>
-<h3 id="torchno_grad">torch.no_grad()</h3>
-<p>上下文管理器<code>torch.no_grad()</code>是另一种实现目的的方式。在<code>torch.no_grad()</code>内，所有的操作的结果都是<code>requires_grad=False</code>，即使它们输入（inputs）的<code>requires_grad=True</code>。所以你不可能将梯度传播到<code>no_grad</code>之前的层。例如：</p>
-<pre><code class="language-python">&gt;&gt;&gt; x = torch.randn(2,2)
-&gt;&gt;&gt; x.requires_grad = True
-&gt;&gt;&gt; lin0 = nn.Linear(2,2)
-&gt;&gt;&gt; lin1 = nn.Linear(2,2)
-&gt;&gt;&gt; lin2 = nn.Linear(2,2)
-&gt;&gt;&gt; x1 = lin0(x)
-&gt;&gt;&gt; with torch.no_grad():
-...     x2 = lin1(x1) # 这里的lin1.weight.requires_grad还是为True，但是不计算梯度。
-...
-&gt;&gt;&gt; x3 = lin2(x2)
-&gt;&gt;&gt; x3.sum().backward()
-&gt;&gt;&gt; lin1.weight.requires_grad
-True
-&gt;&gt;&gt; print(lin0.weight.grad, lin1.weight.grad, lin2.weight.grad)
-(None, None, tensor([[0.4401, 0.9459],
-        [0.4401, 0.9459]]))
-
-</code></pre>
-<p>可以看到，<code>lin1.weight.requires_grad</code>为<code>True</code>，但是没有计算梯度（这是因为操作是在<code>no_grad</code>环境下完成的）。</p>
-<h2 id="设置模型为eval模式">设置模型为eval模式</h2>
-<p>最方便的方式是使用<code>torch.no_grad()</code>，但是你还必须将模型设置为eval模式。这可以通过调用<code>nn.Module</code>上的<code>eval()</code>方式来实现。例如：</p>
-<pre><code class="language-python">with torch.no_grad():
-    model = torchvision.models.vgg16(pretrained=True)
-	model.eval()
-</code></pre>
-<p>这个操作将<code>self.training</code>属性设置为<code>False</code>，会影响类似<code>Dropout</code>和<code>BatchNorm</code>等操作的表现方式。</p>
-<h2 id="获取中间节点的梯度">获取中间节点的梯度</h2>
-<p>非叶子结点不会保存反向传播过程中计算得到的梯度。如果你想获得非叶子结点的梯度，需要注入hook：</p>
-<pre><code class="language-python">&gt;&gt;&gt; yGrad = torch.zeros(1,1)
-&gt;&gt;&gt; def extract(xVar):
-...     global yGrad
-...     yGrad = xVar
-...
-&gt;&gt;&gt; xx = Variable(torch.randn(1,1), requires_grad=True)
-&gt;&gt;&gt; yy = 3*xx
-&gt;&gt;&gt; zz = yy**2
-&gt;&gt;&gt; yy.register_hook(extract)
-&lt;torch.utils.hooks.RemovableHandle object at 0x7fa96588e9d0&gt;
-&gt;&gt;&gt; print(yGrad)
-tensor([[0.]])
-&gt;&gt;&gt; zz.backward()
-&gt;&gt;&gt; print(yGrad)
-tensor([[5.1903]])
-&gt;&gt;&gt;
 </code></pre>
 ]]></content>
     </entry>

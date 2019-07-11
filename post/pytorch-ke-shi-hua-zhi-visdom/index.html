@@ -3,7 +3,7 @@
     <meta charset="utf-8" />
 <meta name="description" content="" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Distance Transform | KALUO</title>
+<title>Pytorch可视化之Visdom | KALUO</title>
 <link rel="shortcut icon" href="D:/Files/Documents/Gridea/output/favicon.ico?v=1562845503644">
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
@@ -74,53 +74,65 @@
         <div class="post-detail">
           <article class="post">
             <h2 class="post-title">
-              Distance Transform
+              Pytorch可视化之Visdom
             </h2>
             <div class="post-info">
               <time class="post-time">
-                · 2019-07-08 ·
+                · 2019-07-11 ·
               </time>
+              
+                <a href="D:/Files/Documents/Gridea/output/tag/eZD1Nf0zT/index.html" class="post-tag">
+                  # visdom
+                </a>
+              
+                <a href="D:/Files/Documents/Gridea/output/tag/rT7AxA2VY/index.html" class="post-tag">
+                  # pytorch
+                </a>
               
             </div>
             
             <div class="post-content">
-              <p>Distance Transform</p>
-<p>现在有这样一种需求，产生由点构成的曲线段的热图。如何产生呢？</p>
-<p>首先介绍一下Distance transform。距离变换提供了图像中点的分离的度量，它处理的对象是二值图像。其基本思想是每个像素值赋值为其与最近的背景像素点之间的距离（常用的距离度量是欧式距离和曼哈顿距离）。</p>
-<p>下面以一张图像为例。从上到下分别是原图、原图+轮廓点、轮廓点、经过距离变换后的图和经过标准化和阈值化后图。这样就得到了由轮廓点产生的边界线热图。</p>
-<p><img src="D:/Files/Documents/Gridea/output/post-images/1562725172655.png" alt="">
-<img src="D:/Files/Documents/Gridea/output/post-images/1562725181225.png" alt="">
-<img src="D:/Files/Documents/Gridea/output/post-images/1562725185714.png" alt="">
-<img src="D:/Files/Documents/Gridea/output/post-images/1562725226765.png" alt="">
-<img src="D:/Files/Documents/Gridea/output/post-images/1562725230518.png" alt=""></p>
-<p>步骤如下：</p>
-<ol>
-<li>
-<p>获取图像轮廓点；</p>
-</li>
-<li>
-<p>得到与原图大小一样的二值图像B，轮廓点对应位置为0，其余位置为1；</p>
-</li>
-<li>
-<p>使用<code>scipy.ndimage.distance_transform</code>函数来转换二值图像B，得到结果D；</p>
-</li>
-<li>
-<p>将D中的最大值减去D中的每一个元素；</p>
-</li>
-<li>
-<p>对D进行标准化；</p>
-</li>
-<li>
-<p>利用对D中的每个像素进行处理。</p>
-</li>
-</ol>
-<p class='katex-block katex-error' title='Error: Expected node of type ordgroup, but got node of type text'>   M(x, y) = \left\{
-   \begin{array}
-   	\text{exp}(-\frac{D(x, y)^2}{2\sigma^2}), &amp;\text{if}\; D(x, y) &lt; 3\sigma \\
-   	0, &amp;\text{otherwise}
-   \end{array}
-   \right.
-</p>
+              <p>Visdom (github主页)[https://github.com/facebookresearch/visdom]</p>
+<p>Visdom旨在(远程)数据的可视化，并强调支持科学实验。</p>
+<p>安装：<code>pip install visdom</code></p>
+<p>启动：<code>python -m visdom.server</code></p>
+<p>使用：</p>
+<p>文件：visdom_plotter.py</p>
+<pre><code>from visdom import Visdom
+import numpy as np
+
+class VisdomPlotter(object):
+    def __init__(self, env_name = 'main'):
+        self.viz = Visdom()
+        self.env = env_name
+        self.plots = {}
+    
+    def plot(self, var_name, split_name, title_name, x, y):
+        if var_name not in self.plots:
+            self.plots[var_name] = self.viz.line(X=np.array([x,x]), Y=np.array([y,y]), env=self.env, opts=dict(
+                legend=[split_name],
+                title=title_name,
+                xlabel='Epochs',
+                ylabel=var_name
+            ))
+        else:
+            self.viz.line(X=np.array([x]), Y=np.array([y]), env=self.env, 
+                            win=self.plots[var_name], name=split_name, update = 'append')
+    
+    def draw_image(self, title_name, img):
+        self.viz.image(img, env=self.env, opts=dict(
+                title = title_name
+            ))
+</code></pre>
+<p>文件main.py</p>
+<pre><code>import numpy as np
+import torch
+from utils.visdom_plotter import VisdomPlotter
+
+visdom_plotter = VisdomPlotter()
+...
+visdom_plotter.draw_image('img_name',  img) # img : C x H x W
+</code></pre>
 
             </div>
           </article>
@@ -129,9 +141,9 @@
         
           <div class="next-post">
             <div class="next">下一篇</div>
-            <a href="D:/Files/Documents/Gridea/output/post/python-shu-xing-fang-wen/index.html">
+            <a href="D:/Files/Documents/Gridea/output/post/shi-yong-ffmpeg-jiang-yi-zu-tu-xiang-zhuan-huan-wei-shi-pin/index.html">
               <h3 class="post-title">
-                Python属性访问
+                使用ffmpeg将一组图像转换为视频
               </h3>
             </a>
           </div>
