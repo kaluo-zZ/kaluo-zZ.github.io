@@ -3,7 +3,7 @@
     <meta charset="utf-8" />
 <meta name="description" content="" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Python属性访问 | KALUO</title>
+<title>Deformable Convolution编译问题 | KALUO</title>
 <link rel="shortcut icon" href="https://kaluo-zz.github.io/favicon.ico?v=1562845562542">
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
@@ -74,27 +74,62 @@
         <div class="post-detail">
           <article class="post">
             <h2 class="post-title">
-              Python属性访问
+              Deformable Convolution编译问题
             </h2>
             <div class="post-info">
               <time class="post-time">
-                · 2019-07-03 ·
+                · 2019-06-23 ·
               </time>
               
-                <a href="https://kaluo-zz.github.io/tag/pSlACxuyg" class="post-tag">
-                  # python
+                <a href="https://kaluo-zz.github.io/tag/bAjW-e_UD" class="post-tag">
+                  # Deformable Convolution
                 </a>
               
             </div>
             
             <div class="post-content">
-              <ol>
-<li><code>__getattr__(self, name)</code>：访问不存在的属性时自动调用</li>
-<li><code>__getattribute__(self, name)</code>：访问存在的属性时自动调用（先调用该方法，查看是否存在该属性，若不存在，调用<code>__getattr__</code>。若重载了<code>__getattribute__</code>方法，则不会自动调用<code>__getattr__</code>方法，需在最后手动添加一行<code>object.__getattribute__(self, name)</code>。）。</li>
-<li><code>__setattr__(self, name)</code>：设置实例对象的一个新的属性时自动调用</li>
-<li><code>__delattr__(self, name)</code>：删除一个实例对象的属性时自动调用</li>
+              <p>编译环境：</p>
+<ol>
+<li>Ubuntu 18.04</li>
+<li>CUDA 9.0</li>
+<li>CUDNN 7.5</li>
+<li>GCC-6.4</li>
 </ol>
-<p>（python中无论实例还是类，都是用<code>__dict__</code>来存储属性和方法）</p>
+<p>项目地址：https://github.com/CharlesShang/DCNv2</p>
+<p>出错信息：</p>
+<pre><code>build error:error: command '/usr/local/cuda/bin/nvcc' failed with exit status 1
+</code></pre>
+<p>出错原因：CUDA 9.0不支持gcc-6.4。
+解决方法：替换低版本的gcc，如gcc-5。</p>
+<pre><code>cd /usr/bin
+sudo rm gcc
+sudo rm g++
+sudo ln -s /usr/bin/gcc-5 gcc
+sudo ln -s /usr/bin/g++-5 g++
+
+cd /usr/local/cuda-9.0/bin
+sudo rm gcc
+sudo rm g++
+sudo ln -s /usr/bin/gcc-5 gcc
+sudo ln -s /usr/bin/g++-5 g++
+</code></pre>
+<p>然后，将setup.py文件中添加<code>-DCUDA_HOST_COMPILER=/usr/bin/gcc-5</code>：</p>
+<pre><code>if torch.cuda.is_available() and CUDA_HOME is not None:
+        extension = CUDAExtension
+        sources += source_cuda
+        define_macros += [(&quot;WITH_CUDA&quot;, None)]
+        extra_compile_args[&quot;nvcc&quot;] = [
+            &quot;-DCUDA_HAS_FP16=1&quot;,
+            &quot;-D__CUDA_NO_HALF_OPERATORS__&quot;,
+            &quot;-D__CUDA_NO_HALF_CONVERSIONS__&quot;,
+            &quot;-D__CUDA_NO_HALF2_OPERATORS__&quot;,
+            &quot;-DCUDA_HOST_COMPILIER=/usr/bin/gcc-5&quot;,
+        ]
+</code></pre>
+<p>删除之前编译失败的build文件：<code>rm -r build</code>;</p>
+<p>重新编译：`CUDAHOSTCXX=/usr/bin/gcc-5 python3 setup.py build develop</p>
+<p>注：如果是在普通用户下编译，可能出现权限问题，此时可以在编译命令后面加上<code>--user</code>。</p>
+<p>参考链接：https://github.com/facebookresearch/maskrcnn-benchmark/issues/25</p>
 
             </div>
           </article>
@@ -103,9 +138,9 @@
         
           <div class="next-post">
             <div class="next">下一篇</div>
-            <a href="https://kaluo-zz.github.io/post/windows-chuang-jian-ruan-lian-jie">
+            <a href="https://kaluo-zz.github.io/post/jian-dan-duo-bian-xing-shun-ni-shi-zhen-pan-duan">
               <h3 class="post-title">
-                Windows创建软链接
+                简单多边形顺逆时针判断
               </h3>
             </a>
           </div>

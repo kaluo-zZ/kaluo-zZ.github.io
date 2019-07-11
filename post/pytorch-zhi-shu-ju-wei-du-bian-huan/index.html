@@ -3,7 +3,7 @@
     <meta charset="utf-8" />
 <meta name="description" content="" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Python属性访问 | KALUO</title>
+<title>pytorch之数据维度变换 | KALUO</title>
 <link rel="shortcut icon" href="https://kaluo-zz.github.io/favicon.ico?v=1562845562542">
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
@@ -74,27 +74,65 @@
         <div class="post-detail">
           <article class="post">
             <h2 class="post-title">
-              Python属性访问
+              pytorch之数据维度变换
             </h2>
             <div class="post-info">
               <time class="post-time">
-                · 2019-07-03 ·
+                · 2019-07-01 ·
               </time>
               
-                <a href="https://kaluo-zz.github.io/tag/pSlACxuyg" class="post-tag">
-                  # python
+                <a href="https://kaluo-zz.github.io/tag/rT7AxA2VY" class="post-tag">
+                  # pytorch
                 </a>
               
             </div>
             
             <div class="post-content">
               <ol>
-<li><code>__getattr__(self, name)</code>：访问不存在的属性时自动调用</li>
-<li><code>__getattribute__(self, name)</code>：访问存在的属性时自动调用（先调用该方法，查看是否存在该属性，若不存在，调用<code>__getattr__</code>。若重载了<code>__getattribute__</code>方法，则不会自动调用<code>__getattr__</code>方法，需在最后手动添加一行<code>object.__getattribute__(self, name)</code>。）。</li>
-<li><code>__setattr__(self, name)</code>：设置实例对象的一个新的属性时自动调用</li>
-<li><code>__delattr__(self, name)</code>：删除一个实例对象的属性时自动调用</li>
+<li><code>torch.cat(inputs, dimension=0) → Tensor</code>：在给定的维度上进行张量序列的拼接。</li>
 </ol>
-<p>（python中无论实例还是类，都是用<code>__dict__</code>来存储属性和方法）</p>
+<pre><code>import torch
+
+x = torch.rand((71, 32, 1))
+# x.shape = torch.Size([71, 32, 1])
+px = torch.cat((torch.zeros(29, 32, 1, dtype=x.dtype, device=x.device), x), 0)
+# px.shape = torch.Size([100, 32, 1])
+</code></pre>
+<ol start="2">
+<li><code>view(*args) -&gt; Tensor</code>：返回一个有相同数据但尺寸不同的tensor。操作的tensor必须是连续的（<code>contiguous()</code>）。</li>
+</ol>
+<pre><code>&gt;&gt;&gt; x = torch.randn(4, 4)
+&gt;&gt;&gt; x.size()
+torch.Size([4, 4])
+&gt;&gt;&gt; y = x.view(16)
+&gt;&gt;&gt; y.size()
+torch.Size([16])
+&gt;&gt;&gt; z = x.view(-1, 8)  # the size -1 is inferred from other dimensions
+&gt;&gt;&gt; z.size()
+torch.Size([2, 8])
+</code></pre>
+<ol start="3">
+<li><code>permute(dims)</code>：将tensor的维度换位。</li>
+</ol>
+<pre><code>&gt;&gt;&gt; x = torch.randn(2, 3, 5)
+&gt;&gt;&gt; x.size()
+torch.Size([2, 3, 5])
+&gt;&gt;&gt; x.permute(2, 0, 1).size()
+torch.Size([5, 2, 3])
+</code></pre>
+<ol start="4">
+<li><code>repeat(*sizes)</code>：沿着指定的维度重复tensor（sizes (torch.Size ot int...)-沿着每一维重复的次数）。</li>
+</ol>
+<pre><code>&gt;&gt;&gt; x = torch.Tensor([1, 2, 3])
+&gt;&gt;&gt; x.repeat(4, 2) # 沿着维度0重复4次，沿着维度1重复2次
+ 1  2  3  1  2  3
+ 1  2  3  1  2  3
+ 1  2  3  1  2  3
+ 1  2  3  1  2  3
+[torch.FloatTensor of size 4x6]
+&gt;&gt;&gt; x.repeat(4, 2, 1).size()
+torch.Size([4, 2, 3])
+</code></pre>
 
             </div>
           </article>
@@ -103,9 +141,9 @@
         
           <div class="next-post">
             <div class="next">下一篇</div>
-            <a href="https://kaluo-zz.github.io/post/windows-chuang-jian-ruan-lian-jie">
+            <a href="https://kaluo-zz.github.io/post/shi-yong-tensorrt-dui-mo-xing-jin-xing-ya-suo-jia-su">
               <h3 class="post-title">
-                Windows创建软链接
+                使用TensorRT对模型进行压缩加速
               </h3>
             </a>
           </div>

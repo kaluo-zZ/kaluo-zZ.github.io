@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://kaluo-zz.github.io</id>
     <title>KALUO</title>
-    <updated>2019-07-11T11:45:06.190Z</updated>
+    <updated>2019-07-11T11:46:04.677Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://kaluo-zz.github.io"/>
     <link rel="self" href="https://kaluo-zz.github.io/atom.xml"/>
@@ -16,7 +16,7 @@
         <link href="https://kaluo-zz.github.io/post/pytorch-ke-shi-hua-zhi-visdom">
         </link>
         <updated>2019-07-11T11:29:57.000Z</updated>
-        <content type="html"><![CDATA[<p>Visdom (github主页)[https://github.com/facebookresearch/visdom]</p>
+        <content type="html"><![CDATA[<p>Visdom <a href="https://github.com/facebookresearch/visdom">github主页</a></p>
 <p>Visdom旨在(远程)数据的可视化，并强调支持科学实验。</p>
 <p>安装：<code>pip install visdom</code></p>
 <p>启动：<code>python -m visdom.server</code></p>

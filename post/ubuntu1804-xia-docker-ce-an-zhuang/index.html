@@ -3,7 +3,7 @@
     <meta charset="utf-8" />
 <meta name="description" content="" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Python属性访问 | KALUO</title>
+<title>Ubuntu18.04下Docker CE安装 | KALUO</title>
 <link rel="shortcut icon" href="https://kaluo-zz.github.io/favicon.ico?v=1562845562542">
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
@@ -74,27 +74,69 @@
         <div class="post-detail">
           <article class="post">
             <h2 class="post-title">
-              Python属性访问
+              Ubuntu18.04下Docker CE安装
             </h2>
             <div class="post-info">
               <time class="post-time">
-                · 2019-07-03 ·
+                · 2019-06-06 ·
               </time>
               
-                <a href="https://kaluo-zz.github.io/tag/pSlACxuyg" class="post-tag">
-                  # python
+                <a href="https://kaluo-zz.github.io/tag/5QDLVaWYn" class="post-tag">
+                  # docker
                 </a>
               
             </div>
             
             <div class="post-content">
               <ol>
-<li><code>__getattr__(self, name)</code>：访问不存在的属性时自动调用</li>
-<li><code>__getattribute__(self, name)</code>：访问存在的属性时自动调用（先调用该方法，查看是否存在该属性，若不存在，调用<code>__getattr__</code>。若重载了<code>__getattribute__</code>方法，则不会自动调用<code>__getattr__</code>方法，需在最后手动添加一行<code>object.__getattribute__(self, name)</code>。）。</li>
-<li><code>__setattr__(self, name)</code>：设置实例对象的一个新的属性时自动调用</li>
-<li><code>__delattr__(self, name)</code>：删除一个实例对象的属性时自动调用</li>
+<li>
+<p>更新系统包索引</p>
+<pre><code class="language-bash">sudo apt-get update
+</code></pre>
+</li>
+<li>
+<p>添加HTTPS协议，允许apt从HTTPS安装软件包</p>
+<pre><code class="language-bash">sudo apt-get install  apt-transport-https  ca-certificates curl  software-properties-common
+</code></pre>
+</li>
+<li>
+<p>添加Docker 公共密钥 (Docker中科大源)</p>
+<pre><code class="language-bash">curl -fsSL  https://mirrors.ustc.edu.cn/docker-ce/linux/ubuntu/gpg | sudo apt-key add -
+</code></pre>
+</li>
+<li>
+<p>设置版本库类型（Ubuntu18.04对应版本<strong>bionic</strong>），软件版本包括三种：<strong>stable、edge、test</strong></p>
+<pre><code class="language-bash">sudo add-apt-repository &quot;deb [arch=amd64] https://mirrors.ustc.edu.cn/docker-ce/linux/ubuntu $(lsb_release -cs) stable&quot; 
+</code></pre>
+</li>
+<li>
+<p>更新系统包索引</p>
+<pre><code class="language-bash">sudo apt-get update
+</code></pre>
+</li>
+<li>
+<p>安装最新版Docker CE</p>
+<pre><code class="language-bash">sudo apt-get install docker-ce
+</code></pre>
+</li>
+<li>
+<p>启动docker</p>
+<pre><code class="language-bash">sudo systemctl start docker
+sudo systemctl enable docker
+docker --version
+</code></pre>
+</li>
+<li>
+<p>将用户user加入docker组，以便非root用户启动docker</p>
+<pre><code class="language-bash">sudo usermod -aG docker user
+</code></pre>
+</li>
+<li>
+<p>切换用户组</p>
+<pre><code class="language-bash">newgrp docker
+</code></pre>
+</li>
 </ol>
-<p>（python中无论实例还是类，都是用<code>__dict__</code>来存储属性和方法）</p>
 
             </div>
           </article>
@@ -103,9 +145,9 @@
         
           <div class="next-post">
             <div class="next">下一篇</div>
-            <a href="https://kaluo-zz.github.io/post/windows-chuang-jian-ruan-lian-jie">
+            <a href="https://kaluo-zz.github.io/post/docker-xiang-guan-ming-ling">
               <h3 class="post-title">
-                Windows创建软链接
+                Docker相关命令
               </h3>
             </a>
           </div>

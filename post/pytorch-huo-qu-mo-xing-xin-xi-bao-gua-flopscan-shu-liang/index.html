@@ -1,0 +1,198 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>pytorch获取模型信息（包括FLOPs、参数量） | KALUO</title>
+<link rel="shortcut icon" href="https://kaluo-zz.github.io/favicon.ico?v=1562845562542">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://kaluo-zz.github.io/styles/main.css">
+
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/moment.js/2.23.0/moment.min.js"></script>
+
+
+
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://kaluo-zz.github.io">
+  <img class="avatar" src="https://kaluo-zz.github.io/images/avatar.png?v=1562845562542" alt="">
+  </a>
+  <h1 class="site-title">
+    KALUO
+  </h1>
+  <p class="site-description">
+    温故而知新
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/post/about" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              pytorch获取模型信息（包括FLOPs、参数量）
+            </h2>
+            <div class="post-info">
+              <time class="post-time">
+                · 2019-07-01 ·
+              </time>
+              
+                <a href="https://kaluo-zz.github.io/tag/rT7AxA2VY" class="post-tag">
+                  # pytorch
+                </a>
+              
+            </div>
+            
+            <div class="post-content">
+              <p>方式一：</p>
+<p>项目地址：<a href="https://github.com/sksq96/pytorch-summary">https://github.com/sksq96/pytorch-summary</a></p>
+<p>使用方式：</p>
+<ul>
+<li><code>pip install torchsummary</code> 或者</li>
+<li><code>git clone https://github.com/sksq96/pytorch-summary</code></li>
+</ul>
+<pre><code class="language-python">from torchsummary import summary
+summary(your_model, input_size=(channels, H, W))
+</code></pre>
+<p>方式二：</p>
+<p>先创建并激活一个python3的虚拟环境：</p>
+<pre><code class="language-python">virtualenv python3.6-env --python=python3.6
+source python3.6-env/bin/activate
+</code></pre>
+<p>在这个虚拟环境中使用命令：</p>
+<pre><code class="language-python">pip3 install torch torchvision
+pip3 install torchstat
+</code></pre>
+<p>进入需要统计模型信息的模型文件目录下，然后使用以下命令：</p>
+<pre><code class="language-python">(python3.6-env) username@hostname:~/SSD/CSRNet-pytorch$ python
+Python 3.6.7 (default, Oct 22 2018, 11:32:17)
+[GCC 8.2.0] on linux
+Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
+&gt;&gt;&gt; from torchstat import stat
+&gt;&gt;&gt; from model import CSRNet
+&gt;&gt;&gt; model = CSRNet()
+&gt;&gt;&gt; stat(model,(3,248,376))
+        module name  input shape output shape      params memory(MB)              MAdd             Flops  MemRead(B)  MemWrite(B) duration[%]    MemR+W(B)
+0        frontend.0    3 248 376   64 248 376      1792.0      22.77     322,265,088.0     167,100,416.0   1126144.0   23871488.0       4.15%   24997632.0
+1        frontend.1   64 248 376   64 248 376         0.0      22.77       5,967,872.0       5,967,872.0  23871488.0   23871488.0       4.50%   47742976.0
+2        frontend.2   64 248 376   64 248 376     36928.0      22.77   6,874,988,544.0   3,443,462,144.0  24019200.0   23871488.0       8.44%   47890688.0
+3        frontend.3   64 248 376   64 248 376         0.0      22.77       5,967,872.0       5,967,872.0  23871488.0   23871488.0       0.36%   47742976.0
+4        frontend.4   64 248 376   64 124 188         0.0       5.69       4,475,904.0       5,967,872.0  23871488.0    5967872.0       7.37%   29839360.0
+5        frontend.5   64 124 188  128 124 188     73856.0      11.38   3,437,494,272.0   1,721,731,072.0   6263296.0   11935744.0       3.70%   18199040.0
+6        frontend.6  128 124 188  128 124 188         0.0      11.38       2,983,936.0       2,983,936.0  11935744.0   11935744.0       0.15%   23871488.0
+7        frontend.7  128 124 188  128 124 188    147584.0      11.38   6,874,988,544.0   3,440,478,208.0  12526080.0   11935744.0       5.02%   24461824.0
+8        frontend.8  128 124 188  128 124 188         0.0      11.38       2,983,936.0       2,983,936.0  11935744.0   11935744.0       0.17%   23871488.0
+9        frontend.9  128 124 188  128  62  94         0.0       2.85       2,237,952.0       2,983,936.0  11935744.0    2983936.0       2.90%   14919680.0
+10      frontend.10  128  62  94  256  62  94    295168.0       5.69   3,437,494,272.0   1,720,239,104.0   4164608.0    5967872.0       2.47%   10132480.0
+11      frontend.11  256  62  94  256  62  94         0.0       5.69       1,491,968.0       1,491,968.0   5967872.0    5967872.0       0.04%   11935744.0
+12      frontend.12  256  62  94  256  62  94    590080.0       5.69   6,874,988,544.0   3,438,986,240.0   8328192.0    5967872.0       4.42%   14296064.0
+13      frontend.13  256  62  94  256  62  94         0.0       5.69       1,491,968.0       1,491,968.0   5967872.0    5967872.0       0.04%   11935744.0
+14      frontend.14  256  62  94  256  62  94    590080.0       5.69   6,874,988,544.0   3,438,986,240.0   8328192.0    5967872.0       5.04%   14296064.0
+15      frontend.15  256  62  94  256  62  94         0.0       5.69       1,491,968.0       1,491,968.0   5967872.0    5967872.0       0.04%   11935744.0
+16      frontend.16  256  62  94  256  31  47         0.0       1.42       1,118,976.0       1,491,968.0   5967872.0    1491968.0       1.52%    7459840.0
+17      frontend.17  256  31  47  512  31  47   1180160.0       2.85   3,437,494,272.0   1,719,493,120.0   6212608.0    2983936.0       2.40%    9196544.0
+18      frontend.18  512  31  47  512  31  47         0.0       2.85         745,984.0         745,984.0   2983936.0    2983936.0       0.02%    5967872.0
+19      frontend.19  512  31  47  512  31  47   2359808.0       2.85   6,874,988,544.0   3,438,240,256.0  12423168.0    2983936.0       4.20%   15407104.0
+20      frontend.20  512  31  47  512  31  47         0.0       2.85         745,984.0         745,984.0   2983936.0    2983936.0       0.02%    5967872.0
+21      frontend.21  512  31  47  512  31  47   2359808.0       2.85   6,874,988,544.0   3,438,240,256.0  12423168.0    2983936.0       5.07%   15407104.0
+22      frontend.22  512  31  47  512  31  47         0.0       2.85         745,984.0         745,984.0   2983936.0    2983936.0       0.03%    5967872.0
+23        backend.0  512  31  47  512  31  47   2359808.0       2.85   6,874,988,544.0   3,438,240,256.0  12423168.0    2983936.0      10.06%   15407104.0
+24        backend.1  512  31  47  512  31  47         0.0       2.85         745,984.0         745,984.0   2983936.0    2983936.0       0.02%    5967872.0
+25        backend.2  512  31  47  512  31  47   2359808.0       2.85   6,874,988,544.0   3,438,240,256.0  12423168.0    2983936.0       9.12%   15407104.0
+26        backend.3  512  31  47  512  31  47         0.0       2.85         745,984.0         745,984.0   2983936.0    2983936.0       0.02%    5967872.0
+27        backend.4  512  31  47  512  31  47   2359808.0       2.85   6,874,988,544.0   3,438,240,256.0  12423168.0    2983936.0       8.92%   15407104.0
+28        backend.5  512  31  47  512  31  47         0.0       2.85         745,984.0         745,984.0   2983936.0    2983936.0       0.03%    5967872.0
+29        backend.6  512  31  47  256  31  47   1179904.0       1.42   3,437,494,272.0   1,719,120,128.0   7703552.0    1491968.0       5.79%    9195520.0
+30        backend.7  256  31  47  256  31  47         0.0       1.42         372,992.0         372,992.0   1491968.0    1491968.0       0.02%    2983936.0
+31        backend.8  256  31  47  128  31  47    295040.0       0.71     859,373,568.0     429,873,280.0   2672128.0     745984.0       2.61%    3418112.0
+32        backend.9  128  31  47  128  31  47         0.0       0.71         186,496.0         186,496.0    745984.0     745984.0       0.01%    1491968.0
+33       backend.10  128  31  47   64  31  47     73792.0       0.36     214,843,392.0     107,514,944.0   1041152.0     372992.0       1.18%    1414144.0
+34       backend.11   64  31  47   64  31  47         0.0       0.36          93,248.0          93,248.0    372992.0     372992.0       0.01%     745984.0
+35     output_layer   64  31  47    1  31  47        65.0       0.01         186,496.0          94,705.0    373252.0       5828.0       0.12%     379080.0
+total                                          16263489.0     219.84  77,056,883,520.0  38,576,232,817.0    373252.0       5828.0     100.00%  527196872.0
+==========================================================================================================================================================
+Total params: 16,263,489
+----------------------------------------------------------------------------------------------------------------------------------------------------------
+Total memory: 219.84MB
+Total MAdd: 77.06GMAdd
+Total Flops: 38.58GFlops
+Total MemR+W: 502.77MB
+</code></pre>
+<p>退出python虚拟环境</p>
+<pre><code class="language-python">deactivate
+</code></pre>
+
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://kaluo-zz.github.io/post/pytorch-gu-ding-wang-luo-yi-bu-fen-can-shu-xun-lian-ling-yi-bu-fen">
+              <h3 class="post-title">
+                pytorch固定网络一部分参数，训练另一部分
+              </h3>
+            </a>
+          </div>
+        
+
+        
+
+        <div class="site-footer">
+  Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | 
+  <a class="rss" href="https://kaluo-zz.github.io/atom.xml" target="_blank">RSS</a>
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+
+      </div>
+    </div>
+  </body>
+</html>
