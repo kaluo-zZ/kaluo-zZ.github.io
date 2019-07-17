@@ -1,0 +1,718 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Darknet中函数分析 | KALUO</title>
+<link rel="shortcut icon" href="https://kaluo-zz.github.io/favicon.ico?v=1563354910385">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://kaluo-zz.github.io/styles/main.css">
+
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/moment.js/2.23.0/moment.min.js"></script>
+
+
+
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://kaluo-zz.github.io">
+  <img class="avatar" src="https://kaluo-zz.github.io/images/avatar.png?v=1563354910385" alt="">
+  </a>
+  <h1 class="site-title">
+    KALUO
+  </h1>
+  <p class="site-description">
+    温故而知新
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/post/about" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              Darknet中函数分析
+            </h2>
+            <div class="post-info">
+              <time class="post-time">
+                · 2019-06-06 ·
+              </time>
+              
+                <a href="https://kaluo-zz.github.io/tag/_2vcj6Je3" class="post-tag">
+                  # darknet
+                </a>
+              
+                <a href="https://kaluo-zz.github.io/tag/ZXh7J58dV" class="post-tag">
+                  # 函数分析
+                </a>
+              
+            </div>
+            
+            <div class="post-content">
+              <h2 id="随机打乱数据">随机打乱数据</h2>
+<p>代码在data.c源文件中</p>
+<pre><code class="language-c">void randomize_data(data d)
+{
+    int i;
+    for(i = d.X.rows-1; i &gt; 0; --i){ // 从最后一个元素位置开始，当前位置为i
+        int index = rand()%i;// 从i（不包括）之前的所有位置随机选择一个位置index
+        float *swap = d.X.vals[index]; // 交换index和i处的指针
+        d.X.vals[index] = d.X.vals[i];
+        d.X.vals[i] = swap;
+
+        swap = d.y.vals[index];
+        d.y.vals[index] = d.y.vals[i];
+        d.y.vals[i] = swap;
+    }
+}
+</code></pre>
+<p>可以看到整个打乱过程只有指针指向在不断发生变化，数据在内存中的位置不变。</p>
+<hr>
+<h2 id="im2col实现">im2col实现</h2>
+<p>代码在im2col.c源文件中</p>
+<pre><code class="language-c">float im2col_get_pixel(float *im, int height, int width, int channels,
+                        int row, int col, int channel, int pad)
+{
+    row -= pad;
+    col -= pad;
+
+    if (row &lt; 0 || col &lt; 0 ||
+        row &gt;= height || col &gt;= width) return 0;
+    return im[col + width*(row + height*channel)];
+}
+
+//From Berkeley Vision's Caffe!
+//https://github.com/BVLC/caffe/blob/master/LICENSE
+void im2col_cpu(float* data_im, // 输入的图像数据，内存中按行排列成一维
+     int channels,  // 通道数
+     int height, int width, // 图像的高和宽
+     int ksize,  // 卷积核的高和宽，这里默认卷积核高和宽大小一样
+     int stride, // 卷积时的步长，这里默认高和宽两个方向上步长一样
+     int pad, // 图像的填充，这里默认高和宽上填充一样
+     float* data_col // 最终输出的数据
+) {
+    int c,h,w;
+    int height_col = (height + 2*pad - ksize) / stride + 1; // 卷积后的图像尺寸，可以想象，其中每个点对应图像的一个卷积区域，卷积区域大小是channels * ksize * ksize，即下面的channels_col。
+    int width_col = (width + 2*pad - ksize) / stride + 1;
+
+    int channels_col = channels * ksize * ksize; // 图像上每个卷积区域展成一列后的大小，比如                                                          // ksize=3，图像通道数为3，那么channels_col为27
+    for (c = 0; c &lt; channels_col; ++c) {
+        int w_offset = c % ksize; // 0, 1, 2, 0, 1, 2, 0, 1, 2, ... 宽的相对偏移
+        int h_offset = (c / ksize) % ksize; // 0, 0, 0, 1, 1, 1, 2, 2, 2, 0, 0, 0, 1, 1, 1, ...高的相对偏移
+        int c_im = c / ksize / ksize; // 9个0， 9个1， 9个2 通道序号，（c_im, h_offset, w_offset）是卷积区域的相对坐标
+        for (h = 0; h &lt; height_col; ++h) { // 有height_col * width_col个卷积区域，遍历每一个卷积区域，对于每个区域，计算它的c位置处的图像像素值
+            for (w = 0; w &lt; width_col; ++w) {
+                int im_row = h_offset + h * stride; // 相对于图像的行坐标
+                int im_col = w_offset + w * stride; // 相对于图像的列坐标
+                int col_index = (c * height_col + h) * width_col + w; // 
+                data_col[col_index] = im2col_get_pixel(data_im, height, width, channels,
+                        im_row, im_col, c_im, pad);
+            }
+        }
+    }
+}
+</code></pre>
+<p>这是caffe中卷积操作之前的关键步骤，对三维图像进行变形，将传统卷积操作变成矩阵形式的卷积操作。</p>
+<p>简便起见，设channels = 1，即图像是个单通道图。data_im为</p>
+<p class='katex-block'><span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mtable><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>0</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>1</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>2</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>3</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>4</mn></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>5</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>6</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>7</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>8</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>9</mn></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>10</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>11</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>12</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>13</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>14</mn></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>15</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>16</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>17</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>18</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>19</mn></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>20</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>21</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>22</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>23</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>24</mn></mstyle></mtd></mtr></mtable><annotation encoding="application/x-tex">\begin{matrix}
+   0 &amp; 1 &amp; 2 &amp; 3 &amp; 4 \\
+   5 &amp; 6 &amp; 7 &amp; 8 &amp; 9 \\
+   10 &amp; 11 &amp; 12 &amp; 13 &amp; 14 \\
+   15 &amp; 16 &amp; 17 &amp; 18 &amp; 19 \\
+   20 &amp; 21 &amp; 22 &amp; 23 &amp; 24 \\
+  \end{matrix}
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:6.000000000000001em;vertical-align:-2.7500000000000004em;"></span><span class="mord"><span class="mtable"><span class="col-align-c"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:3.2500000000000004em;"><span style="top:-5.410000000000001em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">0</span></span></span><span style="top:-4.21em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">5</span></span></span><span style="top:-3.01em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span><span class="mord">0</span></span></span><span style="top:-1.8099999999999998em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span><span class="mord">5</span></span></span><span style="top:-0.6099999999999997em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">2</span><span class="mord">0</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:2.7500000000000004em;"><span></span></span></span></span></span><span class="arraycolsep" style="width:0.5em;"></span><span class="arraycolsep" style="width:0.5em;"></span><span class="col-align-c"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:3.2500000000000004em;"><span style="top:-5.410000000000001em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span></span></span><span style="top:-4.21em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">6</span></span></span><span style="top:-3.01em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span><span class="mord">1</span></span></span><span style="top:-1.8099999999999998em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span><span class="mord">6</span></span></span><span style="top:-0.6099999999999997em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">2</span><span class="mord">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:2.7500000000000004em;"><span></span></span></span></span></span><span class="arraycolsep" style="width:0.5em;"></span><span class="arraycolsep" style="width:0.5em;"></span><span class="col-align-c"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:3.2500000000000004em;"><span style="top:-5.410000000000001em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">2</span></span></span><span style="top:-4.21em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">7</span></span></span><span style="top:-3.01em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span><span class="mord">2</span></span></span><span style="top:-1.8099999999999998em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span><span class="mord">7</span></span></span><span style="top:-0.6099999999999997em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">2</span><span class="mord">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:2.7500000000000004em;"><span></span></span></span></span></span><span class="arraycolsep" style="width:0.5em;"></span><span class="arraycolsep" style="width:0.5em;"></span><span class="col-align-c"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:3.2500000000000004em;"><span style="top:-5.410000000000001em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">3</span></span></span><span style="top:-4.21em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">8</span></span></span><span style="top:-3.01em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span><span class="mord">3</span></span></span><span style="top:-1.8099999999999998em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span><span class="mord">8</span></span></span><span style="top:-0.6099999999999997em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">2</span><span class="mord">3</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:2.7500000000000004em;"><span></span></span></span></span></span><span class="arraycolsep" style="width:0.5em;"></span><span class="arraycolsep" style="width:0.5em;"></span><span class="col-align-c"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:3.2500000000000004em;"><span style="top:-5.410000000000001em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">4</span></span></span><span style="top:-4.21em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">9</span></span></span><span style="top:-3.01em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span><span class="mord">4</span></span></span><span style="top:-1.8099999999999998em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span><span class="mord">9</span></span></span><span style="top:-0.6099999999999997em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">2</span><span class="mord">4</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:2.7500000000000004em;"><span></span></span></span></span></span></span></span></span></span></span></span></p>
+<p>kernel大小为<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mn>3</mn><mo>×</mo><mn>3</mn></mrow><annotation encoding="application/x-tex">3\times3</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.72777em;vertical-align:-0.08333em;"></span><span class="mord">3</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">3</span></span></span></span>，stride = 1, pad = 0。经过上面函数的处理后，data_col为</p>
+<p class='katex-block'><span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mtable><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>0</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>1</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>2</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>5</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>6</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>7</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>10</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>11</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>12</mn></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>1</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>2</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>3</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>6</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>7</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>8</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>11</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>12</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>13</mn></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>2</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>3</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>4</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>7</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>8</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>9</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>12</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>13</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>14</mn></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>5</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>6</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>7</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>10</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>11</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>12</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>15</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>16</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>17</mn></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>6</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>7</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>8</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>11</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>12</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>13</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>16</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>17</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>18</mn></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>7</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>8</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>9</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>12</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>13</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>14</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>17</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>18</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>19</mn></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>10</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>11</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>12</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>15</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>16</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>17</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>20</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>21</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>22</mn></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>11</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>12</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>13</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>16</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>17</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>18</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>21</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>22</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>23</mn></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>12</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>13</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>14</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>17</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>18</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>19</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>22</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>23</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>24</mn></mstyle></mtd></mtr></mtable><annotation encoding="application/x-tex">\begin{matrix}
+0 &amp; 1 &amp; 2 &amp; 5 &amp; 6 &amp; 7 &amp; 10 &amp; 11 &amp; 12 \\
+1 &amp; 2 &amp; 3 &amp; 6 &amp; 7 &amp; 8 &amp; 11 &amp; 12 &amp; 13 \\
+2 &amp; 3 &amp; 4 &amp; 7 &amp; 8 &amp; 9 &amp; 12 &amp; 13 &amp; 14 \\
+5 &amp; 6 &amp; 7 &amp; 10 &amp; 11 &amp; 12 &amp; 15 &amp; 16 &amp; 17 \\
+6 &amp; 7 &amp; 8 &amp; 11 &amp; 12 &amp; 13 &amp; 16 &amp; 17 &amp; 18 \\
+7 &amp; 8 &amp; 9 &amp; 12 &amp; 13 &amp; 14 &amp; 17 &amp; 18 &amp; 19 \\
+10 &amp; 11 &amp; 12 &amp; 15 &amp; 16 &amp; 17 &amp; 20 &amp; 21 &amp; 22 \\
+11 &amp; 12 &amp; 13 &amp; 16 &amp; 17 &amp; 18 &amp; 21 &amp; 22 &amp; 23 \\
+12 &amp; 13 &amp; 14 &amp; 17 &amp; 18 &amp; 19 &amp; 22 &amp; 23 &amp; 24 \\
+\end{matrix}
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:10.8em;vertical-align:-5.15em;"></span><span class="mord"><span class="mtable"><span class="col-align-c"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:5.6499999999999995em;"><span style="top:-7.81em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">0</span></span></span><span style="top:-6.609999999999999em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span></span></span><span style="top:-5.409999999999999em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">2</span></span></span><span style="top:-4.209999999999999em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">5</span></span></span><span style="top:-3.0099999999999985em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">6</span></span></span><span style="top:-1.8099999999999985em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">7</span></span></span><span style="top:-0.6099999999999983em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span><span class="mord">0</span></span></span><span style="top:0.590000000000001em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span><span class="mord">1</span></span></span><span style="top:1.7900000000000003em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span><span class="mord">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:5.15em;"><span></span></span></span></span></span><span class="arraycolsep" style="width:0.5em;"></span><span class="arraycolsep" style="width:0.5em;"></span><span class="col-align-c"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:5.6499999999999995em;"><span style="top:-7.81em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span></span></span><span style="top:-6.609999999999999em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">2</span></span></span><span style="top:-5.409999999999999em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">3</span></span></span><span style="top:-4.209999999999999em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">6</span></span></span><span style="top:-3.0099999999999985em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">7</span></span></span><span style="top:-1.8099999999999985em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">8</span></span></span><span style="top:-0.6099999999999983em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span><span class="mord">1</span></span></span><span style="top:0.590000000000001em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span><span class="mord">2</span></span></span><span style="top:1.7900000000000003em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span><span class="mord">3</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:5.15em;"><span></span></span></span></span></span><span class="arraycolsep" style="width:0.5em;"></span><span class="arraycolsep" style="width:0.5em;"></span><span class="col-align-c"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:5.6499999999999995em;"><span style="top:-7.81em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">2</span></span></span><span style="top:-6.609999999999999em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">3</span></span></span><span style="top:-5.409999999999999em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">4</span></span></span><span style="top:-4.209999999999999em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">7</span></span></span><span style="top:-3.0099999999999985em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">8</span></span></span><span style="top:-1.8099999999999985em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">9</span></span></span><span style="top:-0.6099999999999983em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span><span class="mord">2</span></span></span><span style="top:0.590000000000001em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span><span class="mord">3</span></span></span><span style="top:1.7900000000000003em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span><span class="mord">4</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:5.15em;"><span></span></span></span></span></span><span class="arraycolsep" style="width:0.5em;"></span><span class="arraycolsep" style="width:0.5em;"></span><span class="col-align-c"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:5.6499999999999995em;"><span style="top:-7.81em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">5</span></span></span><span style="top:-6.609999999999999em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">6</span></span></span><span style="top:-5.409999999999999em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">7</span></span></span><span style="top:-4.209999999999999em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span><span class="mord">0</span></span></span><span style="top:-3.0099999999999985em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span><span class="mord">1</span></span></span><span style="top:-1.8099999999999985em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span><span class="mord">2</span></span></span><span style="top:-0.6099999999999983em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span><span class="mord">5</span></span></span><span style="top:0.590000000000001em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span><span class="mord">6</span></span></span><span style="top:1.7900000000000003em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span><span class="mord">7</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:5.15em;"><span></span></span></span></span></span><span class="arraycolsep" style="width:0.5em;"></span><span class="arraycolsep" style="width:0.5em;"></span><span class="col-align-c"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:5.6499999999999995em;"><span style="top:-7.81em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">6</span></span></span><span style="top:-6.609999999999999em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">7</span></span></span><span style="top:-5.409999999999999em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">8</span></span></span><span style="top:-4.209999999999999em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span><span class="mord">1</span></span></span><span style="top:-3.0099999999999985em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span><span class="mord">2</span></span></span><span style="top:-1.8099999999999985em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span><span class="mord">3</span></span></span><span style="top:-0.6099999999999983em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span><span class="mord">6</span></span></span><span style="top:0.590000000000001em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span><span class="mord">7</span></span></span><span style="top:1.7900000000000003em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span><span class="mord">8</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:5.15em;"><span></span></span></span></span></span><span class="arraycolsep" style="width:0.5em;"></span><span class="arraycolsep" style="width:0.5em;"></span><span class="col-align-c"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:5.6499999999999995em;"><span style="top:-7.81em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">7</span></span></span><span style="top:-6.609999999999999em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">8</span></span></span><span style="top:-5.409999999999999em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">9</span></span></span><span style="top:-4.209999999999999em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span><span class="mord">2</span></span></span><span style="top:-3.0099999999999985em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span><span class="mord">3</span></span></span><span style="top:-1.8099999999999985em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span><span class="mord">4</span></span></span><span style="top:-0.6099999999999983em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span><span class="mord">7</span></span></span><span style="top:0.590000000000001em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span><span class="mord">8</span></span></span><span style="top:1.7900000000000003em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span><span class="mord">9</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:5.15em;"><span></span></span></span></span></span><span class="arraycolsep" style="width:0.5em;"></span><span class="arraycolsep" style="width:0.5em;"></span><span class="col-align-c"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:5.6499999999999995em;"><span style="top:-7.81em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span><span class="mord">0</span></span></span><span style="top:-6.609999999999999em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span><span class="mord">1</span></span></span><span style="top:-5.409999999999999em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span><span class="mord">2</span></span></span><span style="top:-4.209999999999999em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span><span class="mord">5</span></span></span><span style="top:-3.0099999999999985em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span><span class="mord">6</span></span></span><span style="top:-1.8099999999999985em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span><span class="mord">7</span></span></span><span style="top:-0.6099999999999983em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">2</span><span class="mord">0</span></span></span><span style="top:0.590000000000001em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">2</span><span class="mord">1</span></span></span><span style="top:1.7900000000000003em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">2</span><span class="mord">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:5.15em;"><span></span></span></span></span></span><span class="arraycolsep" style="width:0.5em;"></span><span class="arraycolsep" style="width:0.5em;"></span><span class="col-align-c"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:5.6499999999999995em;"><span style="top:-7.81em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span><span class="mord">1</span></span></span><span style="top:-6.609999999999999em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span><span class="mord">2</span></span></span><span style="top:-5.409999999999999em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span><span class="mord">3</span></span></span><span style="top:-4.209999999999999em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span><span class="mord">6</span></span></span><span style="top:-3.0099999999999985em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span><span class="mord">7</span></span></span><span style="top:-1.8099999999999985em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span><span class="mord">8</span></span></span><span style="top:-0.6099999999999983em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">2</span><span class="mord">1</span></span></span><span style="top:0.590000000000001em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">2</span><span class="mord">2</span></span></span><span style="top:1.7900000000000003em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">2</span><span class="mord">3</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:5.15em;"><span></span></span></span></span></span><span class="arraycolsep" style="width:0.5em;"></span><span class="arraycolsep" style="width:0.5em;"></span><span class="col-align-c"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:5.6499999999999995em;"><span style="top:-7.81em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span><span class="mord">2</span></span></span><span style="top:-6.609999999999999em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span><span class="mord">3</span></span></span><span style="top:-5.409999999999999em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span><span class="mord">4</span></span></span><span style="top:-4.209999999999999em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span><span class="mord">7</span></span></span><span style="top:-3.0099999999999985em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span><span class="mord">8</span></span></span><span style="top:-1.8099999999999985em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span><span class="mord">9</span></span></span><span style="top:-0.6099999999999983em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">2</span><span class="mord">2</span></span></span><span style="top:0.590000000000001em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">2</span><span class="mord">3</span></span></span><span style="top:1.7900000000000003em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">2</span><span class="mord">4</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:5.15em;"><span></span></span></span></span></span></span></span></span></span></span></span></p>
+<p>简单来说，就是依次取每个卷积区域的第1个，排成一行；取每个卷积区域的第2个，排成一行；...；取每个卷积区域的第9个，排成一行。所以共有9行，<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mn>3</mn><mo>×</mo><mn>3</mn><mo>×</mo><mn>1</mn><mo>=</mo><mn>9</mn></mrow><annotation encoding="application/x-tex">3\times3\times1=9</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.72777em;vertical-align:-0.08333em;"></span><span class="mord">3</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.72777em;vertical-align:-0.08333em;"></span><span class="mord">3</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">1</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">9</span></span></span></span>列。如果是3通道的图像，那么就有27行，<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mn>3</mn><mo>×</mo><mn>3</mn><mo>×</mo><mn>3</mn><mo>=</mo><mn>27</mn></mrow><annotation encoding="application/x-tex">3\times3\times3=27</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.72777em;vertical-align:-0.08333em;"></span><span class="mord">3</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.72777em;vertical-align:-0.08333em;"></span><span class="mord">3</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">3</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">2</span><span class="mord">7</span></span></span></span>列。此时，再将kernel拉伸成一列，卷积过程变成了矩阵乘法：</p>
+<p class='katex-block'><span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mrow><mo fence="true">[</mo><mtable><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>0</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>1</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>2</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>5</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>6</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>7</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>10</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>11</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>12</mn></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>1</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>2</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>3</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>6</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>7</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>8</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>11</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>12</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>13</mn></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>2</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>3</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>4</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>7</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>8</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>9</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>12</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>13</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>14</mn></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>5</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>6</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>7</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>10</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>11</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>12</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>15</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>16</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>17</mn></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>6</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>7</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>8</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>11</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>12</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>13</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>16</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>17</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>18</mn></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>7</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>8</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>9</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>12</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>13</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>14</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>17</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>18</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>19</mn></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>10</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>11</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>12</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>15</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>16</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>17</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>20</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>21</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>22</mn></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>11</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>12</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>13</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>16</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>17</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>18</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>21</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>22</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>23</mn></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>12</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>13</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>14</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>17</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>18</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>19</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>22</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>23</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>24</mn></mstyle></mtd></mtr></mtable><mo fence="true">]</mo></mrow><mo>×</mo><mrow><mo fence="true">[</mo><mtable><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>0</mn></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>1</mn></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>2</mn></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>3</mn></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>4</mn></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>5</mn></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>6</mn></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>7</mn></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>8</mn></mstyle></mtd></mtr></mtable><mo fence="true">]</mo></mrow></mrow><annotation encoding="application/x-tex">\left[
+	\begin{matrix}
+        0 &amp; 1 &amp; 2 &amp; 5 &amp; 6 &amp; 7 &amp; 10 &amp; 11 &amp; 12 \\
+        1 &amp; 2 &amp; 3 &amp; 6 &amp; 7 &amp; 8 &amp; 11 &amp; 12 &amp; 13 \\
+        2 &amp; 3 &amp; 4 &amp; 7 &amp; 8 &amp; 9 &amp; 12 &amp; 13 &amp; 14 \\
+        5 &amp; 6 &amp; 7 &amp; 10 &amp; 11 &amp; 12 &amp; 15 &amp; 16 &amp; 17 \\
+        6 &amp; 7 &amp; 8 &amp; 11 &amp; 12 &amp; 13 &amp; 16 &amp; 17 &amp; 18 \\
+        7 &amp; 8 &amp; 9 &amp; 12 &amp; 13 &amp; 14 &amp; 17 &amp; 18 &amp; 19 \\
+        10 &amp; 11 &amp; 12 &amp; 15 &amp; 16 &amp; 17 &amp; 20 &amp; 21 &amp; 22 \\
+        11 &amp; 12 &amp; 13 &amp; 16 &amp; 17 &amp; 18 &amp; 21 &amp; 22 &amp; 23 \\
+        12 &amp; 13 &amp; 14 &amp; 17 &amp; 18 &amp; 19 &amp; 22 &amp; 23 &amp; 24 \\
+        \end{matrix}\right]
+        \times
+        \left[
+        \begin{matrix}
+        0\\
+        1\\
+        2\\
+        3\\
+        4\\
+        5\\
+        6\\
+        7\\
+        8\\
+        \end{matrix}
+        \right]
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:10.81204em;vertical-align:-5.150079999999999em;"></span><span class="minner"><span class="mopen"><span class="delimsizing mult"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:5.6619600000000005em;"><span style="top:1.3500599999999987em;"><span class="pstrut" style="height:3.1550000000000002em;"></span><span class="delimsizinginner delim-size4"><span>⎣</span></span></span><span style="top:0.1950599999999989em;"><span class="pstrut" style="height:3.1550000000000002em;"></span><span class="delimsizinginner delim-size4"><span>⎢</span></span></span><span style="top:-0.4059400000000011em;"><span class="pstrut" style="height:3.1550000000000002em;"></span><span class="delimsizinginner delim-size4"><span>⎢</span></span></span><span style="top:-1.006940000000001em;"><span class="pstrut" style="height:3.1550000000000002em;"></span><span class="delimsizinginner delim-size4"><span>⎢</span></span></span><span style="top:-1.607940000000001em;"><span class="pstrut" style="height:3.1550000000000002em;"></span><span class="delimsizinginner delim-size4"><span>⎢</span></span></span><span style="top:-2.208940000000001em;"><span class="pstrut" style="height:3.1550000000000002em;"></span><span class="delimsizinginner delim-size4"><span>⎢</span></span></span><span style="top:-2.809940000000001em;"><span class="pstrut" style="height:3.1550000000000002em;"></span><span class="delimsizinginner delim-size4"><span>⎢</span></span></span><span style="top:-3.410940000000001em;"><span class="pstrut" style="height:3.1550000000000002em;"></span><span class="delimsizinginner delim-size4"><span>⎢</span></span></span><span style="top:-4.011940000000001em;"><span class="pstrut" style="height:3.1550000000000002em;"></span><span class="delimsizinginner delim-size4"><span>⎢</span></span></span><span style="top:-4.612940000000001em;"><span class="pstrut" style="height:3.1550000000000002em;"></span><span class="delimsizinginner delim-size4"><span>⎢</span></span></span><span style="top:-5.213940000000001em;"><span class="pstrut" style="height:3.1550000000000002em;"></span><span class="delimsizinginner delim-size4"><span>⎢</span></span></span><span style="top:-5.814940000000001em;"><span class="pstrut" style="height:3.1550000000000002em;"></span><span class="delimsizinginner delim-size4"><span>⎢</span></span></span><span style="top:-6.415940000000001em;"><span class="pstrut" style="height:3.1550000000000002em;"></span><span class="delimsizinginner delim-size4"><span>⎢</span></span></span><span style="top:-7.6619600000000005em;"><span class="pstrut" style="height:3.1550000000000002em;"></span><span class="delimsizinginner delim-size4"><span>⎡</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:5.150079999999999em;"><span></span></span></span></span></span></span><span class="mord"><span class="mtable"><span class="col-align-c"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:5.6499999999999995em;"><span style="top:-7.81em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">0</span></span></span><span style="top:-6.609999999999999em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span></span></span><span style="top:-5.409999999999999em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">2</span></span></span><span style="top:-4.209999999999999em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">5</span></span></span><span style="top:-3.0099999999999985em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">6</span></span></span><span style="top:-1.8099999999999985em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">7</span></span></span><span style="top:-0.6099999999999983em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span><span class="mord">0</span></span></span><span style="top:0.590000000000001em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span><span class="mord">1</span></span></span><span style="top:1.7900000000000003em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span><span class="mord">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:5.15em;"><span></span></span></span></span></span><span class="arraycolsep" style="width:0.5em;"></span><span class="arraycolsep" style="width:0.5em;"></span><span class="col-align-c"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:5.6499999999999995em;"><span style="top:-7.81em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span></span></span><span style="top:-6.609999999999999em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">2</span></span></span><span style="top:-5.409999999999999em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">3</span></span></span><span style="top:-4.209999999999999em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">6</span></span></span><span style="top:-3.0099999999999985em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">7</span></span></span><span style="top:-1.8099999999999985em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">8</span></span></span><span style="top:-0.6099999999999983em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span><span class="mord">1</span></span></span><span style="top:0.590000000000001em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span><span class="mord">2</span></span></span><span style="top:1.7900000000000003em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span><span class="mord">3</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:5.15em;"><span></span></span></span></span></span><span class="arraycolsep" style="width:0.5em;"></span><span class="arraycolsep" style="width:0.5em;"></span><span class="col-align-c"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:5.6499999999999995em;"><span style="top:-7.81em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">2</span></span></span><span style="top:-6.609999999999999em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">3</span></span></span><span style="top:-5.409999999999999em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">4</span></span></span><span style="top:-4.209999999999999em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">7</span></span></span><span style="top:-3.0099999999999985em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">8</span></span></span><span style="top:-1.8099999999999985em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">9</span></span></span><span style="top:-0.6099999999999983em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span><span class="mord">2</span></span></span><span style="top:0.590000000000001em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span><span class="mord">3</span></span></span><span style="top:1.7900000000000003em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span><span class="mord">4</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:5.15em;"><span></span></span></span></span></span><span class="arraycolsep" style="width:0.5em;"></span><span class="arraycolsep" style="width:0.5em;"></span><span class="col-align-c"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:5.6499999999999995em;"><span style="top:-7.81em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">5</span></span></span><span style="top:-6.609999999999999em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">6</span></span></span><span style="top:-5.409999999999999em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">7</span></span></span><span style="top:-4.209999999999999em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span><span class="mord">0</span></span></span><span style="top:-3.0099999999999985em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span><span class="mord">1</span></span></span><span style="top:-1.8099999999999985em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span><span class="mord">2</span></span></span><span style="top:-0.6099999999999983em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span><span class="mord">5</span></span></span><span style="top:0.590000000000001em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span><span class="mord">6</span></span></span><span style="top:1.7900000000000003em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span><span class="mord">7</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:5.15em;"><span></span></span></span></span></span><span class="arraycolsep" style="width:0.5em;"></span><span class="arraycolsep" style="width:0.5em;"></span><span class="col-align-c"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:5.6499999999999995em;"><span style="top:-7.81em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">6</span></span></span><span style="top:-6.609999999999999em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">7</span></span></span><span style="top:-5.409999999999999em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">8</span></span></span><span style="top:-4.209999999999999em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span><span class="mord">1</span></span></span><span style="top:-3.0099999999999985em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span><span class="mord">2</span></span></span><span style="top:-1.8099999999999985em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span><span class="mord">3</span></span></span><span style="top:-0.6099999999999983em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span><span class="mord">6</span></span></span><span style="top:0.590000000000001em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span><span class="mord">7</span></span></span><span style="top:1.7900000000000003em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span><span class="mord">8</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:5.15em;"><span></span></span></span></span></span><span class="arraycolsep" style="width:0.5em;"></span><span class="arraycolsep" style="width:0.5em;"></span><span class="col-align-c"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:5.6499999999999995em;"><span style="top:-7.81em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">7</span></span></span><span style="top:-6.609999999999999em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">8</span></span></span><span style="top:-5.409999999999999em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">9</span></span></span><span style="top:-4.209999999999999em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span><span class="mord">2</span></span></span><span style="top:-3.0099999999999985em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span><span class="mord">3</span></span></span><span style="top:-1.8099999999999985em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span><span class="mord">4</span></span></span><span style="top:-0.6099999999999983em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span><span class="mord">7</span></span></span><span style="top:0.590000000000001em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span><span class="mord">8</span></span></span><span style="top:1.7900000000000003em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span><span class="mord">9</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:5.15em;"><span></span></span></span></span></span><span class="arraycolsep" style="width:0.5em;"></span><span class="arraycolsep" style="width:0.5em;"></span><span class="col-align-c"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:5.6499999999999995em;"><span style="top:-7.81em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span><span class="mord">0</span></span></span><span style="top:-6.609999999999999em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span><span class="mord">1</span></span></span><span style="top:-5.409999999999999em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span><span class="mord">2</span></span></span><span style="top:-4.209999999999999em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span><span class="mord">5</span></span></span><span style="top:-3.0099999999999985em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span><span class="mord">6</span></span></span><span style="top:-1.8099999999999985em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span><span class="mord">7</span></span></span><span style="top:-0.6099999999999983em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">2</span><span class="mord">0</span></span></span><span style="top:0.590000000000001em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">2</span><span class="mord">1</span></span></span><span style="top:1.7900000000000003em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">2</span><span class="mord">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:5.15em;"><span></span></span></span></span></span><span class="arraycolsep" style="width:0.5em;"></span><span class="arraycolsep" style="width:0.5em;"></span><span class="col-align-c"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:5.6499999999999995em;"><span style="top:-7.81em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span><span class="mord">1</span></span></span><span style="top:-6.609999999999999em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span><span class="mord">2</span></span></span><span style="top:-5.409999999999999em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span><span class="mord">3</span></span></span><span style="top:-4.209999999999999em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span><span class="mord">6</span></span></span><span style="top:-3.0099999999999985em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span><span class="mord">7</span></span></span><span style="top:-1.8099999999999985em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span><span class="mord">8</span></span></span><span style="top:-0.6099999999999983em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">2</span><span class="mord">1</span></span></span><span style="top:0.590000000000001em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">2</span><span class="mord">2</span></span></span><span style="top:1.7900000000000003em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">2</span><span class="mord">3</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:5.15em;"><span></span></span></span></span></span><span class="arraycolsep" style="width:0.5em;"></span><span class="arraycolsep" style="width:0.5em;"></span><span class="col-align-c"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:5.6499999999999995em;"><span style="top:-7.81em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span><span class="mord">2</span></span></span><span style="top:-6.609999999999999em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span><span class="mord">3</span></span></span><span style="top:-5.409999999999999em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span><span class="mord">4</span></span></span><span style="top:-4.209999999999999em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span><span class="mord">7</span></span></span><span style="top:-3.0099999999999985em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span><span class="mord">8</span></span></span><span style="top:-1.8099999999999985em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span><span class="mord">9</span></span></span><span style="top:-0.6099999999999983em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">2</span><span class="mord">2</span></span></span><span style="top:0.590000000000001em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">2</span><span class="mord">3</span></span></span><span style="top:1.7900000000000003em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">2</span><span class="mord">4</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:5.15em;"><span></span></span></span></span></span></span></span><span class="mclose"><span class="delimsizing mult"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:5.6619600000000005em;"><span style="top:1.3500599999999987em;"><span class="pstrut" style="height:3.1550000000000002em;"></span><span class="delimsizinginner delim-size4"><span>⎦</span></span></span><span style="top:0.1950599999999989em;"><span class="pstrut" style="height:3.1550000000000002em;"></span><span class="delimsizinginner delim-size4"><span>⎥</span></span></span><span style="top:-0.4059400000000011em;"><span class="pstrut" style="height:3.1550000000000002em;"></span><span class="delimsizinginner delim-size4"><span>⎥</span></span></span><span style="top:-1.006940000000001em;"><span class="pstrut" style="height:3.1550000000000002em;"></span><span class="delimsizinginner delim-size4"><span>⎥</span></span></span><span style="top:-1.607940000000001em;"><span class="pstrut" style="height:3.1550000000000002em;"></span><span class="delimsizinginner delim-size4"><span>⎥</span></span></span><span style="top:-2.208940000000001em;"><span class="pstrut" style="height:3.1550000000000002em;"></span><span class="delimsizinginner delim-size4"><span>⎥</span></span></span><span style="top:-2.809940000000001em;"><span class="pstrut" style="height:3.1550000000000002em;"></span><span class="delimsizinginner delim-size4"><span>⎥</span></span></span><span style="top:-3.410940000000001em;"><span class="pstrut" style="height:3.1550000000000002em;"></span><span class="delimsizinginner delim-size4"><span>⎥</span></span></span><span style="top:-4.011940000000001em;"><span class="pstrut" style="height:3.1550000000000002em;"></span><span class="delimsizinginner delim-size4"><span>⎥</span></span></span><span style="top:-4.612940000000001em;"><span class="pstrut" style="height:3.1550000000000002em;"></span><span class="delimsizinginner delim-size4"><span>⎥</span></span></span><span style="top:-5.213940000000001em;"><span class="pstrut" style="height:3.1550000000000002em;"></span><span class="delimsizinginner delim-size4"><span>⎥</span></span></span><span style="top:-5.814940000000001em;"><span class="pstrut" style="height:3.1550000000000002em;"></span><span class="delimsizinginner delim-size4"><span>⎥</span></span></span><span style="top:-6.415940000000001em;"><span class="pstrut" style="height:3.1550000000000002em;"></span><span class="delimsizinginner delim-size4"><span>⎥</span></span></span><span style="top:-7.6619600000000005em;"><span class="pstrut" style="height:3.1550000000000002em;"></span><span class="delimsizinginner delim-size4"><span>⎤</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:5.150079999999999em;"><span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:10.81204em;vertical-align:-5.150079999999999em;"></span><span class="minner"><span class="mopen"><span class="delimsizing mult"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:5.6619600000000005em;"><span style="top:1.3500599999999987em;"><span class="pstrut" style="height:3.1550000000000002em;"></span><span class="delimsizinginner delim-size4"><span>⎣</span></span></span><span style="top:0.1950599999999989em;"><span class="pstrut" style="height:3.1550000000000002em;"></span><span class="delimsizinginner delim-size4"><span>⎢</span></span></span><span style="top:-0.4059400000000011em;"><span class="pstrut" style="height:3.1550000000000002em;"></span><span class="delimsizinginner delim-size4"><span>⎢</span></span></span><span style="top:-1.006940000000001em;"><span class="pstrut" style="height:3.1550000000000002em;"></span><span class="delimsizinginner delim-size4"><span>⎢</span></span></span><span style="top:-1.607940000000001em;"><span class="pstrut" style="height:3.1550000000000002em;"></span><span class="delimsizinginner delim-size4"><span>⎢</span></span></span><span style="top:-2.208940000000001em;"><span class="pstrut" style="height:3.1550000000000002em;"></span><span class="delimsizinginner delim-size4"><span>⎢</span></span></span><span style="top:-2.809940000000001em;"><span class="pstrut" style="height:3.1550000000000002em;"></span><span class="delimsizinginner delim-size4"><span>⎢</span></span></span><span style="top:-3.410940000000001em;"><span class="pstrut" style="height:3.1550000000000002em;"></span><span class="delimsizinginner delim-size4"><span>⎢</span></span></span><span style="top:-4.011940000000001em;"><span class="pstrut" style="height:3.1550000000000002em;"></span><span class="delimsizinginner delim-size4"><span>⎢</span></span></span><span style="top:-4.612940000000001em;"><span class="pstrut" style="height:3.1550000000000002em;"></span><span class="delimsizinginner delim-size4"><span>⎢</span></span></span><span style="top:-5.213940000000001em;"><span class="pstrut" style="height:3.1550000000000002em;"></span><span class="delimsizinginner delim-size4"><span>⎢</span></span></span><span style="top:-5.814940000000001em;"><span class="pstrut" style="height:3.1550000000000002em;"></span><span class="delimsizinginner delim-size4"><span>⎢</span></span></span><span style="top:-6.415940000000001em;"><span class="pstrut" style="height:3.1550000000000002em;"></span><span class="delimsizinginner delim-size4"><span>⎢</span></span></span><span style="top:-7.6619600000000005em;"><span class="pstrut" style="height:3.1550000000000002em;"></span><span class="delimsizinginner delim-size4"><span>⎡</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:5.150079999999999em;"><span></span></span></span></span></span></span><span class="mord"><span class="mtable"><span class="col-align-c"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:5.6499999999999995em;"><span style="top:-7.81em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">0</span></span></span><span style="top:-6.609999999999999em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span></span></span><span style="top:-5.409999999999999em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">2</span></span></span><span style="top:-4.209999999999999em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">3</span></span></span><span style="top:-3.0099999999999985em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">4</span></span></span><span style="top:-1.8099999999999985em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">5</span></span></span><span style="top:-0.6099999999999983em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">6</span></span></span><span style="top:0.590000000000001em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">7</span></span></span><span style="top:1.7900000000000003em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">8</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:5.15em;"><span></span></span></span></span></span></span></span><span class="mclose"><span class="delimsizing mult"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:5.6619600000000005em;"><span style="top:1.3500599999999987em;"><span class="pstrut" style="height:3.1550000000000002em;"></span><span class="delimsizinginner delim-size4"><span>⎦</span></span></span><span style="top:0.1950599999999989em;"><span class="pstrut" style="height:3.1550000000000002em;"></span><span class="delimsizinginner delim-size4"><span>⎥</span></span></span><span style="top:-0.4059400000000011em;"><span class="pstrut" style="height:3.1550000000000002em;"></span><span class="delimsizinginner delim-size4"><span>⎥</span></span></span><span style="top:-1.006940000000001em;"><span class="pstrut" style="height:3.1550000000000002em;"></span><span class="delimsizinginner delim-size4"><span>⎥</span></span></span><span style="top:-1.607940000000001em;"><span class="pstrut" style="height:3.1550000000000002em;"></span><span class="delimsizinginner delim-size4"><span>⎥</span></span></span><span style="top:-2.208940000000001em;"><span class="pstrut" style="height:3.1550000000000002em;"></span><span class="delimsizinginner delim-size4"><span>⎥</span></span></span><span style="top:-2.809940000000001em;"><span class="pstrut" style="height:3.1550000000000002em;"></span><span class="delimsizinginner delim-size4"><span>⎥</span></span></span><span style="top:-3.410940000000001em;"><span class="pstrut" style="height:3.1550000000000002em;"></span><span class="delimsizinginner delim-size4"><span>⎥</span></span></span><span style="top:-4.011940000000001em;"><span class="pstrut" style="height:3.1550000000000002em;"></span><span class="delimsizinginner delim-size4"><span>⎥</span></span></span><span style="top:-4.612940000000001em;"><span class="pstrut" style="height:3.1550000000000002em;"></span><span class="delimsizinginner delim-size4"><span>⎥</span></span></span><span style="top:-5.213940000000001em;"><span class="pstrut" style="height:3.1550000000000002em;"></span><span class="delimsizinginner delim-size4"><span>⎥</span></span></span><span style="top:-5.814940000000001em;"><span class="pstrut" style="height:3.1550000000000002em;"></span><span class="delimsizinginner delim-size4"><span>⎥</span></span></span><span style="top:-6.415940000000001em;"><span class="pstrut" style="height:3.1550000000000002em;"></span><span class="delimsizinginner delim-size4"><span>⎥</span></span></span><span style="top:-7.6619600000000005em;"><span class="pstrut" style="height:3.1550000000000002em;"></span><span class="delimsizinginner delim-size4"><span>⎤</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:5.150079999999999em;"><span></span></span></span></span></span></span></span></span></span></span></span></p>
+<p>为什么要这么做呢？一是因为矩阵乘法运算研究多年，运算效率有保障；二是卷积运算在实现过程中会因为cache友好性等问题导致性能较差。上面是cpu代码，如果想要加速，可以使用cuda，调用cuDNN库。</p>
+<hr>
+<h2 id="计算iou">计算IOU</h2>
+<p>代码在box.c源文件中</p>
+<pre><code class="language-c">float overlap(float x1, float w1, float x2, float w2)
+{
+    float l1 = x1 - w1/2;
+    float l2 = x2 - w2/2;
+    float left = l1 &gt; l2 ? l1 : l2;
+    float r1 = x1 + w1/2;
+    float r2 = x2 + w2/2;
+    float right = r1 &lt; r2 ? r1 : r2;
+    return right - left;
+}
+
+float box_intersection(box a, box b)
+{
+    float w = overlap(a.x, a.w, b.x, b.w); // 相交矩形的宽
+    float h = overlap(a.y, a.h, b.y, b.h); // 相交矩形的高
+    if(w &lt; 0 || h &lt; 0) return 0;
+    float area = w*h;
+    return area;
+}
+
+float box_union(box a, box b)
+{
+    float i = box_intersection(a, b);
+    float u = a.w*a.h + b.w*b.h - i;
+    return u;
+}
+
+float box_iou(box a, box b)
+{
+    return box_intersection(a, b)/box_union(a, b);
+}
+</code></pre>
+<p>box结构体定义：</p>
+<pre><code class="language-c">typedef struct{
+    float x, y, w, h;
+} box;
+</code></pre>
+<p>其中，x, y是box中心点位置坐标，w, h是box宽和高。</p>
+<h2 id="在这里插入图片描述"><img src="https://img-blog.csdnimg.cn/20181126093100242.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2thbHVvd2Zq,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></h2>
+<h2 id="对bounding-boxes进行nms">对bounding boxes进行NMS</h2>
+<p>代码在box.c源文件中</p>
+<pre><code class="language-c">int nms_comparator(const void *pa, const void *pb)
+{
+    detection a = *(detection *)pa;
+    detection b = *(detection *)pb;
+    float diff = 0;
+    if(b.sort_class &gt;= 0){
+        diff = a.prob[b.sort_class] - b.prob[b.sort_class];
+    } else {
+        diff = a.objectness - b.objectness;
+    }
+    if(diff &lt; 0) return 1;
+    else if(diff &gt; 0) return -1;
+    return 0;
+}
+
+void do_nms_obj(detection *dets, int total, int classes, float thresh)
+{
+    int i, j, k;
+    k = total-1;
+    for(i = 0; i &lt;= k; ++i){ // 遍历dets，将objectness等于0的放置在最后
+        if(dets[i].objectness == 0){
+            detection swap = dets[i];
+            dets[i] = dets[k];
+            dets[k] = swap;
+            --k;
+            --i;
+        }
+    }
+    total = k+1;
+
+    for(i = 0; i &lt; total; ++i){
+        dets[i].sort_class = -1; // 依据objectness大小排序
+    }
+
+    qsort(dets, total, sizeof(detection), nms_comparator); // 调用nms_comparator函数排序
+    for(i = 0; i &lt; total; ++i){
+        if(dets[i].objectness == 0) continue;
+        box a = dets[i].bbox;
+        for(j = i+1; j &lt; total; ++j){
+            if(dets[j].objectness == 0) continue;
+            box b = dets[j].bbox;
+            if (box_iou(a, b) &gt; thresh){ // 如果iou大于阈值，则将dets[j]的objectness和prob全清零
+                dets[j].objectness = 0;
+                for(k = 0; k &lt; classes; ++k){
+                    dets[j].prob[k] = 0;
+                }
+            }
+        }
+    }
+}
+
+void do_nms_sort(detection *dets, int total, int classes, float thresh)
+{
+    int i, j, k;
+    k = total-1;
+    for(i = 0; i &lt;= k; ++i){
+        if(dets[i].objectness == 0){
+            detection swap = dets[i];
+            dets[i] = dets[k];
+            dets[k] = swap;
+            --k;
+            --i;
+        }
+    }
+    total = k+1;
+
+    for(k = 0; k &lt; classes; ++k){
+        for(i = 0; i &lt; total; ++i){
+            dets[i].sort_class = k; // 针对某个类别进行排序，依据类别的概率
+        }
+        qsort(dets, total, sizeof(detection), nms_comparator);// 调用nms_comparator函数排序
+        for(i = 0; i &lt; total; ++i){
+            if(dets[i].prob[k] == 0) continue;
+            box a = dets[i].bbox;
+            for(j = i+1; j &lt; total; ++j){
+                box b = dets[j].bbox;
+                if (box_iou(a, b) &gt; thresh){// 如果iou大于阈值，则只将dets[j].prob[k]置0
+                    dets[j].prob[k] = 0;
+                }
+            }
+        }
+    }
+}
+</code></pre>
+<hr>
+<h2 id="yolo层">YOLO层</h2>
+<p>代码在yolo_layer.c源文件中</p>
+<pre><code class="language-c">box get_yolo_box(float *x, float *biases, int n, int index, int i, int j, int lw, int lh, int w, int h, int stride)
+{
+    box b;
+    b.x = (i + x[index + 0*stride]) / lw; // lw 和 lh是当前层的宽和高
+    b.y = (j + x[index + 1*stride]) / lh;
+    b.w = exp(x[index + 2*stride]) * biases[2*n]   / w; // w 和 h是网络输入图像的宽和高
+    b.h = exp(x[index + 3*stride]) * biases[2*n+1] / h;
+    return b;
+}
+
+static int entry_index(layer l, int batch, int location, int entry)
+{
+    int n =   location / (l.w*l.h);
+    int loc = location % (l.w*l.h);
+    return batch*l.outputs + n*l.w*l.h*(4+l.classes+1) + entry*l.w*l.h + loc;
+}
+
+void forward_yolo_layer(const layer l, network net)
+{
+    int i,j,b,t,n;
+    /*
+        net.input是上一层的输出，这一层的输入。这里先将net.input指向的内容拷贝到l.output
+    */
+    memcpy(l.output, net.input, l.outputs*l.batch*sizeof(float));
+
+#ifndef GPU
+    /*
+    这段循环的作用是对tx、ty、objectness和class logits做sigmoid。
+    */
+    for (b = 0; b &lt; l.batch; ++b){
+        for(n = 0; n &lt; l.n; ++n){ // 遍历每个bounding box，yolov3中l.n = 3
+            int index = entry_index(l, b, n*l.w*l.h, 0);
+            activate_array(l.output + index, 2*l.w*l.h, LOGISTIC);
+            index = entry_index(l, b, n*l.w*l.h, 4);
+            activate_array(l.output + index, (1+l.classes)*l.w*l.h, LOGISTIC);
+        }
+    }
+#endif
+
+    memset(l.delta, 0, l.outputs * l.batch * sizeof(float)); // 梯度清零
+    if(!net.train) return;
+    float avg_iou = 0;
+    float recall = 0;
+    float recall75 = 0;
+    float avg_cat = 0; // 平均类别识别率
+    float avg_obj = 0;
+    float avg_anyobj = 0;
+    int count = 0; // 该batch内检测的target数目
+    int class_count = 0;
+    *(l.cost) = 0; // 损失
+    for (b = 0; b &lt; l.batch; ++b) { // 遍历batch内的数据
+        for (j = 0; j &lt; l.h; ++j) { // 遍历feature map上的预测结果
+            for (i = 0; i &lt; l.w; ++i) {
+                for (n = 0; n &lt; l.n; ++n) {// 每个bounding box
+                    int box_index = entry_index(l, b, n*l.w*l.h + j*l.w + i, 0);// 第n个bounding box在（i,j）上的首地址
+                    box pred = get_yolo_box(l.output, l.biases, l.mask[n], box_index, i, j, l.w, l.h, net.w, net.h, l.w*l.h);// 在cell（i，j）上相对于anchor n的预测结果
+                    float best_iou = 0;
+                    int best_t = 0;
+                    for(t = 0; t &lt; l.max_boxes; ++t){ // net.truth存放的是真实的数据，l.max_boxes默认是90，这里假设每张图像中的GT数目不超过90
+                        // net.truth存储格式：x y w h c x y w h c ...
+                        box truth = float_to_box(net.truth + t*(4 + 1) + b*l.truths, 1); // 读取一个真实目标框
+                        if(!truth.x) break; // 遍历完所有真实box则跳出循环
+                        float iou = box_iou(pred, truth); // 计算IOU
+                        if (iou &gt; best_iou) {
+                            best_iou = iou; // 找到与当前预测box的最大iou及其下标
+                            best_t = t;
+                        }
+                    }
+                    // 第n个bounding box在cell (i,j)的预测的confidence的index
+                    int obj_index = entry_index(l, b, n*l.w*l.h + j*l.w + i, 4);
+                    avg_anyobj += l.output[obj_index]; // 有目标的概率
+                    l.delta[obj_index] = 0 - l.output[obj_index]; // 默认是背景，此时希望越小越好
+                    if (best_iou &gt; l.ignore_thresh) {
+                        l.delta[obj_index] = 0; // 介于ignore_thresh和truth_thresh之间，忽略，梯度为0
+                    }
+                    if (best_iou &gt; l.truth_thresh) { // 含有目标，此时希望该值越大越好
+                        l.delta[obj_index] = 1 - l.output[obj_index];
+
+                        int class = net.truth[best_t*(4 + 1) + b*l.truths + 4]; //找到GT的类别
+                        if (l.map) class = l.map[class];
+                        int class_index = entry_index(l, b, n*l.w*l.h + j*l.w + i, 4 + 1);
+                        delta_yolo_class(l.output, l.delta, class_index, class, l.classes, l.w*l.h, 0); // 计算类别误差
+                        box truth = float_to_box(net.truth + best_t*(4 + 1) + b*l.truths, 1);
+                        delta_yolo_box(truth, l.output, l.biases, l.mask[n], box_index, i, j, l.w, l.h, net.w, net.h, l.delta, (2-truth.w*truth.h), l.w*l.h); // 计算坐标误差
+                    }
+                }
+            }
+        }
+        for(t = 0; t &lt; l.max_boxes; ++t){ // 给每个GT分配一个与其iou最大的bounding box
+            box truth = float_to_box(net.truth + t*(4 + 1) + b*l.truths, 1); //对应的真实值，归一化的真实值
+
+            if(!truth.x) break;
+            float best_iou = 0;
+            int best_n = 0;
+            i = (truth.x * l.w); // 类型的强制转换，计算该truth所在的cell的i,j坐标
+            j = (truth.y * l.h);
+            box truth_shift = truth;
+            truth_shift.x = truth_shift.y = 0; // 平移到(0,0)，再跟pred计算iou
+            for(n = 0; n &lt; l.total; ++n){ 
+                box pred = {0};
+                pred.w = l.biases[2*n]/net.w; // 因为是和anchor比较，所以直接使用anchor的相对大小
+                pred.h = l.biases[2*n+1]/net.h;
+                float iou = box_iou(pred, truth_shift);
+                if (iou &gt; best_iou){
+                    best_iou = iou;
+                    best_n = n;// 最优iou对应的anchor索引，然后使用该anchor预测的predict box计算与真实box的误差
+                }
+            }
+
+            int mask_n = int_index(l.mask, best_n, l.n);
+            if(mask_n &gt;= 0){
+                int box_index = entry_index(l, b, mask_n*l.w*l.h + j*l.w + i, 0);
+                float iou = delta_yolo_box(truth, l.output, l.biases, best_n, box_index, i, j, l.w, l.h, net.w, net.h, l.delta, (2-truth.w*truth.h), l.w*l.h);
+
+                int obj_index = entry_index(l, b, mask_n*l.w*l.h + j*l.w + i, 4);
+                avg_obj += l.output[obj_index];
+                l.delta[obj_index] = 1 - l.output[obj_index];
+
+                int class = net.truth[t*(4 + 1) + b*l.truths + 4];
+                if (l.map) class = l.map[class];
+                int class_index = entry_index(l, b, mask_n*l.w*l.h + j*l.w + i, 4 + 1);
+                delta_yolo_class(l.output, l.delta, class_index, class, l.classes, l.w*l.h, &amp;avg_cat);
+
+                ++count;
+                ++class_count;
+                if(iou &gt; .5) recall += 1; // 如果iou&gt; 0.5, 认为找到该目标，召回数+1
+                if(iou &gt; .75) recall75 += 1;
+                avg_iou += iou;
+            }
+        }
+    }
+    *(l.cost) = pow(mag_array(l.delta, l.outputs * l.batch), 2);
+    printf(&quot;Region %d Avg IOU: %f, Class: %f, Obj: %f, No Obj: %f, .5R: %f, .75R: %f,  count: %d\n&quot;, net.index, avg_iou/count, avg_cat/class_count, avg_obj/count, avg_anyobj/(l.w*l.h*l.n*l.batch), recall/count, recall75/count, count);
+}
+</code></pre>
+<p>根据代码，我们可以画出网络输出在内存中的排列方式。对于batch中第b个样本来说，它的第n个bounding box预测结果的偏移量是<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mtext>b</mtext><mo>×</mo><mtext>outputs</mtext><mo>+</mo><mi>n</mi><mo>×</mo><mi>w</mi><mo>×</mo><mi>h</mi><mo>×</mo><mo>(</mo><mn>4</mn><mo>+</mo><mn>1</mn><mo>+</mo><mtext>classes</mtext><mo>)</mo></mrow><annotation encoding="application/x-tex">\text{b}\times\text{outputs} + n\times w \times h \times (4 + 1 + \text{classes})</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.77777em;vertical-align:-0.08333em;"></span><span class="mord text"><span class="mord">b</span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.80952em;vertical-align:-0.19444em;"></span><span class="mord text"><span class="mord">outputs</span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.66666em;vertical-align:-0.08333em;"></span><span class="mord mathdefault">n</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.66666em;vertical-align:-0.08333em;"></span><span class="mord mathdefault" style="margin-right:0.02691em;">w</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.77777em;vertical-align:-0.08333em;"></span><span class="mord mathdefault">h</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord">4</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.72777em;vertical-align:-0.08333em;"></span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord text"><span class="mord">classes</span></span><span class="mclose">)</span></span></span></span>。在此基础上，对于<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mtext>entry</mtext><mo>=</mo><mn>4</mn></mrow><annotation encoding="application/x-tex">\text{entry}=4</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.80952em;vertical-align:-0.19444em;"></span><span class="mord text"><span class="mord">entry</span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">4</span></span></span></span>，此时偏移跳到了objectness的首个元素。</p>
+<p><img src="https://img-blog.csdnimg.cn/20181126092914839.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2thbHVvd2Zq,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h2 id="保存和加载卷积层参数">保存和加载卷积层参数</h2>
+<p>代码在parser.c源文件中</p>
+<pre><code class="language-c">void save_convolutional_weights(layer l, FILE *fp)
+{
+    if(l.binary){
+        //save_convolutional_weights_binary(l, fp);
+        //return;
+    }
+#ifdef GPU
+    if(gpu_index &gt;= 0){
+        pull_convolutional_layer(l);
+    }
+#endif
+    int num = l.nweights;
+    fwrite(l.biases, sizeof(float), l.n, fp);
+    if (l.batch_normalize){
+        fwrite(l.scales, sizeof(float), l.n, fp);
+        fwrite(l.rolling_mean, sizeof(float), l.n, fp);
+        fwrite(l.rolling_variance, sizeof(float), l.n, fp);
+    }
+    fwrite(l.weights, sizeof(float), num, fp);
+}
+
+void load_convolutional_weights(layer l, FILE *fp)
+{
+    if(l.binary){
+        //load_convolutional_weights_binary(l, fp);
+        //return;
+    }
+    int num = l.nweights;
+    fread(l.biases, sizeof(float), l.n, fp);
+    if (l.batch_normalize &amp;&amp; (!l.dontloadscales)){
+        fread(l.scales, sizeof(float), l.n, fp);
+        fread(l.rolling_mean, sizeof(float), l.n, fp);
+        fread(l.rolling_variance, sizeof(float), l.n, fp);
+    }
+    fread(l.weights, sizeof(float), num, fp);
+    //if(l.c == 3) scal_cpu(num, 1./256, l.weights, 1);
+    if (l.flipped) {
+        transpose_matrix(l.weights, l.c*l.size*l.size, l.n);
+    }
+    //if (l.binary) binarize_weights(l.weights, l.n, l.c*l.size*l.size, l.weights);
+#ifdef GPU
+    if(gpu_index &gt;= 0){
+        push_convolutional_layer(l);
+    }
+#endif
+}
+</code></pre>
+<p>从中可以看到，保存卷积层参数时，先保存偏置项biases，如果有batch_normalize，再保存scales、rolling_mean和rolling_variance，最后保存的是weights。读取的时候也是按照这个顺序。说明一下，在加载模型文件时，如果提供了权重文件，那么就会按照模型文件中每层出现的顺序依次读取权重文件。</p>
+<h2 id="forward函数">forward函数</h2>
+<pre><code class="language-c">void forward_network(network *netp)
+{
+#ifdef GPU
+    if(netp-&gt;gpu_index &gt;= 0){
+        forward_network_gpu(netp);   
+        return;
+    }
+#endif
+    network net = *netp;
+    int i;
+    for(i = 0; i &lt; net.n; ++i){ // 从第0层开始
+        net.index = i;
+        layer l = net.layers[i];
+        if(l.delta){
+            fill_cpu(l.outputs * l.batch, 0, l.delta, 1); // 将l.delta的前l.outputs * l.batch位填充0
+        }
+        l.forward(l, net); // 调用layer l层自己实现的forward函数，l.forward是函数指针
+        net.input = l.output; // 每层的输出是下一层的输入
+        if(l.truth) {
+            net.truth = l.output;
+        }
+    }
+    calc_network_cost(netp);
+}
+</code></pre>
+<p>该函数从第0层开始调用每层的forward函数，在此过程中，不断更新net的状态。中间的计算结果保存在各自的层中。</p>
+<h2 id="route操作">route操作</h2>
+<pre><code class="language-c">route_layer parse_route(list *options, size_params params, network *net)
+{
+    char *l = option_find(options, &quot;layers&quot;);
+    int len = strlen(l);
+    if(!l) error(&quot;Route Layer must specify input layers&quot;);
+    int n = 1;
+    int i;
+    for(i = 0; i &lt; len; ++i){
+        if (l[i] == ',') ++n;
+    }
+
+    int *layers = calloc(n, sizeof(int));
+    int *sizes = calloc(n, sizeof(int));
+    for(i = 0; i &lt; n; ++i){
+        int index = atoi(l);
+        l = strchr(l, ',')+1;
+        if(index &lt; 0) index = params.index + index; // 如果route层中的layers是负的，则它表示从当前层往前index层；否则就是从头开始数index层。注意，这里从头开始不是指在cfg文件中数，而是网络加载过程中每层产生的序号
+        layers[i] = index;
+        sizes[i] = net-&gt;layers[index].outputs; // 获取那一层的输出l.outputs = l.out_w * l.out_h * l.out_c;
+    }
+    int batch = params.batch;
+
+    route_layer layer = make_route_layer(batch, n, layers, sizes); // 将layers指定的几层进行concat
+
+    convolutional_layer first = net-&gt;layers[layers[0]];
+    layer.out_w = first.out_w;
+    layer.out_h = first.out_h;
+    layer.out_c = first.out_c;
+    for(i = 1; i &lt; n; ++i){
+        int index = layers[i];
+        convolutional_layer next = net-&gt;layers[index];
+        if(next.out_w == first.out_w &amp;&amp; next.out_h == first.out_h){
+            layer.out_c += next.out_c;
+        }else{
+            layer.out_h = layer.out_w = layer.out_c = 0;
+        }
+    }
+
+    return layer;
+}
+</code></pre>
+<p>darknet中网络框架是以配置文件形式给出的。配置文件中每层按照出现顺序依次列出，但是，如果网络结构中出现并行的若干条分支怎么办？这时就要用到route层。</p>
+<pre><code class="language-bash">[convolutional]
+...
+
+[route]
+layers= -1
+# 分支1其他操作
+
+[route]
+layers=-2
+# 分支2其他操作
+
+[route]
+layers=-3
+# 分支3其他操作
+
+[route]
+layers=-3,-2,-1 # 将上面3个分支进行拼接
+</code></pre>
+<h2 id="reorg操作">reorg操作</h2>
+<pre><code class="language-c">void reorg_cpu(float *x, int w, int h, int c, int batch, int stride, int forward, float *out)
+{
+    int b,i,j,k;
+    int out_c = c/(stride*stride);
+
+    for(b = 0; b &lt; batch; ++b){
+        for(k = 0; k &lt; c; ++k){
+            for(j = 0; j &lt; h; ++j){
+                for(i = 0; i &lt; w; ++i){
+                    int in_index  = i + w*(j + h*(k + c*b));
+                    int c2 = k % out_c;
+                    int offset = k / out_c;
+                    int w2 = i*stride + offset % stride;
+                    int h2 = j*stride + offset / stride;
+                    int out_index = w2 + w*stride*(h2 + h*stride*(c2 + out_c*b));
+                    if(forward) out[out_index] = x[in_index];
+                    else out[in_index] = x[out_index];
+                }
+            }
+        }
+    }
+}
+</code></pre>
+<p>在darknet框架中有一个层reorg，这个层用来对输入的feature map进行reshape。例如，在yolo v2中，对于如何获得finer-grained features，是将前一层的<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mn>26</mn><mo>×</mo><mn>26</mn><mo>×</mo><mn>512</mn></mrow><annotation encoding="application/x-tex">26\times26\times512</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.72777em;vertical-align:-0.08333em;"></span><span class="mord">2</span><span class="mord">6</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.72777em;vertical-align:-0.08333em;"></span><span class="mord">2</span><span class="mord">6</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">5</span><span class="mord">1</span><span class="mord">2</span></span></span></span>转换成<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mn>13</mn><mo>×</mo><mn>13</mn><mo>×</mo><mn>2048</mn></mrow><annotation encoding="application/x-tex">13\times13\times2048</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.72777em;vertical-align:-0.08333em;"></span><span class="mord">1</span><span class="mord">3</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.72777em;vertical-align:-0.08333em;"></span><span class="mord">1</span><span class="mord">3</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">2</span><span class="mord">0</span><span class="mord">4</span><span class="mord">8</span></span></span></span>，然后和当前层的feature map拼接（堆叠）。比如一个<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mn>6</mn><mo>×</mo><mn>6</mn><mo>×</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">6\times6\times1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.72777em;vertical-align:-0.08333em;"></span><span class="mord">6</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.72777em;vertical-align:-0.08333em;"></span><span class="mord">6</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">1</span></span></span></span>的feature map，stride=2条件下的转换结果为</p>
+<p><img src="https://img-blog.csdnimg.cn/20181126093004689.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2thbHVvd2Zq,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<pre><code class="language-bash"># 13 x 13 x 1024
+[convolutional]
+batch_normalize=1
+size=3
+stride=1
+pad=1
+filters=1024
+activation=leaky
+
+[route]
+layers=-9 # 获取的这一层输出尺寸为 26 x 26 x 512
+
+[reorg]
+stride=2 # reshape为13 x 13 x 2048
+
+[route]
+layers=-1,-4 # 拼接为 13 x 13 x 3072
+</code></pre>
+<h2 id="shortcut操作">shortcut操作</h2>
+<pre><code class="language-c">void shortcut_cpu(int batch, int w1, int h1, int c1, float *add, int w2, int h2, int c2, float s1, float s2, float *out)
+{
+    int stride = w1/w2;
+    int sample = w2/w1;
+    assert(stride == h1/h2);
+    assert(sample == h2/h1);
+    if(stride &lt; 1) stride = 1;
+    if(sample &lt; 1) sample = 1;
+    int minw = (w1 &lt; w2) ? w1 : w2;
+    int minh = (h1 &lt; h2) ? h1 : h2;
+    int minc = (c1 &lt; c2) ? c1 : c2;
+
+    int i,j,k,b;
+    for(b = 0; b &lt; batch; ++b){
+        for(k = 0; k &lt; minc; ++k){
+            for(j = 0; j &lt; minh; ++j){
+                for(i = 0; i &lt; minw; ++i){
+                    int out_index = i*sample + w2*(j*sample + h2*(k + c2*b));
+                    int add_index = i*stride + w1*(j*stride + h1*(k + c1*b));
+                    out[out_index] = s1*out[out_index] + s2*add[add_index];
+                }
+            }
+        }
+    }
+}
+</code></pre>
+<p>其中，s1和s2是超参数，默认都是1。可以跟route操作对比下，shortcut是像素值上的相加，而route则是在channel上的拼接。</p>
+
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://kaluo-zz.github.io/post/ubuntu1804-xia-docker-ce-an-zhuang">
+              <h3 class="post-title">
+                Ubuntu18.04下Docker CE安装
+              </h3>
+            </a>
+          </div>
+        
+
+        
+
+        <div class="site-footer">
+  Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | 
+  <a class="rss" href="https://kaluo-zz.github.io/atom.xml" target="_blank">RSS</a>
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+
+      </div>
+    </div>
+  </body>
+</html>

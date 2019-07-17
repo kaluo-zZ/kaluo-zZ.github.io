@@ -1,0 +1,163 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Deformable Convolution编译问题 | KALUO</title>
+<link rel="shortcut icon" href="https://kaluo-zz.github.io/favicon.ico?v=1563354910385">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://kaluo-zz.github.io/styles/main.css">
+
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/moment.js/2.23.0/moment.min.js"></script>
+
+
+
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://kaluo-zz.github.io">
+  <img class="avatar" src="https://kaluo-zz.github.io/images/avatar.png?v=1563354910385" alt="">
+  </a>
+  <h1 class="site-title">
+    KALUO
+  </h1>
+  <p class="site-description">
+    温故而知新
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/post/about" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              Deformable Convolution编译问题
+            </h2>
+            <div class="post-info">
+              <time class="post-time">
+                · 2019-06-23 ·
+              </time>
+              
+                <a href="https://kaluo-zz.github.io/tag/bAjW-e_UD" class="post-tag">
+                  # Deformable Convolution
+                </a>
+              
+            </div>
+            
+            <div class="post-content">
+              <p>编译环境：</p>
+<ol>
+<li>Ubuntu 18.04</li>
+<li>CUDA 9.0</li>
+<li>CUDNN 7.5</li>
+<li>GCC-6.4</li>
+</ol>
+<p>项目地址：https://github.com/CharlesShang/DCNv2</p>
+<p>出错信息：</p>
+<pre><code>build error:error: command '/usr/local/cuda/bin/nvcc' failed with exit status 1
+</code></pre>
+<p>出错原因：CUDA 9.0不支持gcc-6.4。
+解决方法：替换低版本的gcc，如gcc-5。</p>
+<pre><code>cd /usr/bin
+sudo rm gcc
+sudo rm g++
+sudo ln -s /usr/bin/gcc-5 gcc
+sudo ln -s /usr/bin/g++-5 g++
+
+cd /usr/local/cuda-9.0/bin
+sudo rm gcc
+sudo rm g++
+sudo ln -s /usr/bin/gcc-5 gcc
+sudo ln -s /usr/bin/g++-5 g++
+</code></pre>
+<p>然后，将setup.py文件中添加<code>-DCUDA_HOST_COMPILER=/usr/bin/gcc-5</code>：</p>
+<pre><code>if torch.cuda.is_available() and CUDA_HOME is not None:
+        extension = CUDAExtension
+        sources += source_cuda
+        define_macros += [(&quot;WITH_CUDA&quot;, None)]
+        extra_compile_args[&quot;nvcc&quot;] = [
+            &quot;-DCUDA_HAS_FP16=1&quot;,
+            &quot;-D__CUDA_NO_HALF_OPERATORS__&quot;,
+            &quot;-D__CUDA_NO_HALF_CONVERSIONS__&quot;,
+            &quot;-D__CUDA_NO_HALF2_OPERATORS__&quot;,
+            &quot;-DCUDA_HOST_COMPILIER=/usr/bin/gcc-5&quot;,
+        ]
+</code></pre>
+<p>删除之前编译失败的build文件：<code>rm -r build</code>;</p>
+<p>重新编译：`CUDAHOSTCXX=/usr/bin/gcc-5 python3 setup.py build develop</p>
+<p>注：如果是在普通用户下编译，可能出现权限问题，此时可以在编译命令后面加上<code>--user</code>。</p>
+<p>参考链接：https://github.com/facebookresearch/maskrcnn-benchmark/issues/25</p>
+
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://kaluo-zz.github.io/post/jian-dan-duo-bian-xing-shun-ni-shi-zhen-pan-duan">
+              <h3 class="post-title">
+                简单多边形顺逆时针判断
+              </h3>
+            </a>
+          </div>
+        
+
+        
+
+        <div class="site-footer">
+  Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | 
+  <a class="rss" href="https://kaluo-zz.github.io/atom.xml" target="_blank">RSS</a>
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,182 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>pytorch固定网络一部分参数，训练另一部分 | KALUO</title>
+<link rel="shortcut icon" href="https://kaluo-zz.github.io/favicon.ico?v=1563354910385">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://kaluo-zz.github.io/styles/main.css">
+
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/moment.js/2.23.0/moment.min.js"></script>
+
+
+
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://kaluo-zz.github.io">
+  <img class="avatar" src="https://kaluo-zz.github.io/images/avatar.png?v=1563354910385" alt="">
+  </a>
+  <h1 class="site-title">
+    KALUO
+  </h1>
+  <p class="site-description">
+    温故而知新
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/post/about" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              pytorch固定网络一部分参数，训练另一部分
+            </h2>
+            <div class="post-info">
+              <time class="post-time">
+                · 2019-07-01 ·
+              </time>
+              
+                <a href="https://kaluo-zz.github.io/tag/WUgomcUCO" class="post-tag">
+                  # 参数冻结
+                </a>
+              
+                <a href="https://kaluo-zz.github.io/tag/_n7xZJOd0" class="post-tag">
+                  # 获取梯度
+                </a>
+              
+                <a href="https://kaluo-zz.github.io/tag/rT7AxA2VY" class="post-tag">
+                  # pytorch
+                </a>
+              
+            </div>
+            
+            <div class="post-content">
+              <h3 id="requires_grad-false">requires_grad = False</h3>
+<p>如果你想固定网络的一部分参数，训练另一部分，你可以将你想固定参数的<code>requires_grad</code>设置为<code>False</code>。例如，将VGG16卷积部分固定：</p>
+<pre><code class="language-python">model = torchvision.models.vgg16(pretrained=True)
+for param in model.features.parameters():
+    param.requires_grad = False
+</code></pre>
+<h3 id="torchno_grad">torch.no_grad()</h3>
+<p>上下文管理器<code>torch.no_grad()</code>是另一种实现目的的方式。在<code>torch.no_grad()</code>内，所有的操作的结果都是<code>requires_grad=False</code>，即使它们输入（inputs）的<code>requires_grad=True</code>。所以你不可能将梯度传播到<code>no_grad</code>之前的层。例如：</p>
+<pre><code class="language-python">&gt;&gt;&gt; x = torch.randn(2,2)
+&gt;&gt;&gt; x.requires_grad = True
+&gt;&gt;&gt; lin0 = nn.Linear(2,2)
+&gt;&gt;&gt; lin1 = nn.Linear(2,2)
+&gt;&gt;&gt; lin2 = nn.Linear(2,2)
+&gt;&gt;&gt; x1 = lin0(x)
+&gt;&gt;&gt; with torch.no_grad():
+...     x2 = lin1(x1) # 这里的lin1.weight.requires_grad还是为True，但是不计算梯度。
+...
+&gt;&gt;&gt; x3 = lin2(x2)
+&gt;&gt;&gt; x3.sum().backward()
+&gt;&gt;&gt; lin1.weight.requires_grad
+True
+&gt;&gt;&gt; print(lin0.weight.grad, lin1.weight.grad, lin2.weight.grad)
+(None, None, tensor([[0.4401, 0.9459],
+        [0.4401, 0.9459]]))
+
+</code></pre>
+<p>可以看到，<code>lin1.weight.requires_grad</code>为<code>True</code>，但是没有计算梯度（这是因为操作是在<code>no_grad</code>环境下完成的）。</p>
+<h2 id="设置模型为eval模式">设置模型为eval模式</h2>
+<p>最方便的方式是使用<code>torch.no_grad()</code>，但是你还必须将模型设置为eval模式。这可以通过调用<code>nn.Module</code>上的<code>eval()</code>方式来实现。例如：</p>
+<pre><code class="language-python">with torch.no_grad():
+    model = torchvision.models.vgg16(pretrained=True)
+	model.eval()
+</code></pre>
+<p>这个操作将<code>self.training</code>属性设置为<code>False</code>，会影响类似<code>Dropout</code>和<code>BatchNorm</code>等操作的表现方式。</p>
+<h2 id="获取中间节点的梯度">获取中间节点的梯度</h2>
+<p>非叶子结点不会保存反向传播过程中计算得到的梯度。如果你想获得非叶子结点的梯度，需要注入hook：</p>
+<pre><code class="language-python">&gt;&gt;&gt; yGrad = torch.zeros(1,1)
+&gt;&gt;&gt; def extract(xVar):
+...     global yGrad
+...     yGrad = xVar
+...
+&gt;&gt;&gt; xx = Variable(torch.randn(1,1), requires_grad=True)
+&gt;&gt;&gt; yy = 3*xx
+&gt;&gt;&gt; zz = yy**2
+&gt;&gt;&gt; yy.register_hook(extract)
+&lt;torch.utils.hooks.RemovableHandle object at 0x7fa96588e9d0&gt;
+&gt;&gt;&gt; print(yGrad)
+tensor([[0.]])
+&gt;&gt;&gt; zz.backward()
+&gt;&gt;&gt; print(yGrad)
+tensor([[5.1903]])
+&gt;&gt;&gt;
+</code></pre>
+
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://kaluo-zz.github.io/post/pytorch-ji-suan-tu-nei-cun-shi-fang-wen-ti">
+              <h3 class="post-title">
+                Pytorch计算图内存释放问题
+              </h3>
+            </a>
+          </div>
+        
+
+        
+
+        <div class="site-footer">
+  Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | 
+  <a class="rss" href="https://kaluo-zz.github.io/atom.xml" target="_blank">RSS</a>
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+
+      </div>
+    </div>
+  </body>
+</html>
