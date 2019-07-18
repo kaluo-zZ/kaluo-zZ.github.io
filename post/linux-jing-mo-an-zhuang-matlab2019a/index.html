@@ -4,7 +4,7 @@
 <meta name="description" content="" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Linux静默安装matlab2019a | KALUO</title>
-<link rel="shortcut icon" href="https://kaluo-zz.github.io/favicon.ico?v=1563419003678">
+<link rel="shortcut icon" href="https://kaluo-zz.github.io/favicon.ico?v=1563419084076">
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
 <link rel="stylesheet" href="https://kaluo-zz.github.io/styles/main.css">
@@ -20,7 +20,7 @@
       <div class="main-content">
         <div class="site-header">
   <a href="https://kaluo-zz.github.io">
-  <img class="avatar" src="https://kaluo-zz.github.io/images/avatar.png?v=1563419003678" alt="">
+  <img class="avatar" src="https://kaluo-zz.github.io/images/avatar.png?v=1563419084076" alt="">
   </a>
   <h1 class="site-title">
     KALUO
@@ -85,15 +85,39 @@
             
             <div class="post-content">
               <ol>
-<li>下载<a href="http://zbh.ustc.edu.cn/zbh.php">matlab2019a</a>及其安装密钥；</li>
-<li>安装
-<code>sudo mkdir /media/matlab 	 sudo /media/matlab/install -mode silent -fileInstallationKey [key] -agreeToLicense yes -licensePath /home/lab/network.lic -destinationFolder /usr/local/matlab2019a 	 sudo umount -l /media/matlab</code></li>
-<li><code>sudo vi ~/.bashrc</code>
-<code>alias matlab='/usr/local/matlab2019a/bin/matlab'</code></li>
-<li><code>sudo vi /etc/bash.bashrc</code>
-<code>export PATH=/usr/local/matlab2019a/bin${PATH:+:${PATH}}</code></li>
-<li><code>source ~/.bashrc</code></li>
-<li><code>matlab</code></li>
+<li>
+<p>下载<a href="http://zbh.ustc.edu.cn/zbh.php">matlab2019a</a>及其安装密钥；</p>
+</li>
+<li>
+<p>安装
+```
+sudo mkdir /media/matlab</p>
+<pre><code>  sudo /media/matlab/install -mode silent -fileInstallationKey [key] -agreeToLicense yes -licensePath /home/lab/network.lic -destinationFolder /usr/local/matlab2019a
+  
+  sudo umount -l /media/matlab
+ ```
+</code></pre>
+</li>
+<li>
+<p><code>sudo vi ~/.bashrc</code></p>
+<pre><code> ```
+ alias matlab='/usr/local/matlab2019a/bin/matlab'
+ ```
+</code></pre>
+</li>
+<li>
+<p><code>sudo vi /etc/bash.bashrc</code></p>
+<pre><code> ```
+ export PATH=/usr/local/matlab2019a/bin${PATH:+:${PATH}}
+ ```
+</code></pre>
+</li>
+<li>
+<p><code>source ~/.bashrc</code></p>
+</li>
+<li>
+<p><code>matlab</code></p>
+</li>
 </ol>
 
             </div>
