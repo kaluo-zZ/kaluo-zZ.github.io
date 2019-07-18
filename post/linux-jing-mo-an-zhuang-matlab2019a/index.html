@@ -4,7 +4,7 @@
 <meta name="description" content="" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Linux静默安装matlab2019a | KALUO</title>
-<link rel="shortcut icon" href="https://kaluo-zz.github.io/favicon.ico?v=1563419156044">
+<link rel="shortcut icon" href="https://kaluo-zz.github.io/favicon.ico?v=1563419729611">
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
 <link rel="stylesheet" href="https://kaluo-zz.github.io/styles/main.css">
@@ -20,7 +20,7 @@
       <div class="main-content">
         <div class="site-header">
   <a href="https://kaluo-zz.github.io">
-  <img class="avatar" src="https://kaluo-zz.github.io/images/avatar.png?v=1563419156044" alt="">
+  <img class="avatar" src="https://kaluo-zz.github.io/images/avatar.png?v=1563419729611" alt="">
   </a>
   <h1 class="site-title">
     KALUO
@@ -90,27 +90,23 @@
 </li>
 <li>
 <p>安装</p>
-<pre><code> ```
-</code></pre>
-<p>sudo mkdir /media/matlab
-sudo /media/matlab/install -mode silent -fileInstallationKey [key] -agreeToLicense yes -licensePath /home/lab/network.lic -destinationFolder /usr/local/matlab2019a
-sudo umount -l /media/matlab
-```</p>
 </li>
-<li>
-<p><code>sudo vi ~/.bashrc</code></p>
-<pre><code> ```
- alias matlab='/usr/local/matlab2019a/bin/matlab'
- ```
+</ol>
+<pre><code>  sudo mkdir /media/matlab
+	sudo /media/matlab/install -mode silent -fileInstallationKey key -agreeToLicense yes -licensePath /home/lab/network.lic -destinationFolder /usr/local/matlab2019a
+	sudo umount -l /media/matlab
 </code></pre>
-</li>
-<li>
-<p><code>sudo vi /etc/bash.bashrc</code></p>
-<pre><code> ```
- export PATH=/usr/local/matlab2019a/bin${PATH:+:${PATH}}
- ```
+<ol start="3">
+<li><code>sudo vi ~/.bashrc</code></li>
+</ol>
+<pre><code>	alias matlab='/usr/local/matlab2019a/bin/matlab'
 </code></pre>
-</li>
+<ol start="4">
+<li><code>sudo vi /etc/bash.bashrc</code></li>
+</ol>
+<pre><code>	export PATH=/usr/local/matlab2019a/bin${PATH:+:${PATH}}
+</code></pre>
+<ol start="5">
 <li>
 <p><code>source ~/.bashrc</code></p>
 </li>
