@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://kaluo-zz.github.io</id>
     <title>KALUO</title>
-    <updated>2019-07-18T03:15:31.628Z</updated>
+    <updated>2019-07-18T03:16:57.006Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://kaluo-zz.github.io"/>
     <link rel="self" href="https://kaluo-zz.github.io/atom.xml"/>
@@ -24,19 +24,19 @@
 <p>安装</p>
 </li>
 </ol>
-<pre><code>  sudo mkdir /media/matlab
-	sudo /media/matlab/install -mode silent -fileInstallationKey key -agreeToLicense yes -licensePath /home/lab/network.lic -destinationFolder /usr/local/matlab2019a
-	sudo umount -l /media/matlab
+<pre><code>sudo mkdir /media/matlab
+sudo /media/matlab/install -mode silent -fileInstallationKey key -agreeToLicense yes -licensePath /home/lab/network.lic -destinationFolder /usr/local/matlab2019a
+sudo umount -l /media/matlab
 </code></pre>
 <ol start="3">
 <li><code>sudo vi ~/.bashrc</code></li>
 </ol>
-<pre><code>	alias matlab='/usr/local/matlab2019a/bin/matlab'
+<pre><code>alias matlab='/usr/local/matlab2019a/bin/matlab'
 </code></pre>
 <ol start="4">
 <li><code>sudo vi /etc/bash.bashrc</code></li>
 </ol>
-<pre><code>	export PATH=/usr/local/matlab2019a/bin${PATH:+:${PATH}}
+<pre><code>export PATH=/usr/local/matlab2019a/bin${PATH:+:${PATH}}
 </code></pre>
 <ol start="5">
 <li>
