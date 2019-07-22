@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://kaluo-zz.github.io</id>
     <title>KALUO</title>
-    <updated>2019-07-19T13:58:12.337Z</updated>
+    <updated>2019-07-22T06:38:59.082Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://kaluo-zz.github.io"/>
     <link rel="self" href="https://kaluo-zz.github.io/atom.xml"/>
@@ -10,6 +10,47 @@
     <logo>https://kaluo-zz.github.io/images/avatar.png</logo>
     <icon>https://kaluo-zz.github.io/favicon.ico</icon>
     <rights>All rights reserved 2019, KALUO</rights>
+    <entry>
+        <title type="html"><![CDATA[Pytorch图像基本操作]]></title>
+        <id>https://kaluo-zz.github.io/post/pytorch-tu-xiang-ji-ben-cao-zuo</id>
+        <link href="https://kaluo-zz.github.io/post/pytorch-tu-xiang-ji-ben-cao-zuo">
+        </link>
+        <updated>2019-07-22T06:14:19.000Z</updated>
+        <content type="html"><![CDATA[<p>Pytorch提供了一个用于数据预处理的图像处理包<code>torchvision.transforms</code>，常见用法如下：</p>
+<pre><code>train_loader = torch.utils.data.DataLoader(
+        dataset.listDataset(train_list,
+                       shuffle=True,
+                       transform=transforms.Compose([
+                       transforms.ToTensor(),transforms.Normalize(mean=[0.485, 0.456, 0.406],
+                                     std=[0.229, 0.224, 0.225]),
+                   ]), 
+                       train=True, 
+                       seen=model.seen,
+                       batch_size=args.batch_size,
+                       num_workers=args.workers),
+        batch_size=args.batch_size)
+</code></pre>
+<p>其中，<code>dataset.listDataset</code>是自己实现的读取数据、解析数据和转换数据格式的类。</p>
+<p><code>transforms.Compose()</code>用于将各种transforms组合在一起。</p>
+<p><code>transforms.ToTensor()</code>用于将 PIL.Image/numpy.ndarray 数据进转化为<code>torch.FloadTensor</code>，并归一化到<code>[0, 1.0]</code>：</p>
+<ul>
+<li>取值范围为<code>[0, 255]</code>的<code>PIL.Image</code>，转换成形状为<code>[C, H, W]</code>，取值范围是<code>[0, 1.0]</code>的<code>torch.FloadTensor</code>；</li>
+<li>形状为<code>[H, W, C]</code>的<code>numpy.ndarray</code>，转换成形状为<code>[C, H, W]</code>，取值范围是<code>[0, 1.0]</code>的<code>torch.FloadTensor</code>。</li>
+</ul>
+<p>而transforms.ToPILImage则是将Tensor转化为PIL.Image。如果，我们要将Tensor转化为numpy，只需要使用 .numpy() 即可。</p>
+<p><code>transforms.Normalize()</code>用于数据的归一化，输入每个通道的均值和标准差。</p>
+<p>参考：https://zhuanlan.zhihu.com/p/27382990</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Linux将某个文件夹读写权限授予某个用户]]></title>
+        <id>https://kaluo-zz.github.io/post/linux-jiang-mou-ge-wen-jian-jia-du-xie-quan-xian-shou-yu-mou-ge-yong-hu</id>
+        <link href="https://kaluo-zz.github.io/post/linux-jiang-mou-ge-wen-jian-jia-du-xie-quan-xian-shou-yu-mou-ge-yong-hu">
+        </link>
+        <updated>2019-07-21T12:26:47.000Z</updated>
+        <content type="html"><![CDATA[<p>chown -R username:password directory<code></code></p>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[利用torch.matmul实现batch multiplication]]></title>
         <id>https://kaluo-zz.github.io/post/li-yong-torchmatmul-shi-xian-batch-multiplication</id>
@@ -228,76 +269,6 @@ visdom_plotter.draw_image('img_name',  img) # img : C x H x W
         </link>
         <updated>2019-07-03T09:23:26.000Z</updated>
         <content type="html"><![CDATA[<p>Pytorch中文文档：<a href="https://pytorch-cn.readthedocs.io/zh/latest/package_references/torch/">-&gt;</a></p>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Jupyter notebook快捷键]]></title>
-        <id>https://kaluo-zz.github.io/post/jupyter-notebook-kuai-jie-jian</id>
-        <link href="https://kaluo-zz.github.io/post/jupyter-notebook-kuai-jie-jian">
-        </link>
-        <updated>2019-07-02T00:23:39.000Z</updated>
-        <content type="html"><![CDATA[<p><code>Esc</code> 切换到命令模式，在命令模式下，继续按以下键：<br>
-<code>A</code> 在当前单元格上方创建一个单元格<br>
-<code>B</code> 在当前单元格下方创建一个单元格<br>
-<code>DD</code> 删除当前单元格<br>
-<code>S</code> 手动保存笔记本<br>
-<code>L</code> 打开、关闭行号<br>
-<code>H</code> 查询命令行<br>
-<code>Y</code> 从markdown切换到单元格<br>
-<code>M</code> 从单元格切换到markdown</p>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[pytorch之数据维度变换]]></title>
-        <id>https://kaluo-zz.github.io/post/pytorch-zhi-shu-ju-wei-du-bian-huan</id>
-        <link href="https://kaluo-zz.github.io/post/pytorch-zhi-shu-ju-wei-du-bian-huan">
-        </link>
-        <updated>2019-07-01T13:43:30.000Z</updated>
-        <content type="html"><![CDATA[<ol>
-<li><code>torch.cat(inputs, dimension=0) → Tensor</code>：在给定的维度上进行张量序列的拼接。</li>
-</ol>
-<pre><code>import torch
-
-x = torch.rand((71, 32, 1))
-# x.shape = torch.Size([71, 32, 1])
-px = torch.cat((torch.zeros(29, 32, 1, dtype=x.dtype, device=x.device), x), 0)
-# px.shape = torch.Size([100, 32, 1])
-</code></pre>
-<ol start="2">
-<li><code>view(*args) -&gt; Tensor</code>：返回一个有相同数据但尺寸不同的tensor。操作的tensor必须是连续的（<code>contiguous()</code>）。</li>
-</ol>
-<pre><code>&gt;&gt;&gt; x = torch.randn(4, 4)
-&gt;&gt;&gt; x.size()
-torch.Size([4, 4])
-&gt;&gt;&gt; y = x.view(16)
-&gt;&gt;&gt; y.size()
-torch.Size([16])
-&gt;&gt;&gt; z = x.view(-1, 8)  # the size -1 is inferred from other dimensions
-&gt;&gt;&gt; z.size()
-torch.Size([2, 8])
-</code></pre>
-<ol start="3">
-<li><code>permute(dims)</code>：将tensor的维度换位。</li>
-</ol>
-<pre><code>&gt;&gt;&gt; x = torch.randn(2, 3, 5)
-&gt;&gt;&gt; x.size()
-torch.Size([2, 3, 5])
-&gt;&gt;&gt; x.permute(2, 0, 1).size()
-torch.Size([5, 2, 3])
-</code></pre>
-<ol start="4">
-<li><code>repeat(*sizes)</code>：沿着指定的维度重复tensor（sizes (torch.Size ot int...)-沿着每一维重复的次数）。</li>
-</ol>
-<pre><code>&gt;&gt;&gt; x = torch.Tensor([1, 2, 3])
-&gt;&gt;&gt; x.repeat(4, 2) # 沿着维度0重复4次，沿着维度1重复2次
- 1  2  3  1  2  3
- 1  2  3  1  2  3
- 1  2  3  1  2  3
- 1  2  3  1  2  3
-[torch.FloatTensor of size 4x6]
-&gt;&gt;&gt; x.repeat(4, 2, 1).size()
-torch.Size([4, 2, 3])
-</code></pre>
 ]]></content>
     </entry>
 </feed>
