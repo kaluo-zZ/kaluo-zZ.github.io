@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>Pytorch之grid_sample函数 | KALUO</title>
+<meta name="description" content="温故而知新">
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<link rel="shortcut icon" href="https://kaluo-zz.github.io/favicon.ico?v=1563938048509">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="stylesheet" href="https://unpkg.com/papercss@1.6.1/dist/paper.min.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://kaluo-zz.github.io/styles/main.css">
+
+
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+
+
+  </head>
+  <body>
+  
+    <nav class="navbar border fixed split-nav">
+  <div class="nav-brand">
+    <h3><a href="https://kaluo-zz.github.io">KALUO</a></h3>
+  </div>
+  <div class="collapsible">
+    <input id="collapsible1" type="checkbox" name="collapsible1">
+    <button>
+      <label for="collapsible1">
+        <div class="bar1"></div>
+        <div class="bar2"></div>
+        <div class="bar3"></div>
+      </label>
+    </button>
+    <div class="collapsible-body">
+      <ul class="inline">
+        
+          <li>
+            
+              <a href="/" class="menu">
+                首页
+              </a>
+            
+          </li>
+        
+          <li>
+            
+              <a href="/archives" class="menu">
+                归档
+              </a>
+            
+          </li>
+        
+          <li>
+            
+              <a href="/tags" class="menu">
+                标签
+              </a>
+            
+          </li>
+        
+          <li>
+            
+              <a href="/post/about" class="menu">
+                关于
+              </a>
+            
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div id="top" class="row site">
+      <div class="sm-12 md-8 col">
+        <div class="paper">
+          <article class="article">
+            <h1>Pytorch之grid_sample函数</h1>
+            <p class="article-meta">
+              2019-07-24
+              
+            </p>
+            
+            <div class="post-content">
+              <p><code>torch.nn.functional.grid_sample(input, grid, mode='bilinear', padding_mode='zeros')</code></p>
+<p>给定<code>input</code>和流场<code>grid</code>，通过<code>grid</code>中像素坐标来从<code>input</code>中提取值，得到<code>output</code>。</p>
+<p>在4-D情形下，如果<code>input</code>尺寸为<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mo>(</mo><mi>N</mi><mo separator="true">,</mo><mi>C</mi><mo separator="true">,</mo><msub><mi>H</mi><mrow><mi>i</mi><mi>n</mi></mrow></msub><mo separator="true">,</mo><msub><mi>W</mi><mrow><mi>i</mi><mi>n</mi></mrow></msub><mo>)</mo></mrow><annotation encoding="application/x-tex">(N, C, H_{in}, W_{in})</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord mathdefault" style="margin-right:0.10903em;">N</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathdefault" style="margin-right:0.07153em;">C</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.08125em;">H</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.31166399999999994em;"><span style="top:-2.5500000000000003em;margin-left:-0.08125em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathdefault mtight">i</span><span class="mord mathdefault mtight">n</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.13889em;">W</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.31166399999999994em;"><span style="top:-2.5500000000000003em;margin-left:-0.13889em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathdefault mtight">i</span><span class="mord mathdefault mtight">n</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span></span></span></span>，<code>grid</code>尺寸为<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mo>(</mo><mi>N</mi><mo separator="true">,</mo><msub><mi>H</mi><mrow><mi>o</mi><mi>u</mi><mi>t</mi></mrow></msub><mo separator="true">,</mo><msub><mi>W</mi><mrow><mi>o</mi><mi>u</mi><mi>t</mi></mrow></msub><mo separator="true">,</mo><mn>2</mn><mo>)</mo></mrow><annotation encoding="application/x-tex">(N, H_{out}, W_{out}, 2)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord mathdefault" style="margin-right:0.10903em;">N</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.08125em;">H</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2805559999999999em;"><span style="top:-2.5500000000000003em;margin-left:-0.08125em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathdefault mtight">o</span><span class="mord mathdefault mtight">u</span><span class="mord mathdefault mtight">t</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.13889em;">W</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2805559999999999em;"><span style="top:-2.5500000000000003em;margin-left:-0.13889em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathdefault mtight">o</span><span class="mord mathdefault mtight">u</span><span class="mord mathdefault mtight">t</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord">2</span><span class="mclose">)</span></span></span></span>，那么输出<code>output</code>尺寸为<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mo>(</mo><mi>N</mi><mo separator="true">,</mo><mi>C</mi><mo separator="true">,</mo><msub><mi>H</mi><mrow><mi>o</mi><mi>u</mi><mi>t</mi></mrow></msub><mo separator="true">,</mo><msub><mi>W</mi><mrow><mi>o</mi><mi>u</mi><mi>t</mi></mrow></msub><mo>)</mo></mrow><annotation encoding="application/x-tex">(N, C, H_{out}, W_{out})</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord mathdefault" style="margin-right:0.10903em;">N</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathdefault" style="margin-right:0.07153em;">C</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.08125em;">H</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2805559999999999em;"><span style="top:-2.5500000000000003em;margin-left:-0.08125em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathdefault mtight">o</span><span class="mord mathdefault mtight">u</span><span class="mord mathdefault mtight">t</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.13889em;">W</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2805559999999999em;"><span style="top:-2.5500000000000003em;margin-left:-0.13889em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathdefault mtight">o</span><span class="mord mathdefault mtight">u</span><span class="mord mathdefault mtight">t</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span></span></span></span>。</p>
+<blockquote>
+<p>For each output location output[n, :, h, w], the size-2 vector grid[n, h, w] specifies input pixel locations x and y, which are used to interpolate the output value output[n, :, h, w].</p>
+</blockquote>
+<blockquote>
+<p>grid specifies the sampling pixel locations normalized by the input spatial dimensions. Therefore, it should have most values in the range of [-1, 1]. For example, values x = -1, y = -1 is the left-top pixel of input, and values x = 1, y = 1 is the right-bottom pixel of input.</p>
+</blockquote>
+<p><code>grid</code>中的坐标已经被缩放到<code>[-1, 1]</code>，同时对于坐标还原后不是整数的点，<code>grid_sample</code>提供了插值方式来得到近似值。对于在<code>[-1, 1]</code>之外的点，其值由<code>padding_mode</code>指定。</p>
+<p><code>padding_mode</code>可选选项如下：<br>
+padding_mode=&quot;zeros&quot;: use 0 for out-of-bound grid locations,</p>
+<p>padding_mode=&quot;border&quot;: use border values for out-of-bound grid locations,</p>
+<p>padding_mode=&quot;reflection&quot;: use values at locations reflected by the border for out-of-bound grid locations. For location far away from the border, it will keep being reflected until becoming in bound, e.g., (normalized) pixel location x = -3.5 reflects by border -1 and becomes x' = 1.5, then reflects by border 1 and becomes x'' = -0.5.</p>
+<p><code>mode</code>插值方式有两种：'bilinear' | 'nearest'. Default: 'bilinear'。</p>
+<p>参考：https://pytorch.org/docs/stable/nn.html</p>
+
+            </div>
+          </article>
+        </div>
+        <div class="paper" data-aos="fade-in">
+          
+            <div class="next-post">
+              <div class="next">
+                下一篇
+              </div>
+              <a href="https://kaluo-zz.github.io/post/pytorch-tu-xiang-ji-ben-cao-zuo">
+                <h3 class="post-title">
+                  Pytorch图像基本操作
+                </h3>
+              </a>
+            </div>
+          
+        </div>
+        
+      </div>
+
+      <div class="sm-12 md-4 col sidebar">
+  <div class="paper info-container">
+    <img src="https://kaluo-zz.github.io/images/avatar.png?v=1563938048509" class="no-responsive avatar">
+    <div class="text-muted">温故而知新</div>
+    <div class="social-container">
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+  </div>
+  <div class="paper">
+    <div class="sidebar-title">
+      最新文章
+    </div>
+    <div class="row">
+      <ul>
+        
+          
+            <li>
+              <a href="https://kaluo-zz.github.io/post/pytorch-zhi-grid_sample-han-shu">Pytorch之grid_sample函数</a>
+            </li>
+          
+        
+          
+            <li>
+              <a href="https://kaluo-zz.github.io/post/pytorch-tu-xiang-ji-ben-cao-zuo">Pytorch图像基本操作</a>
+            </li>
+          
+        
+          
+            <li>
+              <a href="https://kaluo-zz.github.io/post/linux-jiang-mou-ge-wen-jian-jia-du-xie-quan-xian-shou-yu-mou-ge-yong-hu">Linux将某个文件夹读写权限授予某个用户</a>
+            </li>
+          
+        
+          
+            <li>
+              <a href="https://kaluo-zz.github.io/post/li-yong-torchmatmul-shi-xian-batch-multiplication">利用torch.matmul实现batch multiplication</a>
+            </li>
+          
+        
+          
+            <li>
+              <a href="https://kaluo-zz.github.io/post/linux-jing-mo-an-zhuang-matlab2019a">Linux静默安装matlab2019a</a>
+            </li>
+          
+        
+          
+            <li>
+              <a href="https://kaluo-zz.github.io/post/pytorch-ke-shi-hua-zhi-visdom">Pytorch可视化之Visdom</a>
+            </li>
+          
+        
+          
+            <li>
+              <a href="https://kaluo-zz.github.io/post/shi-yong-ffmpeg-jiang-yi-zu-tu-xiang-zhuan-huan-wei-shi-pin">使用ffmpeg将一组图像转换为视频</a>
+            </li>
+          
+        
+          
+            <li>
+              <a href="https://kaluo-zz.github.io/post/distance-transform">Distance Transform</a>
+            </li>
+          
+        
+          
+            <li>
+              <a href="https://kaluo-zz.github.io/post/python-shu-xing-fang-wen">Python属性访问</a>
+            </li>
+          
+        
+          
+            <li>
+              <a href="https://kaluo-zz.github.io/post/windows-chuang-jian-ruan-lian-jie">Windows创建软链接</a>
+            </li>
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+      </ul>
+    </div>
+  </div>
+  <div class="paper">
+    <div class="sidebar-title">
+      标签列表
+    </div>
+    <div class="row">
+      
+        <a href="https://kaluo-zz.github.io/tag/eZD1Nf0zT" class="badge secondary">
+          visdom
+        </a>
+      
+        <a href="https://kaluo-zz.github.io/tag/rT7AxA2VY" class="badge secondary">
+          pytorch
+        </a>
+      
+        <a href="https://kaluo-zz.github.io/tag/pSlACxuyg" class="badge secondary">
+          python
+        </a>
+      
+        <a href="https://kaluo-zz.github.io/tag/9PDDgxnN1" class="badge secondary">
+          windows
+        </a>
+      
+        <a href="https://kaluo-zz.github.io/tag/pYPrc_nOS" class="badge ">
+          jupyter notebook
+        </a>
+      
+        <a href="https://kaluo-zz.github.io/tag/tMhk8q8aw" class="badge secondary">
+          TensorRT
+        </a>
+      
+        <a href="https://kaluo-zz.github.io/tag/Pd55hi5zg" class="badge ">
+          模型压缩
+        </a>
+      
+        <a href="https://kaluo-zz.github.io/tag/WUgomcUCO" class="badge success">
+          参数冻结
+        </a>
+      
+        <a href="https://kaluo-zz.github.io/tag/_n7xZJOd0" class="badge success">
+          获取梯度
+        </a>
+      
+        <a href="https://kaluo-zz.github.io/tag/-AEi1Fqbq" class="badge secondary">
+          计算图
+        </a>
+      
+        <a href="https://kaluo-zz.github.io/tag/dESfnJEeE" class="badge success">
+          Linux
+        </a>
+      
+        <a href="https://kaluo-zz.github.io/tag/GIxFYt7GS" class="badge warning">
+          磁盘挂载
+        </a>
+      
+        <a href="https://kaluo-zz.github.io/tag/jzn05sSpT" class="badge success">
+          ssh
+        </a>
+      
+        <a href="https://kaluo-zz.github.io/tag/QcjFDTzeM" class="badge ">
+          autossh
+        </a>
+      
+        <a href="https://kaluo-zz.github.io/tag/zrgqUYq1I" class="badge warning">
+          反向代理
+        </a>
+      
+        <a href="https://kaluo-zz.github.io/tag/tVPefYU-g" class="badge secondary">
+          服务器
+        </a>
+      
+        <a href="https://kaluo-zz.github.io/tag/bAjW-e_UD" class="badge success">
+          Deformable Convolution
+        </a>
+      
+        <a href="https://kaluo-zz.github.io/tag/5IwuLmF47" class="badge warning">
+          叉积
+        </a>
+      
+        <a href="https://kaluo-zz.github.io/tag/gYv8tBs9s" class="badge secondary">
+          多边形
+        </a>
+      
+        <a href="https://kaluo-zz.github.io/tag/gKuVi5cQQ" class="badge ">
+          面积
+        </a>
+      
+        <a href="https://kaluo-zz.github.io/tag/1ViRR-SXR" class="badge ">
+          顺时针
+        </a>
+      
+        <a href="https://kaluo-zz.github.io/tag/-HzodX2-Z" class="badge success">
+          逆时针
+        </a>
+      
+        <a href="https://kaluo-zz.github.io/tag/Q-fXnNDSO" class="badge ">
+          matlab
+        </a>
+      
+        <a href="https://kaluo-zz.github.io/tag/Ib4sWZB8W" class="badge secondary">
+          json
+        </a>
+      
+        <a href="https://kaluo-zz.github.io/tag/_2vcj6Je3" class="badge secondary">
+          darknet
+        </a>
+      
+        <a href="https://kaluo-zz.github.io/tag/ZXh7J58dV" class="badge ">
+          函数分析
+        </a>
+      
+        <a href="https://kaluo-zz.github.io/tag/5QDLVaWYn" class="badge success">
+          docker
+        </a>
+      
+        <a href="https://kaluo-zz.github.io/tag/q7ckOahzm" class="badge secondary">
+          ubuntu18.04
+        </a>
+      
+        <a href="https://kaluo-zz.github.io/tag/-EGjsU52C" class="badge warning">
+          服务器环境
+        </a>
+      
+        <a href="https://kaluo-zz.github.io/tag/OX4bnktRr" class="badge ">
+          切换gcc版本
+        </a>
+      
+    </div>
+  </div>
+  <div class="paper">
+    Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <a class="rss" href="https://kaluo-zz.github.io/atom.xml" target="_blank">RSS</a>
+  </div>
+</div>
+
+
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+
+<script type="application/javascript">
+
+AOS.init();
+
+hljs.initHighlightingOnLoad()
+
+</script>
+
+
+
+
+  </body>
+</html>
