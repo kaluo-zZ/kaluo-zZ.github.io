@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://kaluo-zz.github.io</id>
     <title>KALUO</title>
-    <updated>2019-07-24T03:14:11.547Z</updated>
+    <updated>2019-07-24T03:15:04.919Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://kaluo-zz.github.io"/>
     <link rel="self" href="https://kaluo-zz.github.io/atom.xml"/>
@@ -31,6 +31,7 @@ padding_mode=&quot;zeros&quot;: use 0 for out-of-bound grid locations,</p>
 <p>padding_mode=&quot;border&quot;: use border values for out-of-bound grid locations,</p>
 <p>padding_mode=&quot;reflection&quot;: use values at locations reflected by the border for out-of-bound grid locations. For location far away from the border, it will keep being reflected until becoming in bound, e.g., (normalized) pixel location x = -3.5 reflects by border -1 and becomes x' = 1.5, then reflects by border 1 and becomes x'' = -0.5.</p>
 <p><code>mode</code>插值方式有两种：'bilinear' | 'nearest'. Default: 'bilinear'。</p>
+<p><code>grid_sample</code>经常和<code>affine_grid</code>一起使用。</p>
 <p>参考：https://pytorch.org/docs/stable/nn.html</p>
 ]]></content>
     </entry>
