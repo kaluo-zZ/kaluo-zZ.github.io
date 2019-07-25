@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://kaluo-zz.github.io</id>
     <title>KALUO</title>
-    <updated>2019-07-24T06:39:19.622Z</updated>
+    <updated>2019-07-25T11:58:29.150Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://kaluo-zz.github.io"/>
     <link rel="self" href="https://kaluo-zz.github.io/atom.xml"/>
@@ -90,7 +90,7 @@ padding_mode=&quot;zeros&quot;: use 0 for out-of-bound grid locations,</p>
         <link href="https://kaluo-zz.github.io/post/linux-jiang-mou-ge-wen-jian-jia-du-xie-quan-xian-shou-yu-mou-ge-yong-hu">
         </link>
         <updated>2019-07-21T12:26:47.000Z</updated>
-        <content type="html"><![CDATA[<p>chown -R username:password directory<code></code></p>
+        <content type="html"><![CDATA[<p>chown -R username directory<code></code></p>
 ]]></content>
     </entry>
     <entry>
