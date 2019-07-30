@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://kaluo-zz.github.io</id>
     <title>KALUO</title>
-    <updated>2019-07-25T11:58:29.150Z</updated>
+    <updated>2019-07-30T07:40:46.260Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://kaluo-zz.github.io"/>
     <link rel="self" href="https://kaluo-zz.github.io/atom.xml"/>
@@ -10,6 +10,31 @@
     <logo>https://kaluo-zz.github.io/images/avatar.png</logo>
     <icon>https://kaluo-zz.github.io/favicon.ico</icon>
     <rights>All rights reserved 2019, KALUO</rights>
+    <entry>
+        <title type="html"><![CDATA[Linux-清理空间]]></title>
+        <id>https://kaluo-zz.github.io/post/linux-qing-li-kong-jian</id>
+        <link href="https://kaluo-zz.github.io/post/linux-qing-li-kong-jian">
+        </link>
+        <updated>2019-07-30T07:30:44.000Z</updated>
+        <content type="html"><![CDATA[<p>使用Linux命令删除垃圾文件：</p>
+<ol>
+<li>删除用户后遗留下来的垃圾文件:<code>find ./ -nouser | xargs rm -rf</code></li>
+<li>删除运行程序出错时遗留下来的垃圾文件：<code>find / -name core -print -exec rm -rf {} \;</code></li>
+</ol>
+<p>使用Linux命令清理缓存：</p>
+<ol>
+<li>清理旧版本的软件缓存：<code>apt-get autoclean</code></li>
+<li>清理所有软件缓存：<code>apt-get clean</code></li>
+<li>删除系统不再使用的孤立软件：``apt-get autoremove</li>
+</ol>
+<p>查看空间大小：</p>
+<ol>
+<li><code>du -sh *</code></li>
+<li><code>du -h --max-depth=1</code></li>
+<li><code>du -h --max-depth=1 | sort -n</code></li>
+</ol>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[数字补零]]></title>
         <id>https://kaluo-zz.github.io/post/shu-zi-bu-ling</id>
@@ -277,21 +302,6 @@ visdom_plotter.draw_image('img_name',  img) # img : C x H x W
    \end{array}
    \right.
 </p>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Python属性访问]]></title>
-        <id>https://kaluo-zz.github.io/post/python-shu-xing-fang-wen</id>
-        <link href="https://kaluo-zz.github.io/post/python-shu-xing-fang-wen">
-        </link>
-        <updated>2019-07-03T13:21:28.000Z</updated>
-        <content type="html"><![CDATA[<ol>
-<li><code>__getattr__(self, name)</code>：访问不存在的属性时自动调用</li>
-<li><code>__getattribute__(self, name)</code>：访问存在的属性时自动调用（先调用该方法，查看是否存在该属性，若不存在，调用<code>__getattr__</code>。若重载了<code>__getattribute__</code>方法，则不会自动调用<code>__getattr__</code>方法，需在最后手动添加一行<code>object.__getattribute__(self, name)</code>。）。</li>
-<li><code>__setattr__(self, name)</code>：设置实例对象的一个新的属性时自动调用</li>
-<li><code>__delattr__(self, name)</code>：删除一个实例对象的属性时自动调用</li>
-</ol>
-<p>（python中无论实例还是类，都是用<code>__dict__</code>来存储属性和方法）</p>
 ]]></content>
     </entry>
 </feed>
