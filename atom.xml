@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://kaluo-zz.github.io</id>
     <title>KALUO</title>
-    <updated>2019-07-30T07:50:43.477Z</updated>
+    <updated>2019-07-30T09:24:00.083Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://kaluo-zz.github.io"/>
     <link rel="self" href="https://kaluo-zz.github.io/atom.xml"/>
@@ -10,6 +10,16 @@
     <logo>https://kaluo-zz.github.io/images/avatar.png</logo>
     <icon>https://kaluo-zz.github.io/favicon.ico</icon>
     <rights>All rights reserved 2019, KALUO</rights>
+    <entry>
+        <title type="html"><![CDATA[Python脚本输出重定向问题]]></title>
+        <id>https://kaluo-zz.github.io/post/python-jiao-ben-shu-chu-chong-ding-xiang-wen-ti</id>
+        <link href="https://kaluo-zz.github.io/post/python-jiao-ben-shu-chu-chong-ding-xiang-wen-ti">
+        </link>
+        <updated>2019-07-30T08:56:47.000Z</updated>
+        <content type="html"><![CDATA[<p>Python脚本输出重定向到文件中时，发现文件内容为空。这是因为python在利用<code>print</code>函数输出信息时，默认是向缓冲区输出，待缓冲区满或者程序结束时才一次性输出。如果我们不需要缓冲，在执行脚本时加上<code>-u</code>参数。</p>
+<p><code>python -u file.py &gt; file.log 2&gt;&amp;1</code></p>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Linux-清理空间]]></title>
         <id>https://kaluo-zz.github.io/post/linux-qing-li-kong-jian</id>
@@ -256,51 +266,6 @@ visdom_plotter.draw_image('img_name',  img) # img : C x H x W
 <li><code>-crf</code> 质量，更低意味着更好的质量（一般15-25）</li>
 <li><code>-pix_fmt yuv420p</code> 指定像素格式</li>
 </ul>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Distance Transform]]></title>
-        <id>https://kaluo-zz.github.io/post/distance-transform</id>
-        <link href="https://kaluo-zz.github.io/post/distance-transform">
-        </link>
-        <updated>2019-07-08T12:58:51.000Z</updated>
-        <content type="html"><![CDATA[<p>Distance Transform</p>
-<p>现在有这样一种需求，产生由点构成的曲线段的热图。如何产生呢？</p>
-<p>首先介绍一下Distance transform。距离变换提供了图像中点的分离的度量，它处理的对象是二值图像。其基本思想是每个像素值赋值为其与最近的背景像素点之间的距离（常用的距离度量是欧式距离和曼哈顿距离）。</p>
-<p>下面以一张图像为例。从上到下分别是原图、原图+轮廓点、轮廓点、经过距离变换后的图和经过标准化和阈值化后图。这样就得到了由轮廓点产生的边界线热图。</p>
-<p><img src="https://kaluo-zz.github.io/post-images/1562725172655.png" alt=""><br>
-<img src="https://kaluo-zz.github.io/post-images/1562725181225.png" alt=""><br>
-<img src="https://kaluo-zz.github.io/post-images/1562725185714.png" alt=""><br>
-<img src="https://kaluo-zz.github.io/post-images/1562725226765.png" alt=""><br>
-<img src="https://kaluo-zz.github.io/post-images/1562725230518.png" alt=""></p>
-<p>步骤如下：</p>
-<ol>
-<li>
-<p>获取图像轮廓点；</p>
-</li>
-<li>
-<p>得到与原图大小一样的二值图像B，轮廓点对应位置为0，其余位置为1；</p>
-</li>
-<li>
-<p>使用<code>scipy.ndimage.distance_transform</code>函数来转换二值图像B，得到结果D；</p>
-</li>
-<li>
-<p>将D中的最大值减去D中的每一个元素；</p>
-</li>
-<li>
-<p>对D进行标准化；</p>
-</li>
-<li>
-<p>利用对D中的每个像素进行处理。</p>
-</li>
-</ol>
-<p class='katex-block katex-error' title='Error: Expected node of type ordgroup, but got node of type text'>   M(x, y) = \left\{
-   \begin{array}
-   	\text{exp}(-\frac{D(x, y)^2}{2\sigma^2}), &amp;\text{if}\; D(x, y) &lt; 3\sigma \\
-   	0, &amp;\text{otherwise}
-   \end{array}
-   \right.
-</p>
 ]]></content>
     </entry>
 </feed>

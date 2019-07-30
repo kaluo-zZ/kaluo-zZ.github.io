@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" >
 
-<title>Pytorch图像基本操作 | KALUO</title>
+<title>后台运行 | KALUO</title>
 <meta name="description" content="温故而知新">
 
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
@@ -23,7 +23,6 @@
 
   </head>
   <body>
-  
     <nav class="navbar border fixed split-nav">
   <div class="nav-brand">
     <h3><a href="https://kaluo-zz.github.io">KALUO</a></h3>
@@ -80,59 +79,48 @@
     <div id="top" class="row site">
       <div class="sm-12 md-8 col">
         <div class="paper">
-          <article class="article">
-            <h1>Pytorch图像基本操作</h1>
-            <p class="article-meta">
-              2019-07-22
-              
-            </p>
-            
-            <div class="post-content">
-              <p>Pytorch提供了一个用于数据预处理的图像处理包<code>torchvision.transforms</code>，常见用法如下：</p>
-<pre><code>train_loader = torch.utils.data.DataLoader(
-        dataset.listDataset(train_list,
-                       shuffle=True,
-                       transform=transforms.Compose([
-                       transforms.ToTensor(),transforms.Normalize(mean=[0.485, 0.456, 0.406],
-                                     std=[0.229, 0.224, 0.225]),
-                   ]), 
-                       train=True, 
-                       seen=model.seen,
-                       batch_size=args.batch_size,
-                       num_workers=args.workers),
-        batch_size=args.batch_size)
-</code></pre>
-<p>其中，<code>dataset.listDataset</code>是自己实现的读取数据、解析数据和转换数据格式的类。</p>
-<p><code>transforms.Compose()</code>用于将各种transforms组合在一起。</p>
-<p><code>transforms.ToTensor()</code>用于将 PIL.Image/numpy.ndarray 数据进转化为<code>torch.FloadTensor</code>，并归一化到<code>[0, 1.0]</code>：</p>
-<ul>
-<li>取值范围为<code>[0, 255]</code>的<code>PIL.Image</code>，转换成形状为<code>[C, H, W]</code>，取值范围是<code>[0, 1.0]</code>的<code>torch.FloadTensor</code>；</li>
-<li>形状为<code>[H, W, C]</code>的<code>numpy.ndarray</code>，转换成形状为<code>[C, H, W]</code>，取值范围是<code>[0, 1.0]</code>的<code>torch.FloadTensor</code>。</li>
-</ul>
-<p>而transforms.ToPILImage则是将Tensor转化为PIL.Image。如果，我们要将Tensor转化为numpy，只需要使用 .numpy() 即可。</p>
-<p><code>transforms.Normalize()</code>用于数据的归一化，输入每个通道的均值和标准差。</p>
-<p>参考：https://zhuanlan.zhihu.com/p/27382990</p>
+          <h2 class="current-tag">标签: 后台运行</h2>
+          
+  <article class="article">
+    <h2 class="article-title">
+      <a href="https://kaluo-zz.github.io/post/python-jiao-ben-shu-chu-chong-ding-xiang-wen-ti">Python脚本输出重定向问题</a>
+    </h2>
+    <p class="article-meta">
+      2019-07-30
+      
+        <a href="https://kaluo-zz.github.io/tag/yvi1PqtLs" class="badge success">
+          重定向
+        </a>
+      
+        <a href="https://kaluo-zz.github.io/tag/F4_bpm-PN1" class="badge ">
+          后台运行
+        </a>
+      
+        <a href="https://kaluo-zz.github.io/tag/pSlACxuyg" class="badge success">
+          python
+        </a>
+      
+    </p>
+    <p class="text-lead">
+      
+    </p>
+    <div class="row">
+      <a href="https://kaluo-zz.github.io/post/python-jiao-ben-shu-chu-chong-ding-xiang-wen-ti" class="readmore-link">
+        <button>
+          Read More
+        </button>
+      </a>
+    </div>
+  </article>
 
-            </div>
-          </article>
+
         </div>
-        <div class="paper" data-aos="fade-in">
-          
-            <div class="next-post">
-              <div class="next">
-                下一篇
-              </div>
-              <a href="https://kaluo-zz.github.io/post/linux-jiang-mou-ge-wen-jian-jia-du-xie-quan-xian-shou-yu-mou-ge-yong-hu">
-                <h3 class="post-title">
-                  Linux将某个文件夹读写权限授予某个用户
-                </h3>
-              </a>
-            </div>
-          
-        </div>
-        
+        <div class="row flex-edges">
+  
+  
+</div>
+
       </div>
-
       <div class="sm-12 md-4 col sidebar">
   <div class="paper info-container">
     <img src="https://kaluo-zz.github.io/images/avatar.png?v=1564478596195" class="no-responsive avatar">
@@ -271,15 +259,15 @@
     </div>
     <div class="row">
       
-        <a href="https://kaluo-zz.github.io/tag/yvi1PqtLs" class="badge success">
+        <a href="https://kaluo-zz.github.io/tag/yvi1PqtLs" class="badge warning">
           重定向
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/F4_bpm-PN1" class="badge secondary">
+        <a href="https://kaluo-zz.github.io/tag/F4_bpm-PN1" class="badge ">
           后台运行
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/pSlACxuyg" class="badge secondary">
+        <a href="https://kaluo-zz.github.io/tag/pSlACxuyg" class="badge ">
           python
         </a>
       
@@ -291,11 +279,11 @@
           命令
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/eZD1Nf0zT" class="badge ">
+        <a href="https://kaluo-zz.github.io/tag/eZD1Nf0zT" class="badge secondary">
           visdom
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/rT7AxA2VY" class="badge success">
+        <a href="https://kaluo-zz.github.io/tag/rT7AxA2VY" class="badge secondary">
           pytorch
         </a>
       
@@ -303,31 +291,31 @@
           windows
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/pYPrc_nOS" class="badge secondary">
+        <a href="https://kaluo-zz.github.io/tag/pYPrc_nOS" class="badge success">
           jupyter notebook
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/tMhk8q8aw" class="badge secondary">
+        <a href="https://kaluo-zz.github.io/tag/tMhk8q8aw" class="badge success">
           TensorRT
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/Pd55hi5zg" class="badge warning">
+        <a href="https://kaluo-zz.github.io/tag/Pd55hi5zg" class="badge ">
           模型压缩
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/WUgomcUCO" class="badge secondary">
+        <a href="https://kaluo-zz.github.io/tag/WUgomcUCO" class="badge warning">
           参数冻结
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/_n7xZJOd0" class="badge warning">
+        <a href="https://kaluo-zz.github.io/tag/_n7xZJOd0" class="badge secondary">
           获取梯度
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/-AEi1Fqbq" class="badge warning">
+        <a href="https://kaluo-zz.github.io/tag/-AEi1Fqbq" class="badge secondary">
           计算图
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/dESfnJEeE" class="badge warning">
+        <a href="https://kaluo-zz.github.io/tag/dESfnJEeE" class="badge secondary">
           Linux
         </a>
       
@@ -335,11 +323,11 @@
           磁盘挂载
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/jzn05sSpT" class="badge success">
+        <a href="https://kaluo-zz.github.io/tag/jzn05sSpT" class="badge warning">
           ssh
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/QcjFDTzeM" class="badge secondary">
+        <a href="https://kaluo-zz.github.io/tag/QcjFDTzeM" class="badge ">
           autossh
         </a>
       
@@ -347,11 +335,11 @@
           反向代理
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/tVPefYU-g" class="badge secondary">
+        <a href="https://kaluo-zz.github.io/tag/tVPefYU-g" class="badge warning">
           服务器
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/bAjW-e_UD" class="badge ">
+        <a href="https://kaluo-zz.github.io/tag/bAjW-e_UD" class="badge success">
           Deformable Convolution
         </a>
       
@@ -359,43 +347,43 @@
           叉积
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/gYv8tBs9s" class="badge warning">
+        <a href="https://kaluo-zz.github.io/tag/gYv8tBs9s" class="badge ">
           多边形
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/gKuVi5cQQ" class="badge warning">
+        <a href="https://kaluo-zz.github.io/tag/gKuVi5cQQ" class="badge success">
           面积
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/1ViRR-SXR" class="badge success">
+        <a href="https://kaluo-zz.github.io/tag/1ViRR-SXR" class="badge secondary">
           顺时针
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/-HzodX2-Z" class="badge success">
+        <a href="https://kaluo-zz.github.io/tag/-HzodX2-Z" class="badge secondary">
           逆时针
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/Q-fXnNDSO" class="badge ">
+        <a href="https://kaluo-zz.github.io/tag/Q-fXnNDSO" class="badge warning">
           matlab
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/Ib4sWZB8W" class="badge success">
+        <a href="https://kaluo-zz.github.io/tag/Ib4sWZB8W" class="badge warning">
           json
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/_2vcj6Je3" class="badge secondary">
+        <a href="https://kaluo-zz.github.io/tag/_2vcj6Je3" class="badge ">
           darknet
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/ZXh7J58dV" class="badge warning">
+        <a href="https://kaluo-zz.github.io/tag/ZXh7J58dV" class="badge secondary">
           函数分析
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/5QDLVaWYn" class="badge success">
+        <a href="https://kaluo-zz.github.io/tag/5QDLVaWYn" class="badge secondary">
           docker
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/q7ckOahzm" class="badge secondary">
+        <a href="https://kaluo-zz.github.io/tag/q7ckOahzm" class="badge ">
           ubuntu18.04
         </a>
       
@@ -403,7 +391,7 @@
           服务器环境
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/OX4bnktRr" class="badge secondary">
+        <a href="https://kaluo-zz.github.io/tag/OX4bnktRr" class="badge warning">
           切换gcc版本
         </a>
       
@@ -413,7 +401,6 @@
     Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <a class="rss" href="https://kaluo-zz.github.io/atom.xml" target="_blank">RSS</a>
   </div>
 </div>
-
 
     </div>
 
