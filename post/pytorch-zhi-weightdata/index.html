@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" >
 
-<title>Deformable Convolution编译问题 | KALUO</title>
+<title>Pytorch之weight.data | KALUO</title>
 <meta name="description" content="温故而知新">
 
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
@@ -81,59 +81,138 @@
       <div class="sm-12 md-8 col">
         <div class="paper">
           <article class="article">
-            <h1>Deformable Convolution编译问题</h1>
+            <h1>Pytorch之weight.data</h1>
             <p class="article-meta">
-              2019-06-23
+              2019-08-09
               
-                <a href="https://kaluo-zz.github.io/tag/bAjW-e_UD" class="badge secondary">
-                  Deformable Convolution
+                <a href="https://kaluo-zz.github.io/tag/qNRCu_hfZ" class="badge success">
+                  data布局
+                </a>
+              
+                <a href="https://kaluo-zz.github.io/tag/_JunyD00tX" class="badge success">
+                  卷积核
+                </a>
+              
+                <a href="https://kaluo-zz.github.io/tag/rT7AxA2VY" class="badge warning">
+                  pytorch
                 </a>
               
             </p>
             
             <div class="post-content">
-              <p>编译环境：</p>
-<ol>
-<li>Ubuntu 18.04</li>
-<li>CUDA 9.0</li>
-<li>CUDNN 7.5</li>
-<li>GCC-6.4</li>
-</ol>
-<p>项目地址：https://github.com/CharlesShang/DCNv2</p>
-<p>出错信息：</p>
-<pre><code>build error:error: command '/usr/local/cuda/bin/nvcc' failed with exit status 1
-</code></pre>
-<p>出错原因：CUDA 9.0不支持gcc-6.4。<br>
-解决方法：替换低版本的gcc，如gcc-5。</p>
-<pre><code>cd /usr/bin
-sudo rm gcc
-sudo rm g++
-sudo ln -s /usr/bin/gcc-5 gcc
-sudo ln -s /usr/bin/g++-5 g++
+              <p><code>conv = torch.nn.Conv2d(in_channels, out_channels, kernel_size, stride, padding, dilation, groups, bias)</code></p>
+<p>pytorch中的卷积核权重保存在conv.weight.data中，可以通过<code>.cpu().numpy()</code>将其转换为numpy形式，尺寸为<code>[out_channels, in_channels, kernel_h, kernel_w]</code>。</p>
+<p>也可以将numpy形式的权重赋给卷积核，只要尺寸保持一致：</p>
+<p><code>conv.weight.data = torch.from_numpy(new_weights).cuda()</code></p>
+<p>对于<code>torch.nn.Linear</code>也是类似的。</p>
+<p>给定一个模型<code>net</code>，如何获取它的权重呢？</p>
+<pre><code>net = Net()
 
-cd /usr/local/cuda-9.0/bin
-sudo rm gcc
-sudo rm g++
-sudo ln -s /usr/bin/gcc-5 gcc
-sudo ln -s /usr/bin/g++-5 g++
+# 第一个卷积核的weight和bias权重信息
+print(list(net.state_dict().items())[0][0]) # weight的名称
+print(list(net.state_dict().items())[0][1]) # weight的值
+print(list(net.state_dict().items())[0][1].shape) # weight的尺寸
+
+print(list(net.state_dict().items())[1][0]) # bias的名称
+print(list(net.state_dict().items())[1][1]) # bias的值
+print(list(net.state_dict().items())[1][1].shape) # bias的尺寸
+
 </code></pre>
-<p>然后，将setup.py文件中添加<code>-DCUDA_HOST_COMPILER=/usr/bin/gcc-5</code>：</p>
-<pre><code>if torch.cuda.is_available() and CUDA_HOME is not None:
-        extension = CUDAExtension
-        sources += source_cuda
-        define_macros += [(&quot;WITH_CUDA&quot;, None)]
-        extra_compile_args[&quot;nvcc&quot;] = [
-            &quot;-DCUDA_HAS_FP16=1&quot;,
-            &quot;-D__CUDA_NO_HALF_OPERATORS__&quot;,
-            &quot;-D__CUDA_NO_HALF_CONVERSIONS__&quot;,
-            &quot;-D__CUDA_NO_HALF2_OPERATORS__&quot;,
-            &quot;-DCUDA_HOST_COMPILIER=/usr/bin/gcc-5&quot;,
-        ]
+<p>输出：</p>
+<pre><code>frontend.0.weight
+tensor([[[[-5.5373e-01,  1.4270e-01,  5.2896e-01],
+          [-5.8312e-01,  3.5655e-01,  7.6566e-01],
+          [-6.9022e-01, -4.8019e-02,  4.8409e-01]],
+
+         [[ 1.7548e-01,  9.8630e-03, -8.1413e-02],
+          [ 4.4089e-02, -7.0323e-02, -2.6035e-01],
+          [ 1.3239e-01, -1.7279e-01, -1.3226e-01]],
+
+         [[ 3.1303e-01, -1.6591e-01, -4.2752e-01],
+          [ 4.7519e-01, -8.2677e-02, -4.8700e-01],
+          [ 6.3203e-01,  1.9308e-02, -2.7753e-01]]],
+
+
+        [[[ 2.3254e-01,  1.2666e-01,  1.8605e-01],
+          [-4.2805e-01, -2.4349e-01,  2.4628e-01],
+          [-2.5066e-01,  1.4177e-01, -5.4864e-03]],
+
+         [[-1.4076e-01, -2.1903e-01,  1.5041e-01],
+          [-8.4127e-01, -3.5176e-01,  5.6398e-01],
+          [-2.4194e-01,  5.1928e-01,  5.3915e-01]],
+
+         [[-3.1432e-01, -3.7048e-01, -1.3094e-01],
+          [-4.7144e-01, -1.5503e-01,  3.4589e-01],
+          [ 5.4384e-02,  5.8683e-01,  4.9580e-01]]],
+
+
+        [[[ 1.7715e-01,  5.2149e-01,  9.8740e-03],
+          [-2.7185e-01, -7.1709e-01,  3.1292e-01],
+          [-7.5753e-02, -2.2079e-01,  3.3455e-01]],
+
+         [[ 3.0924e-01,  6.7071e-01,  2.0546e-02],
+          [-4.6607e-01, -1.0697e+00,  3.3501e-01],
+          [-8.0284e-02, -3.0522e-01,  5.4460e-01]],
+
+         [[ 3.1572e-01,  4.2335e-01, -3.4976e-01],
+          [ 8.6354e-02, -4.6457e-01,  1.1803e-02],
+          [ 1.0483e-01, -1.4584e-01, -1.5765e-02]]],
+
+
+        ...,
+
+
+        [[[ 7.7599e-02,  1.2692e-01,  3.2305e-02],
+          [ 2.2131e-01,  2.4681e-01, -4.6637e-02],
+          [ 4.6407e-02,  2.8246e-02,  1.7528e-02]],
+
+         [[-1.8327e-01, -6.7425e-02, -7.2120e-03],
+          [-4.8855e-02,  7.0427e-03, -1.2883e-01],
+          [-6.4601e-02, -6.4566e-02,  4.4235e-02]],
+
+         [[-2.2547e-01, -1.1931e-01, -2.3425e-02],
+          [-9.9171e-02, -1.5143e-02,  9.5385e-04],
+          [-2.6137e-02,  1.3567e-03,  1.4282e-01]]],
+
+
+        [[[ 1.6520e-02, -3.2225e-02, -3.8450e-03],
+          [-6.8206e-02, -1.9445e-01, -1.4166e-01],
+          [-6.9528e-02, -1.8340e-01, -1.7422e-01]],
+
+         [[ 4.2781e-02, -6.7529e-02, -7.0309e-03],
+          [ 1.1765e-02, -1.4958e-01, -1.2361e-01],
+          [ 1.0205e-02, -1.0393e-01, -1.1742e-01]],
+
+         [[ 1.2661e-01,  8.5046e-02,  1.3066e-01],
+          [ 1.7585e-01,  1.1288e-01,  1.1937e-01],
+          [ 1.4656e-01,  9.8892e-02,  1.0348e-01]]],
+
+
+        [[[ 3.2176e-02, -1.0766e-01, -2.6388e-01],
+          [ 2.7957e-01, -3.7416e-02, -2.5471e-01],
+          [ 3.4872e-01,  3.0041e-02, -5.5898e-02]],
+
+         [[ 2.5063e-01,  1.5543e-01, -1.7432e-01],
+          [ 3.9255e-01,  3.2306e-02, -3.5191e-01],
+          [ 1.9299e-01, -1.9898e-01, -2.9713e-01]],
+
+         [[ 4.6032e-01,  4.3399e-01,  2.8352e-01],
+          [ 1.6341e-01, -5.8165e-02, -1.9196e-01],
+          [-1.9521e-01, -4.5630e-01, -4.2732e-01]]]])
+torch.Size([64, 3, 3, 3])
+frontend.0.bias
+tensor([ 0.4034,  0.3778,  0.4644, -0.3228,  0.3940, -0.3953,  0.3951, -0.5496,
+         0.2693, -0.7602, -0.3508,  0.2334, -1.3239, -0.1694,  0.3938, -0.1026,
+         0.0460, -0.6995,  0.1549,  0.5628,  0.3011,  0.3425,  0.1073,  0.4651,
+         0.1295,  0.0788, -0.0492, -0.5638,  0.1465, -0.3890, -0.0715,  0.0649,
+         0.2768,  0.3279,  0.5682, -1.2640, -0.8368, -0.9485,  0.1358,  0.2727,
+         0.1841, -0.5325,  0.3507, -0.0827, -1.0248, -0.6912, -0.7711,  0.2612,
+         0.4033, -0.4802, -0.3066,  0.5807, -1.3325,  0.4844, -0.8160,  0.2386,
+         0.2300,  0.4979,  0.5553,  0.5230, -0.2182,  0.0117, -0.5516,  0.2108])
+torch.Size([64])
 </code></pre>
-<p>删除之前编译失败的build文件：<code>rm -r build</code>;</p>
-<p>重新编译：`CUDAHOSTCXX=/usr/bin/gcc-5 python3 setup.py build develop</p>
-<p>注：如果是在普通用户下编译，可能出现权限问题，此时可以在编译命令后面加上<code>--user</code>。</p>
-<p>参考链接：https://github.com/facebookresearch/maskrcnn-benchmark/issues/25</p>
+<p><code>net.state_dict().items()</code>返回一个迭代器，可以用for循环遍历权重：<code>for k, v in net.state_dict().items()</code>。其中，<code>k</code>是权重名称，<code>v</code>是其值。</p>
+<p>可以使用<code>list</code>将其转换为list：<code>list(net.state_dict().items())</code>。</p>
 
             </div>
           </article>
@@ -144,9 +223,9 @@ sudo ln -s /usr/bin/g++-5 g++
               <div class="next">
                 下一篇
               </div>
-              <a href="https://kaluo-zz.github.io/post/jian-dan-duo-bian-xing-shun-ni-shi-zhen-pan-duan">
+              <a href="https://kaluo-zz.github.io/post/python-jiao-ben-shu-chu-chong-ding-xiang-wen-ti">
                 <h3 class="post-title">
-                  简单多边形顺逆时针判断
+                  Python脚本输出重定向问题
                 </h3>
               </a>
             </div>
@@ -299,19 +378,19 @@ sudo ln -s /usr/bin/g++-5 g++
           data布局
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/_JunyD00tX" class="badge warning">
+        <a href="https://kaluo-zz.github.io/tag/_JunyD00tX" class="badge secondary">
           卷积核
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/rT7AxA2VY" class="badge ">
+        <a href="https://kaluo-zz.github.io/tag/rT7AxA2VY" class="badge warning">
           pytorch
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/yvi1PqtLs" class="badge success">
+        <a href="https://kaluo-zz.github.io/tag/yvi1PqtLs" class="badge secondary">
           重定向
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/F4_bpm-PN1" class="badge ">
+        <a href="https://kaluo-zz.github.io/tag/F4_bpm-PN1" class="badge secondary">
           后台运行
         </a>
       
@@ -319,15 +398,15 @@ sudo ln -s /usr/bin/g++-5 g++
           python
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/XpP7hQ3bK" class="badge success">
+        <a href="https://kaluo-zz.github.io/tag/XpP7hQ3bK" class="badge secondary">
           linux
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/m2uV6SR6-Y" class="badge warning">
+        <a href="https://kaluo-zz.github.io/tag/m2uV6SR6-Y" class="badge ">
           命令
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/eZD1Nf0zT" class="badge warning">
+        <a href="https://kaluo-zz.github.io/tag/eZD1Nf0zT" class="badge secondary">
           visdom
         </a>
       
@@ -335,19 +414,19 @@ sudo ln -s /usr/bin/g++-5 g++
           windows
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/pYPrc_nOS" class="badge ">
+        <a href="https://kaluo-zz.github.io/tag/pYPrc_nOS" class="badge success">
           jupyter notebook
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/tMhk8q8aw" class="badge ">
+        <a href="https://kaluo-zz.github.io/tag/tMhk8q8aw" class="badge success">
           TensorRT
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/Pd55hi5zg" class="badge success">
+        <a href="https://kaluo-zz.github.io/tag/Pd55hi5zg" class="badge secondary">
           模型压缩
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/WUgomcUCO" class="badge secondary">
+        <a href="https://kaluo-zz.github.io/tag/WUgomcUCO" class="badge success">
           参数冻结
         </a>
       
@@ -355,7 +434,7 @@ sudo ln -s /usr/bin/g++-5 g++
           获取梯度
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/-AEi1Fqbq" class="badge warning">
+        <a href="https://kaluo-zz.github.io/tag/-AEi1Fqbq" class="badge secondary">
           计算图
         </a>
       
@@ -367,19 +446,19 @@ sudo ln -s /usr/bin/g++-5 g++
           磁盘挂载
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/jzn05sSpT" class="badge success">
+        <a href="https://kaluo-zz.github.io/tag/jzn05sSpT" class="badge secondary">
           ssh
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/QcjFDTzeM" class="badge warning">
+        <a href="https://kaluo-zz.github.io/tag/QcjFDTzeM" class="badge success">
           autossh
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/zrgqUYq1I" class="badge warning">
+        <a href="https://kaluo-zz.github.io/tag/zrgqUYq1I" class="badge secondary">
           反向代理
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/tVPefYU-g" class="badge secondary">
+        <a href="https://kaluo-zz.github.io/tag/tVPefYU-g" class="badge ">
           服务器
         </a>
       
@@ -387,31 +466,31 @@ sudo ln -s /usr/bin/g++-5 g++
           Deformable Convolution
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/5IwuLmF47" class="badge ">
+        <a href="https://kaluo-zz.github.io/tag/5IwuLmF47" class="badge warning">
           叉积
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/gYv8tBs9s" class="badge warning">
+        <a href="https://kaluo-zz.github.io/tag/gYv8tBs9s" class="badge secondary">
           多边形
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/gKuVi5cQQ" class="badge secondary">
+        <a href="https://kaluo-zz.github.io/tag/gKuVi5cQQ" class="badge warning">
           面积
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/1ViRR-SXR" class="badge secondary">
+        <a href="https://kaluo-zz.github.io/tag/1ViRR-SXR" class="badge success">
           顺时针
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/-HzodX2-Z" class="badge secondary">
+        <a href="https://kaluo-zz.github.io/tag/-HzodX2-Z" class="badge warning">
           逆时针
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/Q-fXnNDSO" class="badge secondary">
+        <a href="https://kaluo-zz.github.io/tag/Q-fXnNDSO" class="badge success">
           matlab
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/Ib4sWZB8W" class="badge secondary">
+        <a href="https://kaluo-zz.github.io/tag/Ib4sWZB8W" class="badge warning">
           json
         </a>
       
@@ -423,19 +502,19 @@ sudo ln -s /usr/bin/g++-5 g++
           函数分析
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/5QDLVaWYn" class="badge secondary">
+        <a href="https://kaluo-zz.github.io/tag/5QDLVaWYn" class="badge ">
           docker
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/q7ckOahzm" class="badge warning">
+        <a href="https://kaluo-zz.github.io/tag/q7ckOahzm" class="badge ">
           ubuntu18.04
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/-EGjsU52C" class="badge success">
+        <a href="https://kaluo-zz.github.io/tag/-EGjsU52C" class="badge ">
           服务器环境
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/OX4bnktRr" class="badge success">
+        <a href="https://kaluo-zz.github.io/tag/OX4bnktRr" class="badge secondary">
           切换gcc版本
         </a>
       
