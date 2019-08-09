@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://kaluo-zz.github.io</id>
     <title>KALUO</title>
-    <updated>2019-08-09T08:21:16.877Z</updated>
+    <updated>2019-08-09T08:31:22.942Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://kaluo-zz.github.io"/>
     <link rel="self" href="https://kaluo-zz.github.io/atom.xml"/>
@@ -27,7 +27,11 @@
 # 第一个卷积核的weight和bias权重信息
 print(list(net.state_dict().items())[0][0]) # weight的名称
 print(list(net.state_dict().items())[0][1]) # weight的值
+# 或
+# print(list(net.state_dict().items())[0][1].data)
 print(list(net.state_dict().items())[0][1].shape) # weight的尺寸
+# 或
+# print(list(net.state_dict().items())[0][1].data.shape)
 
 print(list(net.state_dict().items())[1][0]) # bias的名称
 print(list(net.state_dict().items())[1][1]) # bias的值
