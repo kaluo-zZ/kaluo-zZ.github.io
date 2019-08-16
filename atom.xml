@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://kaluo-zz.github.io</id>
     <title>KALUO</title>
-    <updated>2019-08-09T08:31:22.942Z</updated>
+    <updated>2019-08-16T12:00:33.356Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://kaluo-zz.github.io"/>
     <link rel="self" href="https://kaluo-zz.github.io/atom.xml"/>
@@ -10,6 +10,153 @@
     <logo>https://kaluo-zz.github.io/images/avatar.png</logo>
     <icon>https://kaluo-zz.github.io/favicon.ico</icon>
     <rights>All rights reserved 2019, KALUO</rights>
+    <entry>
+        <title type="html"><![CDATA[Linux之shell命令]]></title>
+        <id>https://kaluo-zz.github.io/post/linux-zhi-shell-ming-ling</id>
+        <link href="https://kaluo-zz.github.io/post/linux-zhi-shell-ming-ling">
+        </link>
+        <updated>2019-08-16T11:56:13.000Z</updated>
+        <content type="html"><![CDATA[<ol>
+<li>去除文本中的空行</li>
+</ol>
+<pre><code>sed -i '/^$/d' loss.txt
+</code></pre>
+<ol start="2">
+<li>提取文本中的第几列数据</li>
+</ol>
+<pre><code>cat segnet_0.log | awk '{print $22}' &gt; loss.txt
+</code></pre>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Tikz绘图]]></title>
+        <id>https://kaluo-zz.github.io/post/tikz-hui-tu</id>
+        <link href="https://kaluo-zz.github.io/post/tikz-hui-tu">
+        </link>
+        <updated>2019-08-14T08:51:55.000Z</updated>
+        <content type="html"><![CDATA[<ol>
+<li>Tikz文档结构</li>
+</ol>
+<pre><code>\documentclass{article}
+\usepackage{tikz}
+\begin{document}
+    \begin{tikzpicture}
+     TikZ 命令
+    \end{tikzpicture}
+\end{document}
+</code></pre>
+<ol start="2">
+<li>Tikz语法形式</li>
+</ol>
+<blockquote>
+<p>\起始动作 (变量) [参数列表] 下一动作 (变量) [参数列表] 下一动作 (变量) [参数列表] ...</p>
+</blockquote>
+<ol start="3">
+<li>直线<br>
+画直线分为两步：给出起始点，给出到下一个点的路径。例如：</li>
+</ol>
+<pre><code>\draw (-1, 0) -- (1, 0);
+</code></pre>
+<p>上面第一个坐标 (-1, 0) 是 \draw 命令的参数（可以理解为“落笔点”），而第二个坐标 (1, 0) 是 &quot;--&quot; 命令的参数。不要把( -1, 0) -- (1, 0) 统一看做 \draw 命令的参数。上面这个命令可以理解为：<br>
+（落笔到）(-1, 0) ，（画直线到） (1, 0)<br>
+路径可以继续延伸下去，直到分号为止。例如</p>
+<pre><code>\draw (-1, 0) -- (1, 0) -- (0, -1) -- (0, 1);
+</code></pre>
+<p>上面这个语句可以理解为：<br>
+（落笔到）(-1, 0) ，（画直线到） (1, 0)，（画直线到）(0, -1)，（画直线到） (0, 1)<br>
+“落笔”后仍然可以“抬笔”，只要中断画线的动作即可，比如:</p>
+<pre><code>\draw (-1, 0) -- (1, 0)   (0, -1) -- (0, 1);
+</code></pre>
+<p>上面这个语句可以理解为：<br>
+（落笔到）(-1, 0) ，（画直线到） (1, 0)，（落笔到）(0, -1) ，（画直线到） (0, 1)<br>
+3. 椭圆和圆<br>
+从 圆锥曲线的定义 可以知道：圆是椭圆的特殊情况，所以先研究 椭圆 怎么画。<br>
+绘制椭圆，需要给出中心位置，作为 \draw 的参数，然后给出半轴长，放置于参数列表中，以方括号括起来：</p>
+<pre><code>\draw (0, 0) ellipse [x radius=2cm, y radius=1cm];
+</code></pre>
+<p>画圆时的 radius 参数同时设定 x radius 和 y radius：</p>
+<pre><code>\draw (0, 0) circle [radius=1cm];
+</code></pre>
+<ol start="4">
+<li>矩形<br>
+矩形的画法是，由落笔点和对角点确定一个矩形：</li>
+</ol>
+<pre><code>\draw (0, 0) rectangle (1, 1);
+</code></pre>
+<ol start="5">
+<li>网格线<br>
+网格线和矩形类似，也是确定落笔点和对角点，区别是一个画出外围的轮廓线，一个是画出矩形范围内的网格，默认的间隔宽度为1单位。</li>
+</ol>
+<pre><code>\draw (0, 0) grid (3, 3);
+</code></pre>
+<p>网格有一个重要的特性：</p>
+<blockquote>
+<p>无论起点和终点的位置在哪里，网格线总是通过原点 (0, 0)。</p>
+</blockquote>
+<ol start="6">
+<li>画图样式<br>
+从 网格线 一节就能看出， \draw 命令的样式参数可以简写，比如</li>
+</ol>
+<pre><code>\draw [color = red] (0,0) [radius=1cm] circle;
+</code></pre>
+<p>可以简写为</p>
+<pre><code>\draw [red] (0,0) circle (1cm);
+</code></pre>
+<p>线宽的选项有以下几种：</p>
+<ul>
+<li>very thin</li>
+<li>thin</li>
+<li>thick</li>
+<li>very thick</li>
+<li>ultra thick<br>
+ultra thin 的选项，对于分辨率不高的普通显示器，可能不能正常显示。而且没有 normal 这一选择，如果想表达 thin 和 thick 之间的中间值，要用 semithick.</li>
+</ul>
+<ol start="7">
+<li>圆弧<br>
+圆弧的命令是 arc，属性全部在方括号内，作用是从 \draw 的落笔点开始，画出一段椭圆弧，或者圆弧。比如</li>
+</ol>
+<pre><code>\draw (0,0) arc [start angle=-30, end angle=30, x radius=1cm, y radius=3cm];
+\draw (0,0) arc [start angle=-30, end angle=30, x radius=3cm, y radius=1cm];
+\draw (0,0) arc [start angle=-30, end angle=30, x radius=2cm, y radius=2cm];
+</code></pre>
+<p>和 圆 一样，可以用 radius 同时指定 x radius 和 y radius ：</p>
+<pre><code>\draw (0,0) arc [start angle=-30, end angle=30, radius=2cm];
+\draw (0,0) arc [start angle=-40, end angle=40, radius=3cm];
+\draw (0,0) arc [start angle=-50, end angle=50, radius=4cm];
+</code></pre>
+<ol start="8">
+<li>裁剪<br>
+如果只想突出显示图形的局部，可以用某种路径（比如圆、矩形）作为剪切工具，命令是 \clip , 和 \draw 类似，唯一不同的是画完曲线后，将曲线外的部分裁掉。比如下面的语句：</li>
+</ol>
+<pre><code>\clip (0, 0) circle (1.9);
+\draw (-1.5, -1.5) rectangle (1.5, 1.5);
+</code></pre>
+<p>\clip 命令还有一个可选参数 [draw] ， 启用后，将同时画出裁剪的边界，比如</p>
+<pre><code>\clip[draw] (0, 0) circle (1.9);
+\draw (-1.5, -1.5) rectangle (1.5, 1.5);
+</code></pre>
+<ol start="10">
+<li>\插入外部图像</li>
+</ol>
+<pre><code>\node[inner sep=0pt] (russell) at (0,0)
+    {\includegraphics[width=.25\textwidth]{bertrand_russell.jpg}};
+</code></pre>
+<p>参考：<br>
+https://www.lfhacks.com/tech/tikz-1</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Ubuntu之查看CPU使用情况]]></title>
+        <id>https://kaluo-zz.github.io/post/ubuntu-zhi-cha-kan-cpu-shi-yong-qing-kuang</id>
+        <link href="https://kaluo-zz.github.io/post/ubuntu-zhi-cha-kan-cpu-shi-yong-qing-kuang">
+        </link>
+        <updated>2019-08-14T01:34:03.000Z</updated>
+        <content type="html"><![CDATA[<ol>
+<li>系统自带：top</li>
+<li>安装htop，<code>apt-get install htop</code></li>
+</ol>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Pytorch之weight.data]]></title>
         <id>https://kaluo-zz.github.io/post/pytorch-zhi-weightdata</id>
@@ -250,131 +397,6 @@ padding_mode=&quot;zeros&quot;: use 0 for out-of-bound grid locations,</p>
         </link>
         <updated>2019-07-21T12:26:47.000Z</updated>
         <content type="html"><![CDATA[<p>chown -R username directory<code></code></p>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[利用torch.matmul实现batch multiplication]]></title>
-        <id>https://kaluo-zz.github.io/post/li-yong-torchmatmul-shi-xian-batch-multiplication</id>
-        <link href="https://kaluo-zz.github.io/post/li-yong-torchmatmul-shi-xian-batch-multiplication">
-        </link>
-        <updated>2019-07-19T07:33:00.000Z</updated>
-        <content type="html"><![CDATA[<p>【<code>torch.matmul</code>】</p>
-<p><code>torch.matmul(tensor1, tensor2, out=None) → Tensor</code></p>
-<pre><code>&gt;&gt;&gt; # vector x vector
-&gt;&gt;&gt; tensor1 = torch.randn(3)
-&gt;&gt;&gt; tensor2 = torch.randn(3)
-&gt;&gt;&gt; torch.matmul(tensor1, tensor2).size()
-torch.Size([])
-&gt;&gt;&gt; # matrix x vector
-&gt;&gt;&gt; tensor1 = torch.randn(3, 4)
-&gt;&gt;&gt; tensor2 = torch.randn(4)
-&gt;&gt;&gt; torch.matmul(tensor1, tensor2).size()
-torch.Size([3])
-&gt;&gt;&gt; # batched matrix x broadcasted vector
-&gt;&gt;&gt; tensor1 = torch.randn(10, 3, 4)
-&gt;&gt;&gt; tensor2 = torch.randn(4)
-&gt;&gt;&gt; torch.matmul(tensor1, tensor2).size()
-torch.Size([10, 3])
-&gt;&gt;&gt; # batched matrix x batched matrix
-&gt;&gt;&gt; tensor1 = torch.randn(10, 3, 4)
-&gt;&gt;&gt; tensor2 = torch.randn(10, 4, 5)
-&gt;&gt;&gt; torch.matmul(tensor1, tensor2).size()
-torch.Size([10, 3, 5])
-&gt;&gt;&gt; # batched matrix x broadcasted matrix
-&gt;&gt;&gt; tensor1 = torch.randn(10, 3, 4)
-&gt;&gt;&gt; tensor2 = torch.randn(4, 5)
-&gt;&gt;&gt; torch.matmul(tensor1, tensor2).size()
-torch.Size([10, 3, 5])
-</code></pre>
-<p><code>torch.mm</code>实现两个矩阵的相乘，不具有broadcasting功能。</p>
-<p>参考：https://pytorch.org/docs/stable/torch.html#torch.matmul</p>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Linux静默安装matlab2019a]]></title>
-        <id>https://kaluo-zz.github.io/post/linux-jing-mo-an-zhuang-matlab2019a</id>
-        <link href="https://kaluo-zz.github.io/post/linux-jing-mo-an-zhuang-matlab2019a">
-        </link>
-        <updated>2019-07-18T02:47:20.000Z</updated>
-        <content type="html"><![CDATA[<ol>
-<li>
-<p>下载<a href="http://zbh.ustc.edu.cn/zbh.php">matlab2019a</a>及其安装密钥；</p>
-</li>
-<li>
-<p>安装</p>
-</li>
-</ol>
-<pre><code>sudo mkdir /media/matlab
-sudo /media/matlab/install -mode silent -fileInstallationKey key -agreeToLicense yes -licensePath /home/lab/network.lic -destinationFolder /usr/local/matlab2019a
-sudo umount -l /media/matlab
-</code></pre>
-<ol start="3">
-<li><code>sudo vi ~/.bashrc</code></li>
-</ol>
-<pre><code>alias matlab='/usr/local/matlab2019a/bin/matlab'
-</code></pre>
-<ol start="4">
-<li><code>sudo vi /etc/bash.bashrc</code></li>
-</ol>
-<pre><code>export PATH=/usr/local/matlab2019a/bin${PATH:+:${PATH}}
-</code></pre>
-<ol start="5">
-<li>
-<p><code>source ~/.bashrc</code></p>
-</li>
-<li>
-<p><code>matlab</code></p>
-</li>
-</ol>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Pytorch可视化之Visdom]]></title>
-        <id>https://kaluo-zz.github.io/post/pytorch-ke-shi-hua-zhi-visdom</id>
-        <link href="https://kaluo-zz.github.io/post/pytorch-ke-shi-hua-zhi-visdom">
-        </link>
-        <updated>2019-07-11T11:29:57.000Z</updated>
-        <content type="html"><![CDATA[<p>Visdom <a href="https://github.com/facebookresearch/visdom">github主页</a></p>
-<p>Visdom旨在(远程)数据的可视化，并强调支持科学实验。</p>
-<p>安装：<code>pip install visdom</code></p>
-<p>启动：<code>python -m visdom.server</code></p>
-<p>使用：</p>
-<p>文件：visdom_plotter.py</p>
-<pre><code>from visdom import Visdom
-import numpy as np
-
-class VisdomPlotter(object):
-    def __init__(self, env_name = 'main'):
-        self.viz = Visdom()
-        self.env = env_name
-        self.plots = {}
-    
-    def plot(self, var_name, split_name, title_name, x, y):
-        if var_name not in self.plots:
-            self.plots[var_name] = self.viz.line(X=np.array([x,x]), Y=np.array([y,y]), env=self.env, opts=dict(
-                legend=[split_name],
-                title=title_name,
-                xlabel='Epochs',
-                ylabel=var_name
-            ))
-        else:
-            self.viz.line(X=np.array([x]), Y=np.array([y]), env=self.env, 
-                            win=self.plots[var_name], name=split_name, update = 'append')
-    
-    def draw_image(self, title_name, img):
-        self.viz.image(img, env=self.env, opts=dict(
-                title = title_name
-            ))
-</code></pre>
-<p>文件main.py</p>
-<pre><code>import numpy as np
-import torch
-from utils.visdom_plotter import VisdomPlotter
-
-visdom_plotter = VisdomPlotter()
-...
-visdom_plotter.draw_image('img_name',  img) # img : C x H x W
-</code></pre>
 ]]></content>
     </entry>
 </feed>

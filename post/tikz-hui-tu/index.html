@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>Tikz绘图 | KALUO</title>
+<meta name="description" content="温故而知新">
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<link rel="shortcut icon" href="https://kaluo-zz.github.io/favicon.ico?v=1565956827381">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="stylesheet" href="https://unpkg.com/papercss@1.6.1/dist/paper.min.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://kaluo-zz.github.io/styles/main.css">
+
+
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+
+
+  </head>
+  <body>
+  
+    <nav class="navbar border fixed split-nav">
+  <div class="nav-brand">
+    <h3><a href="https://kaluo-zz.github.io">KALUO</a></h3>
+  </div>
+  <div class="collapsible">
+    <input id="collapsible1" type="checkbox" name="collapsible1">
+    <button>
+      <label for="collapsible1">
+        <div class="bar1"></div>
+        <div class="bar2"></div>
+        <div class="bar3"></div>
+      </label>
+    </button>
+    <div class="collapsible-body">
+      <ul class="inline">
+        
+          <li>
+            
+              <a href="/" class="menu">
+                首页
+              </a>
+            
+          </li>
+        
+          <li>
+            
+              <a href="/archives" class="menu">
+                归档
+              </a>
+            
+          </li>
+        
+          <li>
+            
+              <a href="/tags" class="menu">
+                标签
+              </a>
+            
+          </li>
+        
+          <li>
+            
+              <a href="/post/about" class="menu">
+                关于
+              </a>
+            
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div id="top" class="row site">
+      <div class="sm-12 md-8 col">
+        <div class="paper">
+          <article class="article">
+            <h1>Tikz绘图</h1>
+            <p class="article-meta">
+              2019-08-14
+              
+                <a href="https://kaluo-zz.github.io/tag/4K6bnBDuJ" class="badge success">
+                  latex
+                </a>
+              
+                <a href="https://kaluo-zz.github.io/tag/vf0AuUtmM5" class="badge success">
+                  tikz
+                </a>
+              
+                <a href="https://kaluo-zz.github.io/tag/PzNHh70_8H" class="badge secondary">
+                  绘图
+                </a>
+              
+            </p>
+            
+            <div class="post-content">
+              <ol>
+<li>Tikz文档结构</li>
+</ol>
+<pre><code>\documentclass{article}
+\usepackage{tikz}
+\begin{document}
+    \begin{tikzpicture}
+     TikZ 命令
+    \end{tikzpicture}
+\end{document}
+</code></pre>
+<ol start="2">
+<li>Tikz语法形式</li>
+</ol>
+<blockquote>
+<p>\起始动作 (变量) [参数列表] 下一动作 (变量) [参数列表] 下一动作 (变量) [参数列表] ...</p>
+</blockquote>
+<ol start="3">
+<li>直线<br>
+画直线分为两步：给出起始点，给出到下一个点的路径。例如：</li>
+</ol>
+<pre><code>\draw (-1, 0) -- (1, 0);
+</code></pre>
+<p>上面第一个坐标 (-1, 0) 是 \draw 命令的参数（可以理解为“落笔点”），而第二个坐标 (1, 0) 是 &quot;--&quot; 命令的参数。不要把( -1, 0) -- (1, 0) 统一看做 \draw 命令的参数。上面这个命令可以理解为：<br>
+（落笔到）(-1, 0) ，（画直线到） (1, 0)<br>
+路径可以继续延伸下去，直到分号为止。例如</p>
+<pre><code>\draw (-1, 0) -- (1, 0) -- (0, -1) -- (0, 1);
+</code></pre>
+<p>上面这个语句可以理解为：<br>
+（落笔到）(-1, 0) ，（画直线到） (1, 0)，（画直线到）(0, -1)，（画直线到） (0, 1)<br>
+“落笔”后仍然可以“抬笔”，只要中断画线的动作即可，比如:</p>
+<pre><code>\draw (-1, 0) -- (1, 0)   (0, -1) -- (0, 1);
+</code></pre>
+<p>上面这个语句可以理解为：<br>
+（落笔到）(-1, 0) ，（画直线到） (1, 0)，（落笔到）(0, -1) ，（画直线到） (0, 1)<br>
+3. 椭圆和圆<br>
+从 圆锥曲线的定义 可以知道：圆是椭圆的特殊情况，所以先研究 椭圆 怎么画。<br>
+绘制椭圆，需要给出中心位置，作为 \draw 的参数，然后给出半轴长，放置于参数列表中，以方括号括起来：</p>
+<pre><code>\draw (0, 0) ellipse [x radius=2cm, y radius=1cm];
+</code></pre>
+<p>画圆时的 radius 参数同时设定 x radius 和 y radius：</p>
+<pre><code>\draw (0, 0) circle [radius=1cm];
+</code></pre>
+<ol start="4">
+<li>矩形<br>
+矩形的画法是，由落笔点和对角点确定一个矩形：</li>
+</ol>
+<pre><code>\draw (0, 0) rectangle (1, 1);
+</code></pre>
+<ol start="5">
+<li>网格线<br>
+网格线和矩形类似，也是确定落笔点和对角点，区别是一个画出外围的轮廓线，一个是画出矩形范围内的网格，默认的间隔宽度为1单位。</li>
+</ol>
+<pre><code>\draw (0, 0) grid (3, 3);
+</code></pre>
+<p>网格有一个重要的特性：</p>
+<blockquote>
+<p>无论起点和终点的位置在哪里，网格线总是通过原点 (0, 0)。</p>
+</blockquote>
+<ol start="6">
+<li>画图样式<br>
+从 网格线 一节就能看出， \draw 命令的样式参数可以简写，比如</li>
+</ol>
+<pre><code>\draw [color = red] (0,0) [radius=1cm] circle;
+</code></pre>
+<p>可以简写为</p>
+<pre><code>\draw [red] (0,0) circle (1cm);
+</code></pre>
+<p>线宽的选项有以下几种：</p>
+<ul>
+<li>very thin</li>
+<li>thin</li>
+<li>thick</li>
+<li>very thick</li>
+<li>ultra thick<br>
+ultra thin 的选项，对于分辨率不高的普通显示器，可能不能正常显示。而且没有 normal 这一选择，如果想表达 thin 和 thick 之间的中间值，要用 semithick.</li>
+</ul>
+<ol start="7">
+<li>圆弧<br>
+圆弧的命令是 arc，属性全部在方括号内，作用是从 \draw 的落笔点开始，画出一段椭圆弧，或者圆弧。比如</li>
+</ol>
+<pre><code>\draw (0,0) arc [start angle=-30, end angle=30, x radius=1cm, y radius=3cm];
+\draw (0,0) arc [start angle=-30, end angle=30, x radius=3cm, y radius=1cm];
+\draw (0,0) arc [start angle=-30, end angle=30, x radius=2cm, y radius=2cm];
+</code></pre>
+<p>和 圆 一样，可以用 radius 同时指定 x radius 和 y radius ：</p>
+<pre><code>\draw (0,0) arc [start angle=-30, end angle=30, radius=2cm];
+\draw (0,0) arc [start angle=-40, end angle=40, radius=3cm];
+\draw (0,0) arc [start angle=-50, end angle=50, radius=4cm];
+</code></pre>
+<ol start="8">
+<li>裁剪<br>
+如果只想突出显示图形的局部，可以用某种路径（比如圆、矩形）作为剪切工具，命令是 \clip , 和 \draw 类似，唯一不同的是画完曲线后，将曲线外的部分裁掉。比如下面的语句：</li>
+</ol>
+<pre><code>\clip (0, 0) circle (1.9);
+\draw (-1.5, -1.5) rectangle (1.5, 1.5);
+</code></pre>
+<p>\clip 命令还有一个可选参数 [draw] ， 启用后，将同时画出裁剪的边界，比如</p>
+<pre><code>\clip[draw] (0, 0) circle (1.9);
+\draw (-1.5, -1.5) rectangle (1.5, 1.5);
+</code></pre>
+<ol start="10">
+<li>\插入外部图像</li>
+</ol>
+<pre><code>\node[inner sep=0pt] (russell) at (0,0)
+    {\includegraphics[width=.25\textwidth]{bertrand_russell.jpg}};
+</code></pre>
+<p>参考：<br>
+https://www.lfhacks.com/tech/tikz-1</p>
+
+            </div>
+          </article>
+        </div>
+        <div class="paper" data-aos="fade-in">
+          
+            <div class="next-post">
+              <div class="next">
+                下一篇
+              </div>
+              <a href="https://kaluo-zz.github.io/post/ubuntu-zhi-cha-kan-cpu-shi-yong-qing-kuang">
+                <h3 class="post-title">
+                  Ubuntu之查看CPU使用情况
+                </h3>
+              </a>
+            </div>
+          
+        </div>
+        
+      </div>
+
+      <div class="sm-12 md-4 col sidebar">
+  <div class="paper info-container">
+    <img src="https://kaluo-zz.github.io/images/avatar.png?v=1565956827381" class="no-responsive avatar">
+    <div class="text-muted">温故而知新</div>
+    <div class="social-container">
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+  </div>
+  <div class="paper">
+    <div class="sidebar-title">
+      最新文章
+    </div>
+    <div class="row">
+      <ul>
+        
+          
+            <li>
+              <a href="https://kaluo-zz.github.io/post/linux-zhi-shell-ming-ling">Linux之shell命令</a>
+            </li>
+          
+        
+          
+            <li>
+              <a href="https://kaluo-zz.github.io/post/tikz-hui-tu">Tikz绘图</a>
+            </li>
+          
+        
+          
+            <li>
+              <a href="https://kaluo-zz.github.io/post/ubuntu-zhi-cha-kan-cpu-shi-yong-qing-kuang">Ubuntu之查看CPU使用情况</a>
+            </li>
+          
+        
+          
+            <li>
+              <a href="https://kaluo-zz.github.io/post/pytorch-zhi-weightdata">Pytorch之weight.data</a>
+            </li>
+          
+        
+          
+            <li>
+              <a href="https://kaluo-zz.github.io/post/python-jiao-ben-shu-chu-chong-ding-xiang-wen-ti">Python脚本输出重定向问题</a>
+            </li>
+          
+        
+          
+            <li>
+              <a href="https://kaluo-zz.github.io/post/linux-qing-li-kong-jian">Linux-清理空间</a>
+            </li>
+          
+        
+          
+            <li>
+              <a href="https://kaluo-zz.github.io/post/shu-zi-bu-ling">数字补零</a>
+            </li>
+          
+        
+          
+            <li>
+              <a href="https://kaluo-zz.github.io/post/pytorch-zhi-grid_sample-han-shu">Pytorch之grid_sample函数</a>
+            </li>
+          
+        
+          
+            <li>
+              <a href="https://kaluo-zz.github.io/post/pytorch-tu-xiang-ji-ben-cao-zuo">Pytorch图像基本操作</a>
+            </li>
+          
+        
+          
+            <li>
+              <a href="https://kaluo-zz.github.io/post/linux-jiang-mou-ge-wen-jian-jia-du-xie-quan-xian-shou-yu-mou-ge-yong-hu">Linux将某个文件夹读写权限授予某个用户</a>
+            </li>
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+      </ul>
+    </div>
+  </div>
+  <div class="paper">
+    <div class="sidebar-title">
+      标签列表
+    </div>
+    <div class="row">
+      
+        <a href="https://kaluo-zz.github.io/tag/PgVGsZYpu" class="badge ">
+          shell
+        </a>
+      
+        <a href="https://kaluo-zz.github.io/tag/XpP7hQ3bK" class="badge secondary">
+          linux
+        </a>
+      
+        <a href="https://kaluo-zz.github.io/tag/m2uV6SR6-Y" class="badge success">
+          命令
+        </a>
+      
+        <a href="https://kaluo-zz.github.io/tag/4K6bnBDuJ" class="badge success">
+          latex
+        </a>
+      
+        <a href="https://kaluo-zz.github.io/tag/vf0AuUtmM5" class="badge warning">
+          tikz
+        </a>
+      
+        <a href="https://kaluo-zz.github.io/tag/PzNHh70_8H" class="badge success">
+          绘图
+        </a>
+      
+        <a href="https://kaluo-zz.github.io/tag/cjY55A-Pe" class="badge secondary">
+          ubuntu
+        </a>
+      
+        <a href="https://kaluo-zz.github.io/tag/lFDvY_rtIK" class="badge warning">
+          cpu
+        </a>
+      
+        <a href="https://kaluo-zz.github.io/tag/qNRCu_hfZ" class="badge secondary">
+          data布局
+        </a>
+      
+        <a href="https://kaluo-zz.github.io/tag/_JunyD00tX" class="badge secondary">
+          卷积核
+        </a>
+      
+        <a href="https://kaluo-zz.github.io/tag/rT7AxA2VY" class="badge secondary">
+          pytorch
+        </a>
+      
+        <a href="https://kaluo-zz.github.io/tag/yvi1PqtLs" class="badge success">
+          重定向
+        </a>
+      
+        <a href="https://kaluo-zz.github.io/tag/F4_bpm-PN1" class="badge secondary">
+          后台运行
+        </a>
+      
+        <a href="https://kaluo-zz.github.io/tag/pSlACxuyg" class="badge warning">
+          python
+        </a>
+      
+        <a href="https://kaluo-zz.github.io/tag/eZD1Nf0zT" class="badge secondary">
+          visdom
+        </a>
+      
+        <a href="https://kaluo-zz.github.io/tag/9PDDgxnN1" class="badge warning">
+          windows
+        </a>
+      
+        <a href="https://kaluo-zz.github.io/tag/pYPrc_nOS" class="badge warning">
+          jupyter notebook
+        </a>
+      
+        <a href="https://kaluo-zz.github.io/tag/tMhk8q8aw" class="badge success">
+          TensorRT
+        </a>
+      
+        <a href="https://kaluo-zz.github.io/tag/Pd55hi5zg" class="badge secondary">
+          模型压缩
+        </a>
+      
+        <a href="https://kaluo-zz.github.io/tag/WUgomcUCO" class="badge ">
+          参数冻结
+        </a>
+      
+        <a href="https://kaluo-zz.github.io/tag/_n7xZJOd0" class="badge secondary">
+          获取梯度
+        </a>
+      
+        <a href="https://kaluo-zz.github.io/tag/-AEi1Fqbq" class="badge warning">
+          计算图
+        </a>
+      
+        <a href="https://kaluo-zz.github.io/tag/dESfnJEeE" class="badge warning">
+          Linux
+        </a>
+      
+        <a href="https://kaluo-zz.github.io/tag/GIxFYt7GS" class="badge warning">
+          磁盘挂载
+        </a>
+      
+        <a href="https://kaluo-zz.github.io/tag/jzn05sSpT" class="badge success">
+          ssh
+        </a>
+      
+        <a href="https://kaluo-zz.github.io/tag/QcjFDTzeM" class="badge success">
+          autossh
+        </a>
+      
+        <a href="https://kaluo-zz.github.io/tag/zrgqUYq1I" class="badge secondary">
+          反向代理
+        </a>
+      
+        <a href="https://kaluo-zz.github.io/tag/tVPefYU-g" class="badge secondary">
+          服务器
+        </a>
+      
+        <a href="https://kaluo-zz.github.io/tag/bAjW-e_UD" class="badge secondary">
+          Deformable Convolution
+        </a>
+      
+        <a href="https://kaluo-zz.github.io/tag/5IwuLmF47" class="badge warning">
+          叉积
+        </a>
+      
+        <a href="https://kaluo-zz.github.io/tag/gYv8tBs9s" class="badge success">
+          多边形
+        </a>
+      
+        <a href="https://kaluo-zz.github.io/tag/gKuVi5cQQ" class="badge secondary">
+          面积
+        </a>
+      
+        <a href="https://kaluo-zz.github.io/tag/1ViRR-SXR" class="badge secondary">
+          顺时针
+        </a>
+      
+        <a href="https://kaluo-zz.github.io/tag/-HzodX2-Z" class="badge ">
+          逆时针
+        </a>
+      
+        <a href="https://kaluo-zz.github.io/tag/Q-fXnNDSO" class="badge secondary">
+          matlab
+        </a>
+      
+        <a href="https://kaluo-zz.github.io/tag/Ib4sWZB8W" class="badge secondary">
+          json
+        </a>
+      
+        <a href="https://kaluo-zz.github.io/tag/_2vcj6Je3" class="badge warning">
+          darknet
+        </a>
+      
+        <a href="https://kaluo-zz.github.io/tag/ZXh7J58dV" class="badge secondary">
+          函数分析
+        </a>
+      
+        <a href="https://kaluo-zz.github.io/tag/5QDLVaWYn" class="badge secondary">
+          docker
+        </a>
+      
+        <a href="https://kaluo-zz.github.io/tag/q7ckOahzm" class="badge ">
+          ubuntu18.04
+        </a>
+      
+        <a href="https://kaluo-zz.github.io/tag/-EGjsU52C" class="badge success">
+          服务器环境
+        </a>
+      
+        <a href="https://kaluo-zz.github.io/tag/OX4bnktRr" class="badge ">
+          切换gcc版本
+        </a>
+      
+    </div>
+  </div>
+  <div class="paper">
+    Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <a class="rss" href="https://kaluo-zz.github.io/atom.xml" target="_blank">RSS</a>
+  </div>
+</div>
+
+
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+
+<script type="application/javascript">
+
+AOS.init();
+
+hljs.initHighlightingOnLoad()
+
+</script>
+
+
+
+
+  </body>
+</html>
