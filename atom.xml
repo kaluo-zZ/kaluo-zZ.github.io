@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://kaluo-zz.github.io</id>
     <title>KALUO</title>
-    <updated>2019-08-16T12:00:33.356Z</updated>
+    <updated>2019-08-19T12:42:30.238Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://kaluo-zz.github.io"/>
     <link rel="self" href="https://kaluo-zz.github.io/atom.xml"/>
@@ -10,6 +10,18 @@
     <logo>https://kaluo-zz.github.io/images/avatar.png</logo>
     <icon>https://kaluo-zz.github.io/favicon.ico</icon>
     <rights>All rights reserved 2019, KALUO</rights>
+    <entry>
+        <title type="html"><![CDATA[Pytorch之gather理解]]></title>
+        <id>https://kaluo-zz.github.io/post/pytorch-zhi-gather-li-jie</id>
+        <link href="https://kaluo-zz.github.io/post/pytorch-zhi-gather-li-jie">
+        </link>
+        <updated>2019-08-19T12:22:27.000Z</updated>
+        <content type="html"><![CDATA[<pre><code>torch.gather(input, dim, index, out=None, sparse_grad=False) → Tensor
+</code></pre>
+<p>首先，我们要知道index的各个维度（除dim指定的维度外）的大小必须和input相同。比如，input维度是[3, 4, 3, 3]，若指定dim=1，则index的维度为[3, n, 3, 3]（n为指定的正整数）。index的维度就是gather函数输出数据的维度。</p>
+<p>index[0, 0, 0, 0]表示在位置(0, 0, 0, 0)处的值（假如为3），将此值用以替换index[0, 0, 0, 0]的dim=1处，得[0, 3, 0, 0]，则表示提取input[0, 3, 0, 0]处的值放在out[0, 0, 0, 0]处。</p>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Linux之shell命令]]></title>
         <id>https://kaluo-zz.github.io/post/linux-zhi-shell-ming-ling</id>
@@ -388,15 +400,6 @@ padding_mode=&quot;zeros&quot;: use 0 for out-of-bound grid locations,</p>
 <p>而transforms.ToPILImage则是将Tensor转化为PIL.Image。如果，我们要将Tensor转化为numpy，只需要使用 .numpy() 即可。</p>
 <p><code>transforms.Normalize()</code>用于数据的归一化，输入每个通道的均值和标准差。</p>
 <p>参考：https://zhuanlan.zhihu.com/p/27382990</p>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Linux将某个文件夹读写权限授予某个用户]]></title>
-        <id>https://kaluo-zz.github.io/post/linux-jiang-mou-ge-wen-jian-jia-du-xie-quan-xian-shou-yu-mou-ge-yong-hu</id>
-        <link href="https://kaluo-zz.github.io/post/linux-jiang-mou-ge-wen-jian-jia-du-xie-quan-xian-shou-yu-mou-ge-yong-hu">
-        </link>
-        <updated>2019-07-21T12:26:47.000Z</updated>
-        <content type="html"><![CDATA[<p>chown -R username directory<code></code></p>
 ]]></content>
     </entry>
 </feed>

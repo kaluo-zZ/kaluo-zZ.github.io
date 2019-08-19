@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" >
 
-<title>模型压缩 | KALUO</title>
+<title>Pytorch之gather理解 | KALUO</title>
 <meta name="description" content="温故而知新">
 
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
@@ -23,6 +23,7 @@
 
   </head>
   <body>
+  
     <nav class="navbar border fixed split-nav">
   <div class="nav-brand">
     <h3><a href="https://kaluo-zz.github.io">KALUO</a></h3>
@@ -79,44 +80,39 @@
     <div id="top" class="row site">
       <div class="sm-12 md-8 col">
         <div class="paper">
-          <h2 class="current-tag">标签: 模型压缩</h2>
-          
-  <article class="article">
-    <h2 class="article-title">
-      <a href="https://kaluo-zz.github.io/post/shi-yong-tensorrt-dui-mo-xing-jin-xing-ya-suo-jia-su">使用TensorRT对模型进行压缩加速</a>
-    </h2>
-    <p class="article-meta">
-      2019-07-01
-      
-        <a href="https://kaluo-zz.github.io/tag/tMhk8q8aw" class="badge warning">
-          TensorRT
-        </a>
-      
-        <a href="https://kaluo-zz.github.io/tag/Pd55hi5zg" class="badge success">
-          模型压缩
-        </a>
-      
-    </p>
-    <p class="text-lead">
-      
-    </p>
-    <div class="row">
-      <a href="https://kaluo-zz.github.io/post/shi-yong-tensorrt-dui-mo-xing-jin-xing-ya-suo-jia-su" class="readmore-link">
-        <button>
-          Read More
-        </button>
-      </a>
-    </div>
-  </article>
+          <article class="article">
+            <h1>Pytorch之gather理解</h1>
+            <p class="article-meta">
+              2019-08-19
+              
+            </p>
+            
+            <div class="post-content">
+              <pre><code>torch.gather(input, dim, index, out=None, sparse_grad=False) → Tensor
+</code></pre>
+<p>首先，我们要知道index的各个维度（除dim指定的维度外）的大小必须和input相同。比如，input维度是[3, 4, 3, 3]，若指定dim=1，则index的维度为[3, n, 3, 3]（n为指定的正整数）。index的维度就是gather函数输出数据的维度。</p>
+<p>index[0, 0, 0, 0]表示在位置(0, 0, 0, 0)处的值（假如为3），将此值用以替换index[0, 0, 0, 0]的dim=1处，得[0, 3, 0, 0]，则表示提取input[0, 3, 0, 0]处的值放在out[0, 0, 0, 0]处。</p>
 
-
+            </div>
+          </article>
         </div>
-        <div class="row flex-edges">
-  
-  
-</div>
-
+        <div class="paper" data-aos="fade-in">
+          
+            <div class="next-post">
+              <div class="next">
+                下一篇
+              </div>
+              <a href="https://kaluo-zz.github.io/post/linux-zhi-shell-ming-ling">
+                <h3 class="post-title">
+                  Linux之shell命令
+                </h3>
+              </a>
+            </div>
+          
+        </div>
+        
       </div>
+
       <div class="sm-12 md-4 col sidebar">
   <div class="paper info-container">
     <img src="https://kaluo-zz.github.io/images/avatar.png?v=1566218460730" class="no-responsive avatar">
@@ -265,7 +261,7 @@
     </div>
     <div class="row">
       
-        <a href="https://kaluo-zz.github.io/tag/PgVGsZYpu" class="badge success">
+        <a href="https://kaluo-zz.github.io/tag/PgVGsZYpu" class="badge secondary">
           shell
         </a>
       
@@ -273,7 +269,7 @@
           linux
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/m2uV6SR6-Y" class="badge success">
+        <a href="https://kaluo-zz.github.io/tag/m2uV6SR6-Y" class="badge warning">
           命令
         </a>
       
@@ -281,19 +277,19 @@
           latex
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/vf0AuUtmM5" class="badge success">
+        <a href="https://kaluo-zz.github.io/tag/vf0AuUtmM5" class="badge warning">
           tikz
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/PzNHh70_8H" class="badge warning">
+        <a href="https://kaluo-zz.github.io/tag/PzNHh70_8H" class="badge secondary">
           绘图
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/cjY55A-Pe" class="badge success">
+        <a href="https://kaluo-zz.github.io/tag/cjY55A-Pe" class="badge ">
           ubuntu
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/lFDvY_rtIK" class="badge ">
+        <a href="https://kaluo-zz.github.io/tag/lFDvY_rtIK" class="badge secondary">
           cpu
         </a>
       
@@ -301,7 +297,7 @@
           data布局
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/_JunyD00tX" class="badge success">
+        <a href="https://kaluo-zz.github.io/tag/_JunyD00tX" class="badge warning">
           卷积核
         </a>
       
@@ -309,27 +305,27 @@
           pytorch
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/yvi1PqtLs" class="badge ">
+        <a href="https://kaluo-zz.github.io/tag/yvi1PqtLs" class="badge success">
           重定向
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/F4_bpm-PN1" class="badge ">
+        <a href="https://kaluo-zz.github.io/tag/F4_bpm-PN1" class="badge warning">
           后台运行
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/pSlACxuyg" class="badge success">
+        <a href="https://kaluo-zz.github.io/tag/pSlACxuyg" class="badge secondary">
           python
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/eZD1Nf0zT" class="badge secondary">
+        <a href="https://kaluo-zz.github.io/tag/eZD1Nf0zT" class="badge success">
           visdom
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/9PDDgxnN1" class="badge warning">
+        <a href="https://kaluo-zz.github.io/tag/9PDDgxnN1" class="badge secondary">
           windows
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/pYPrc_nOS" class="badge warning">
+        <a href="https://kaluo-zz.github.io/tag/pYPrc_nOS" class="badge success">
           jupyter notebook
         </a>
       
@@ -337,23 +333,23 @@
           TensorRT
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/Pd55hi5zg" class="badge success">
+        <a href="https://kaluo-zz.github.io/tag/Pd55hi5zg" class="badge warning">
           模型压缩
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/WUgomcUCO" class="badge success">
+        <a href="https://kaluo-zz.github.io/tag/WUgomcUCO" class="badge secondary">
           参数冻结
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/_n7xZJOd0" class="badge warning">
+        <a href="https://kaluo-zz.github.io/tag/_n7xZJOd0" class="badge success">
           获取梯度
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/-AEi1Fqbq" class="badge ">
+        <a href="https://kaluo-zz.github.io/tag/-AEi1Fqbq" class="badge warning">
           计算图
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/dESfnJEeE" class="badge warning">
+        <a href="https://kaluo-zz.github.io/tag/dESfnJEeE" class="badge secondary">
           Linux
         </a>
       
@@ -373,19 +369,19 @@
           反向代理
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/tVPefYU-g" class="badge ">
+        <a href="https://kaluo-zz.github.io/tag/tVPefYU-g" class="badge secondary">
           服务器
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/bAjW-e_UD" class="badge success">
+        <a href="https://kaluo-zz.github.io/tag/bAjW-e_UD" class="badge ">
           Deformable Convolution
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/5IwuLmF47" class="badge ">
+        <a href="https://kaluo-zz.github.io/tag/5IwuLmF47" class="badge secondary">
           叉积
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/gYv8tBs9s" class="badge secondary">
+        <a href="https://kaluo-zz.github.io/tag/gYv8tBs9s" class="badge ">
           多边形
         </a>
       
@@ -397,7 +393,7 @@
           顺时针
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/-HzodX2-Z" class="badge success">
+        <a href="https://kaluo-zz.github.io/tag/-HzodX2-Z" class="badge warning">
           逆时针
         </a>
       
@@ -405,23 +401,23 @@
           matlab
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/Ib4sWZB8W" class="badge warning">
+        <a href="https://kaluo-zz.github.io/tag/Ib4sWZB8W" class="badge success">
           json
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/_2vcj6Je3" class="badge secondary">
+        <a href="https://kaluo-zz.github.io/tag/_2vcj6Je3" class="badge success">
           darknet
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/ZXh7J58dV" class="badge warning">
+        <a href="https://kaluo-zz.github.io/tag/ZXh7J58dV" class="badge secondary">
           函数分析
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/5QDLVaWYn" class="badge warning">
+        <a href="https://kaluo-zz.github.io/tag/5QDLVaWYn" class="badge success">
           docker
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/q7ckOahzm" class="badge success">
+        <a href="https://kaluo-zz.github.io/tag/q7ckOahzm" class="badge secondary">
           ubuntu18.04
         </a>
       
@@ -429,7 +425,7 @@
           服务器环境
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/OX4bnktRr" class="badge secondary">
+        <a href="https://kaluo-zz.github.io/tag/OX4bnktRr" class="badge ">
           切换gcc版本
         </a>
       
@@ -439,6 +435,7 @@
     Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <a class="rss" href="https://kaluo-zz.github.io/atom.xml" target="_blank">RSS</a>
   </div>
 </div>
+
 
     </div>
 
