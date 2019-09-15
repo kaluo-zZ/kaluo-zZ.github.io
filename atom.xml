@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://kaluo-zz.github.io</id>
     <title>KALUO</title>
-    <updated>2019-09-13T08:50:52.108Z</updated>
+    <updated>2019-09-15T06:45:05.286Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://kaluo-zz.github.io"/>
     <link rel="self" href="https://kaluo-zz.github.io/atom.xml"/>
@@ -10,6 +10,81 @@
     <logo>https://kaluo-zz.github.io/images/avatar.png</logo>
     <icon>https://kaluo-zz.github.io/favicon.ico</icon>
     <rights>All rights reserved 2019, KALUO</rights>
+    <entry>
+        <title type="html"><![CDATA[Python之上三角矩阵]]></title>
+        <id>https://kaluo-zz.github.io/post/python-zhi-shang-san-jiao-ju-zhen</id>
+        <link href="https://kaluo-zz.github.io/post/python-zhi-shang-san-jiao-ju-zhen">
+        </link>
+        <updated>2019-09-15T06:38:40.000Z</updated>
+        <content type="html"><![CDATA[<h1 id="numpytrium-k0">numpy.triu(m, k=0)</h1>
+<blockquote>
+<p>Upper triangle of an array.</p>
+<p>Return a copy of a matrix with the elements below the k-th diagonal zeroed.</p>
+</blockquote>
+<p>例子:</p>
+<pre><code>np.triu(np.ones(5), 0)
+array([[1., 1., 1., 1., 1.],
+       [0., 1., 1., 1., 1.],
+       [0., 0., 1., 1., 1.],
+       [0., 0., 0., 1., 1.],
+       [0., 0., 0., 0., 1.]])
+&gt;&gt;&gt; np.triu(np.ones(5), 1)
+array([[0., 1., 1., 1., 1.],
+       [0., 0., 1., 1., 1.],
+       [0., 0., 0., 1., 1.],
+       [0., 0., 0., 0., 1.],
+       [0., 0., 0., 0., 0.]])
+&gt;&gt;&gt; np.triu(np.ones(5), 2)
+array([[0., 0., 1., 1., 1.],
+       [0., 0., 0., 1., 1.],
+       [0., 0., 0., 0., 1.],
+       [0., 0., 0., 0., 0.],
+       [0., 0., 0., 0., 0.]])
+&gt;&gt;&gt; np.triu(np.ones(5), 3)
+array([[0., 0., 0., 1., 1.],
+       [0., 0., 0., 0., 1.],
+       [0., 0., 0., 0., 0.],
+       [0., 0., 0., 0., 0.],
+       [0., 0., 0., 0., 0.]])
+&gt;&gt;&gt; np.triu(np.ones(5)) - np.triu(np.ones(5), 3)
+array([[1., 1., 1., 0., 0.],
+       [0., 1., 1., 1., 0.],
+       [0., 0., 1., 1., 1.],
+       [0., 0., 0., 1., 1.],
+       [0., 0., 0., 0., 1.]])
+&gt;&gt;&gt; mask = np.triu(np.ones(5)) - np.triu(np.ones(5), 3)
+&gt;&gt;&gt; mask
+array([[1., 1., 1., 0., 0.],
+       [0., 1., 1., 1., 0.],
+       [0., 0., 1., 1., 1.],
+       [0., 0., 0., 1., 1.],
+       [0., 0., 0., 0., 1.]])
+&gt;&gt;&gt; mask[3, 0:1] = 1
+&gt;&gt;&gt; mask[3, 0:2] = 1
+&gt;&gt;&gt; mask
+array([[1., 1., 1., 0., 0.],
+       [0., 1., 1., 1., 0.],
+       [0., 0., 1., 1., 1.],
+       [1., 1., 0., 1., 1.],
+       [0., 0., 0., 0., 1.]])
+&gt;&gt;&gt; mask[3, 0:2] = 0
+&gt;&gt;&gt; mask
+array([[1., 1., 1., 0., 0.],
+       [0., 1., 1., 1., 0.],
+       [0., 0., 1., 1., 1.],
+       [0., 0., 0., 1., 1.],
+       [0., 0., 0., 0., 1.]])
+&gt;&gt;&gt; mask[3, 0:1] = 1
+&gt;&gt;&gt; mask[4, 0:2] = 1
+&gt;&gt;&gt; mask
+array([[1., 1., 1., 0., 0.],
+       [0., 1., 1., 1., 0.],
+       [0., 0., 1., 1., 1.],
+       [1., 0., 0., 1., 1.],
+       [1., 1., 0., 0., 1.]])
+</code></pre>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Pytorch之gather理解]]></title>
         <id>https://kaluo-zz.github.io/post/pytorch-zhi-gather-li-jie</id>
@@ -368,38 +443,6 @@ padding_mode=&quot;zeros&quot;: use 0 for out-of-bound grid locations,</p>
 <p><code>mode</code>插值方式有两种：'bilinear' | 'nearest'. Default: 'bilinear'。</p>
 <p><code>grid_sample</code>经常和<code>affine_grid</code>一起使用。</p>
 <p>参考：https://pytorch.org/docs/stable/nn.html</p>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Pytorch图像基本操作]]></title>
-        <id>https://kaluo-zz.github.io/post/pytorch-tu-xiang-ji-ben-cao-zuo</id>
-        <link href="https://kaluo-zz.github.io/post/pytorch-tu-xiang-ji-ben-cao-zuo">
-        </link>
-        <updated>2019-07-22T06:14:19.000Z</updated>
-        <content type="html"><![CDATA[<p>Pytorch提供了一个用于数据预处理的图像处理包<code>torchvision.transforms</code>，常见用法如下：</p>
-<pre><code>train_loader = torch.utils.data.DataLoader(
-        dataset.listDataset(train_list,
-                       shuffle=True,
-                       transform=transforms.Compose([
-                       transforms.ToTensor(),transforms.Normalize(mean=[0.485, 0.456, 0.406],
-                                     std=[0.229, 0.224, 0.225]),
-                   ]), 
-                       train=True, 
-                       seen=model.seen,
-                       batch_size=args.batch_size,
-                       num_workers=args.workers),
-        batch_size=args.batch_size)
-</code></pre>
-<p>其中，<code>dataset.listDataset</code>是自己实现的读取数据、解析数据和转换数据格式的类。</p>
-<p><code>transforms.Compose()</code>用于将各种transforms组合在一起。</p>
-<p><code>transforms.ToTensor()</code>用于将 PIL.Image/numpy.ndarray 数据进转化为<code>torch.FloadTensor</code>，并归一化到<code>[0, 1.0]</code>：</p>
-<ul>
-<li>取值范围为<code>[0, 255]</code>的<code>PIL.Image</code>，转换成形状为<code>[C, H, W]</code>，取值范围是<code>[0, 1.0]</code>的<code>torch.FloadTensor</code>；</li>
-<li>形状为<code>[H, W, C]</code>的<code>numpy.ndarray</code>，转换成形状为<code>[C, H, W]</code>，取值范围是<code>[0, 1.0]</code>的<code>torch.FloadTensor</code>。</li>
-</ul>
-<p>而transforms.ToPILImage则是将Tensor转化为PIL.Image。如果，我们要将Tensor转化为numpy，只需要使用 .numpy() 即可。</p>
-<p><code>transforms.Normalize()</code>用于数据的归一化，输入每个通道的均值和标准差。</p>
-<p>参考：https://zhuanlan.zhihu.com/p/27382990</p>
 ]]></content>
     </entry>
 </feed>
