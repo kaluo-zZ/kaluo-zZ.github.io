@@ -7,7 +7,7 @@
 <meta name="description" content="温故而知新">
 
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<link rel="shortcut icon" href="https://kaluo-zz.github.io/favicon.ico?v=1568529901226">
+<link rel="shortcut icon" href="https://kaluo-zz.github.io/favicon.ico?v=1571729309297">
 
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
 <link rel="stylesheet" href="https://unpkg.com/papercss@1.6.1/dist/paper.min.css" />
@@ -85,11 +85,11 @@
             <p class="article-meta">
               2019-06-06
               
-                <a href="https://kaluo-zz.github.io/tag/_2vcj6Je3" class="badge secondary">
+                <a href="https://kaluo-zz.github.io/tag/_2vcj6Je3" class="badge success">
                   darknet
                 </a>
               
-                <a href="https://kaluo-zz.github.io/tag/ZXh7J58dV" class="badge success">
+                <a href="https://kaluo-zz.github.io/tag/ZXh7J58dV" class="badge ">
                   函数分析
                 </a>
               
@@ -478,7 +478,7 @@ void forward_yolo_layer(const layer l, network net)
 }
 </code></pre>
 <p>根据代码，我们可以画出网络输出在内存中的排列方式。对于batch中第b个样本来说，它的第n个bounding box预测结果的偏移量是<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mtext>b</mtext><mo>×</mo><mtext>outputs</mtext><mo>+</mo><mi>n</mi><mo>×</mo><mi>w</mi><mo>×</mo><mi>h</mi><mo>×</mo><mo>(</mo><mn>4</mn><mo>+</mo><mn>1</mn><mo>+</mo><mtext>classes</mtext><mo>)</mo></mrow><annotation encoding="application/x-tex">\text{b}\times\text{outputs} + n\times w \times h \times (4 + 1 + \text{classes})</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.77777em;vertical-align:-0.08333em;"></span><span class="mord text"><span class="mord">b</span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.80952em;vertical-align:-0.19444em;"></span><span class="mord text"><span class="mord">outputs</span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.66666em;vertical-align:-0.08333em;"></span><span class="mord mathdefault">n</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.66666em;vertical-align:-0.08333em;"></span><span class="mord mathdefault" style="margin-right:0.02691em;">w</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.77777em;vertical-align:-0.08333em;"></span><span class="mord mathdefault">h</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord">4</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.72777em;vertical-align:-0.08333em;"></span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord text"><span class="mord">classes</span></span><span class="mclose">)</span></span></span></span>。在此基础上，对于<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mtext>entry</mtext><mo>=</mo><mn>4</mn></mrow><annotation encoding="application/x-tex">\text{entry}=4</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.80952em;vertical-align:-0.19444em;"></span><span class="mord text"><span class="mord">entry</span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">4</span></span></span></span>，此时偏移跳到了objectness的首个元素。</p>
-<p><img src="https://img-blog.csdnimg.cn/20181126092914839.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2thbHVvd2Zq,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<figure data-type="image" tabindex="1"><img src="https://img-blog.csdnimg.cn/20181126092914839.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2thbHVvd2Zq,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></figure>
 <h2 id="保存和加载卷积层参数">保存和加载卷积层参数</h2>
 <p>代码在parser.c源文件中</p>
 <pre><code class="language-c">void save_convolutional_weights(layer l, FILE *fp)
@@ -642,7 +642,7 @@ layers=-3,-2,-1 # 将上面3个分支进行拼接
 }
 </code></pre>
 <p>在darknet框架中有一个层reorg，这个层用来对输入的feature map进行reshape。例如，在yolo v2中，对于如何获得finer-grained features，是将前一层的<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mn>26</mn><mo>×</mo><mn>26</mn><mo>×</mo><mn>512</mn></mrow><annotation encoding="application/x-tex">26\times26\times512</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.72777em;vertical-align:-0.08333em;"></span><span class="mord">2</span><span class="mord">6</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.72777em;vertical-align:-0.08333em;"></span><span class="mord">2</span><span class="mord">6</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">5</span><span class="mord">1</span><span class="mord">2</span></span></span></span>转换成<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mn>13</mn><mo>×</mo><mn>13</mn><mo>×</mo><mn>2048</mn></mrow><annotation encoding="application/x-tex">13\times13\times2048</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.72777em;vertical-align:-0.08333em;"></span><span class="mord">1</span><span class="mord">3</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.72777em;vertical-align:-0.08333em;"></span><span class="mord">1</span><span class="mord">3</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">2</span><span class="mord">0</span><span class="mord">4</span><span class="mord">8</span></span></span></span>，然后和当前层的feature map拼接（堆叠）。比如一个<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mn>6</mn><mo>×</mo><mn>6</mn><mo>×</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">6\times6\times1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.72777em;vertical-align:-0.08333em;"></span><span class="mord">6</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.72777em;vertical-align:-0.08333em;"></span><span class="mord">6</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">1</span></span></span></span>的feature map，stride=2条件下的转换结果为</p>
-<p><img src="https://img-blog.csdnimg.cn/20181126093004689.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2thbHVvd2Zq,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<figure data-type="image" tabindex="2"><img src="https://img-blog.csdnimg.cn/20181126093004689.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2thbHVvd2Zq,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></figure>
 <pre><code class="language-bash"># 13 x 13 x 1024
 [convolutional]
 batch_normalize=1
@@ -712,7 +712,7 @@ layers=-1,-4 # 拼接为 13 x 13 x 3072
 
       <div class="sm-12 md-4 col sidebar">
   <div class="paper info-container">
-    <img src="https://kaluo-zz.github.io/images/avatar.png?v=1568529901226" class="no-responsive avatar">
+    <img src="https://kaluo-zz.github.io/images/avatar.png?v=1571729309297" class="no-responsive avatar">
     <div class="text-muted">温故而知新</div>
     <div class="social-container">
       
@@ -860,31 +860,31 @@ layers=-1,-4 # 拼接为 13 x 13 x 3072
     </div>
     <div class="row">
       
-        <a href="https://kaluo-zz.github.io/tag/PgVGsZYpu" class="badge ">
+        <a href="https://kaluo-zz.github.io/tag/PgVGsZYpu" class="badge secondary">
           shell
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/XpP7hQ3bK" class="badge ">
+        <a href="https://kaluo-zz.github.io/tag/XpP7hQ3bK" class="badge warning">
           linux
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/m2uV6SR6-Y" class="badge ">
+        <a href="https://kaluo-zz.github.io/tag/m2uV6SR6-Y" class="badge secondary">
           命令
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/4K6bnBDuJ" class="badge success">
+        <a href="https://kaluo-zz.github.io/tag/4K6bnBDuJ" class="badge warning">
           latex
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/vf0AuUtmM5" class="badge ">
+        <a href="https://kaluo-zz.github.io/tag/vf0AuUtmM5" class="badge warning">
           tikz
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/PzNHh70_8H" class="badge secondary">
+        <a href="https://kaluo-zz.github.io/tag/PzNHh70_8H" class="badge warning">
           绘图
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/cjY55A-Pe" class="badge ">
+        <a href="https://kaluo-zz.github.io/tag/cjY55A-Pe" class="badge warning">
           ubuntu
         </a>
       
@@ -896,7 +896,7 @@ layers=-1,-4 # 拼接为 13 x 13 x 3072
           data布局
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/_JunyD00tX" class="badge ">
+        <a href="https://kaluo-zz.github.io/tag/_JunyD00tX" class="badge secondary">
           卷积核
         </a>
       
@@ -908,15 +908,15 @@ layers=-1,-4 # 拼接为 13 x 13 x 3072
           重定向
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/F4_bpm-PN1" class="badge success">
+        <a href="https://kaluo-zz.github.io/tag/F4_bpm-PN1" class="badge secondary">
           后台运行
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/pSlACxuyg" class="badge ">
+        <a href="https://kaluo-zz.github.io/tag/pSlACxuyg" class="badge secondary">
           python
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/eZD1Nf0zT" class="badge ">
+        <a href="https://kaluo-zz.github.io/tag/eZD1Nf0zT" class="badge warning">
           visdom
         </a>
       
@@ -924,55 +924,55 @@ layers=-1,-4 # 拼接为 13 x 13 x 3072
           windows
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/pYPrc_nOS" class="badge ">
+        <a href="https://kaluo-zz.github.io/tag/pYPrc_nOS" class="badge secondary">
           jupyter notebook
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/tMhk8q8aw" class="badge warning">
+        <a href="https://kaluo-zz.github.io/tag/tMhk8q8aw" class="badge secondary">
           TensorRT
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/Pd55hi5zg" class="badge success">
+        <a href="https://kaluo-zz.github.io/tag/Pd55hi5zg" class="badge secondary">
           模型压缩
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/WUgomcUCO" class="badge ">
+        <a href="https://kaluo-zz.github.io/tag/WUgomcUCO" class="badge success">
           参数冻结
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/_n7xZJOd0" class="badge warning">
+        <a href="https://kaluo-zz.github.io/tag/_n7xZJOd0" class="badge secondary">
           获取梯度
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/-AEi1Fqbq" class="badge secondary">
+        <a href="https://kaluo-zz.github.io/tag/-AEi1Fqbq" class="badge warning">
           计算图
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/dESfnJEeE" class="badge ">
+        <a href="https://kaluo-zz.github.io/tag/dESfnJEeE" class="badge secondary">
           Linux
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/GIxFYt7GS" class="badge success">
+        <a href="https://kaluo-zz.github.io/tag/GIxFYt7GS" class="badge ">
           磁盘挂载
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/jzn05sSpT" class="badge warning">
+        <a href="https://kaluo-zz.github.io/tag/jzn05sSpT" class="badge secondary">
           ssh
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/QcjFDTzeM" class="badge secondary">
+        <a href="https://kaluo-zz.github.io/tag/QcjFDTzeM" class="badge warning">
           autossh
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/zrgqUYq1I" class="badge warning">
+        <a href="https://kaluo-zz.github.io/tag/zrgqUYq1I" class="badge secondary">
           反向代理
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/tVPefYU-g" class="badge secondary">
+        <a href="https://kaluo-zz.github.io/tag/tVPefYU-g" class="badge ">
           服务器
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/bAjW-e_UD" class="badge warning">
+        <a href="https://kaluo-zz.github.io/tag/bAjW-e_UD" class="badge ">
           Deformable Convolution
         </a>
       
@@ -980,19 +980,19 @@ layers=-1,-4 # 拼接为 13 x 13 x 3072
           叉积
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/gYv8tBs9s" class="badge ">
+        <a href="https://kaluo-zz.github.io/tag/gYv8tBs9s" class="badge warning">
           多边形
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/gKuVi5cQQ" class="badge ">
+        <a href="https://kaluo-zz.github.io/tag/gKuVi5cQQ" class="badge secondary">
           面积
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/1ViRR-SXR" class="badge warning">
+        <a href="https://kaluo-zz.github.io/tag/1ViRR-SXR" class="badge secondary">
           顺时针
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/-HzodX2-Z" class="badge secondary">
+        <a href="https://kaluo-zz.github.io/tag/-HzodX2-Z" class="badge warning">
           逆时针
         </a>
       
@@ -1008,23 +1008,23 @@ layers=-1,-4 # 拼接为 13 x 13 x 3072
           darknet
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/ZXh7J58dV" class="badge warning">
+        <a href="https://kaluo-zz.github.io/tag/ZXh7J58dV" class="badge secondary">
           函数分析
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/5QDLVaWYn" class="badge secondary">
+        <a href="https://kaluo-zz.github.io/tag/5QDLVaWYn" class="badge ">
           docker
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/q7ckOahzm" class="badge secondary">
+        <a href="https://kaluo-zz.github.io/tag/q7ckOahzm" class="badge warning">
           ubuntu18.04
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/-EGjsU52C" class="badge ">
+        <a href="https://kaluo-zz.github.io/tag/-EGjsU52C" class="badge warning">
           服务器环境
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/OX4bnktRr" class="badge success">
+        <a href="https://kaluo-zz.github.io/tag/OX4bnktRr" class="badge secondary">
           切换gcc版本
         </a>
       

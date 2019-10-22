@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://kaluo-zz.github.io</id>
     <title>KALUO</title>
-    <updated>2019-09-15T06:54:56.798Z</updated>
+    <updated>2019-10-22T07:28:39.400Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://kaluo-zz.github.io"/>
     <link rel="self" href="https://kaluo-zz.github.io/atom.xml"/>
@@ -53,21 +53,6 @@ array([[1., 1., 1., 0., 0.],
        [0., 0., 0., 1., 1.],
        [0., 0., 0., 0., 1.]])
 &gt;&gt;&gt; mask = np.triu(np.ones(5)) - np.triu(np.ones(5), 3)
-&gt;&gt;&gt; mask
-array([[1., 1., 1., 0., 0.],
-       [0., 1., 1., 1., 0.],
-       [0., 0., 1., 1., 1.],
-       [0., 0., 0., 1., 1.],
-       [0., 0., 0., 0., 1.]])
-&gt;&gt;&gt; mask[3, 0:1] = 1
-&gt;&gt;&gt; mask[3, 0:2] = 1
-&gt;&gt;&gt; mask
-array([[1., 1., 1., 0., 0.],
-       [0., 1., 1., 1., 0.],
-       [0., 0., 1., 1., 1.],
-       [1., 1., 0., 1., 1.],
-       [0., 0., 0., 0., 1.]])
-&gt;&gt;&gt; mask[3, 0:2] = 0
 &gt;&gt;&gt; mask
 array([[1., 1., 1., 0., 0.],
        [0., 1., 1., 1., 0.],
