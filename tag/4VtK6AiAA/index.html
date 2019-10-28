@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" >
 
-<title>Ubuntu18.04下Docker CE安装 | KALUO</title>
+<title>gpu | KALUO</title>
 <meta name="description" content="温故而知新">
 
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
@@ -23,7 +23,6 @@
 
   </head>
   <body>
-  
     <nav class="navbar border fixed split-nav">
   <div class="nav-brand">
     <h3><a href="https://kaluo-zz.github.io">KALUO</a></h3>
@@ -80,88 +79,48 @@
     <div id="top" class="row site">
       <div class="sm-12 md-8 col">
         <div class="paper">
-          <article class="article">
-            <h1>Ubuntu18.04下Docker CE安装</h1>
-            <p class="article-meta">
-              2019-06-06
-              
-                <a href="https://kaluo-zz.github.io/tag/5QDLVaWYn" class="badge ">
-                  docker
-                </a>
-              
-            </p>
-            
-            <div class="post-content">
-              <ol>
-<li>
-<p>更新系统包索引</p>
-<pre><code class="language-bash">sudo apt-get update
-</code></pre>
-</li>
-<li>
-<p>添加HTTPS协议，允许apt从HTTPS安装软件包</p>
-<pre><code class="language-bash">sudo apt-get install  apt-transport-https  ca-certificates curl  software-properties-common
-</code></pre>
-</li>
-<li>
-<p>添加Docker 公共密钥 (Docker中科大源)</p>
-<pre><code class="language-bash">curl -fsSL  https://mirrors.ustc.edu.cn/docker-ce/linux/ubuntu/gpg | sudo apt-key add -
-</code></pre>
-</li>
-<li>
-<p>设置版本库类型（Ubuntu18.04对应版本<strong>bionic</strong>），软件版本包括三种：<strong>stable、edge、test</strong></p>
-<pre><code class="language-bash">sudo add-apt-repository &quot;deb [arch=amd64] https://mirrors.ustc.edu.cn/docker-ce/linux/ubuntu $(lsb_release -cs) stable&quot; 
-</code></pre>
-</li>
-<li>
-<p>更新系统包索引</p>
-<pre><code class="language-bash">sudo apt-get update
-</code></pre>
-</li>
-<li>
-<p>安装最新版Docker CE</p>
-<pre><code class="language-bash">sudo apt-get install docker-ce
-</code></pre>
-</li>
-<li>
-<p>启动docker</p>
-<pre><code class="language-bash">sudo systemctl start docker
-sudo systemctl enable docker
-docker --version
-</code></pre>
-</li>
-<li>
-<p>将用户user加入docker组，以便非root用户启动docker</p>
-<pre><code class="language-bash">sudo usermod -aG docker user
-</code></pre>
-</li>
-<li>
-<p>切换用户组</p>
-<pre><code class="language-bash">newgrp docker
-</code></pre>
-</li>
-</ol>
+          <h2 class="current-tag">标签: gpu</h2>
+          
+  <article class="article">
+    <h2 class="article-title">
+      <a href="https://kaluo-zz.github.io/post/gpu-zhuang-tai-jian-ce">GPU状态监测</a>
+    </h2>
+    <p class="article-meta">
+      2019-10-27
+      
+        <a href="https://kaluo-zz.github.io/tag/4VtK6AiAA" class="badge ">
+          gpu
+        </a>
+      
+        <a href="https://kaluo-zz.github.io/tag/5i-SZnsCao" class="badge secondary">
+          gpustat
+        </a>
+      
+        <a href="https://kaluo-zz.github.io/tag/cjY55A-Pe" class="badge ">
+          ubuntu
+        </a>
+      
+    </p>
+    <p class="text-lead">
+      
+    </p>
+    <div class="row">
+      <a href="https://kaluo-zz.github.io/post/gpu-zhuang-tai-jian-ce" class="readmore-link">
+        <button>
+          Read More
+        </button>
+      </a>
+    </div>
+  </article>
 
-            </div>
-          </article>
+
         </div>
-        <div class="paper" data-aos="fade-in">
-          
-            <div class="next-post">
-              <div class="next">
-                下一篇
-              </div>
-              <a href="https://kaluo-zz.github.io/post/docker-xiang-guan-ming-ling">
-                <h3 class="post-title">
-                  Docker相关命令
-                </h3>
-              </a>
-            </div>
-          
-        </div>
-        
+        <div class="row flex-edges">
+  
+  
+</div>
+
       </div>
-
       <div class="sm-12 md-4 col sidebar">
   <div class="paper info-container">
     <img src="https://kaluo-zz.github.io/images/avatar.png?v=1572263237191" class="no-responsive avatar">
@@ -314,15 +273,15 @@ docker --version
     </div>
     <div class="row">
       
-        <a href="https://kaluo-zz.github.io/tag/4VtK6AiAA" class="badge warning">
+        <a href="https://kaluo-zz.github.io/tag/4VtK6AiAA" class="badge ">
           gpu
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/5i-SZnsCao" class="badge secondary">
+        <a href="https://kaluo-zz.github.io/tag/5i-SZnsCao" class="badge ">
           gpustat
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/cjY55A-Pe" class="badge success">
+        <a href="https://kaluo-zz.github.io/tag/cjY55A-Pe" class="badge warning">
           ubuntu
         </a>
       
@@ -334,7 +293,7 @@ docker --version
           linux
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/m2uV6SR6-Y" class="badge secondary">
+        <a href="https://kaluo-zz.github.io/tag/m2uV6SR6-Y" class="badge success">
           命令
         </a>
       
@@ -346,11 +305,11 @@ docker --version
           tikz
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/PzNHh70_8H" class="badge success">
+        <a href="https://kaluo-zz.github.io/tag/PzNHh70_8H" class="badge secondary">
           绘图
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/lFDvY_rtIK" class="badge secondary">
+        <a href="https://kaluo-zz.github.io/tag/lFDvY_rtIK" class="badge warning">
           cpu
         </a>
       
@@ -358,11 +317,11 @@ docker --version
           data布局
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/_JunyD00tX" class="badge secondary">
+        <a href="https://kaluo-zz.github.io/tag/_JunyD00tX" class="badge warning">
           卷积核
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/rT7AxA2VY" class="badge warning">
+        <a href="https://kaluo-zz.github.io/tag/rT7AxA2VY" class="badge secondary">
           pytorch
         </a>
       
@@ -370,7 +329,7 @@ docker --version
           重定向
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/F4_bpm-PN1" class="badge ">
+        <a href="https://kaluo-zz.github.io/tag/F4_bpm-PN1" class="badge warning">
           后台运行
         </a>
       
@@ -378,7 +337,7 @@ docker --version
           python
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/eZD1Nf0zT" class="badge ">
+        <a href="https://kaluo-zz.github.io/tag/eZD1Nf0zT" class="badge success">
           visdom
         </a>
       
@@ -386,15 +345,15 @@ docker --version
           windows
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/pYPrc_nOS" class="badge secondary">
+        <a href="https://kaluo-zz.github.io/tag/pYPrc_nOS" class="badge success">
           jupyter notebook
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/tMhk8q8aw" class="badge success">
+        <a href="https://kaluo-zz.github.io/tag/tMhk8q8aw" class="badge ">
           TensorRT
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/Pd55hi5zg" class="badge warning">
+        <a href="https://kaluo-zz.github.io/tag/Pd55hi5zg" class="badge ">
           模型压缩
         </a>
       
@@ -406,7 +365,7 @@ docker --version
           获取梯度
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/-AEi1Fqbq" class="badge ">
+        <a href="https://kaluo-zz.github.io/tag/-AEi1Fqbq" class="badge success">
           计算图
         </a>
       
@@ -414,11 +373,11 @@ docker --version
           Linux
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/GIxFYt7GS" class="badge ">
+        <a href="https://kaluo-zz.github.io/tag/GIxFYt7GS" class="badge secondary">
           磁盘挂载
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/jzn05sSpT" class="badge success">
+        <a href="https://kaluo-zz.github.io/tag/jzn05sSpT" class="badge warning">
           ssh
         </a>
       
@@ -430,7 +389,7 @@ docker --version
           反向代理
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/tVPefYU-g" class="badge success">
+        <a href="https://kaluo-zz.github.io/tag/tVPefYU-g" class="badge ">
           服务器
         </a>
       
@@ -438,11 +397,11 @@ docker --version
           Deformable Convolution
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/5IwuLmF47" class="badge secondary">
+        <a href="https://kaluo-zz.github.io/tag/5IwuLmF47" class="badge warning">
           叉积
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/gYv8tBs9s" class="badge ">
+        <a href="https://kaluo-zz.github.io/tag/gYv8tBs9s" class="badge warning">
           多边形
         </a>
       
@@ -454,7 +413,7 @@ docker --version
           顺时针
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/-HzodX2-Z" class="badge success">
+        <a href="https://kaluo-zz.github.io/tag/-HzodX2-Z" class="badge secondary">
           逆时针
         </a>
       
@@ -462,7 +421,7 @@ docker --version
           matlab
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/Ib4sWZB8W" class="badge ">
+        <a href="https://kaluo-zz.github.io/tag/Ib4sWZB8W" class="badge secondary">
           json
         </a>
       
@@ -478,7 +437,7 @@ docker --version
           docker
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/q7ckOahzm" class="badge ">
+        <a href="https://kaluo-zz.github.io/tag/q7ckOahzm" class="badge secondary">
           ubuntu18.04
         </a>
       
@@ -486,7 +445,7 @@ docker --version
           服务器环境
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/OX4bnktRr" class="badge ">
+        <a href="https://kaluo-zz.github.io/tag/OX4bnktRr" class="badge warning">
           切换gcc版本
         </a>
       
@@ -496,7 +455,6 @@ docker --version
     Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <a class="rss" href="https://kaluo-zz.github.io/atom.xml" target="_blank">RSS</a>
   </div>
 </div>
-
 
     </div>
 
