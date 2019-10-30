@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://kaluo-zz.github.io</id>
     <title>KALUO</title>
-    <updated>2019-10-30T02:50:12.659Z</updated>
+    <updated>2019-10-30T02:55:39.530Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://kaluo-zz.github.io"/>
     <link rel="self" href="https://kaluo-zz.github.io/atom.xml"/>
@@ -10,6 +10,32 @@
     <logo>https://kaluo-zz.github.io/images/avatar.png</logo>
     <icon>https://kaluo-zz.github.io/favicon.ico</icon>
     <rights>All rights reserved 2019, KALUO</rights>
+    <entry>
+        <title type="html"><![CDATA[Matlab删除结构体中的字段]]></title>
+        <id>https://kaluo-zz.github.io/post/matlab-shan-chu-jie-gou-ti-zhong-de-zi-duan</id>
+        <link href="https://kaluo-zz.github.io/post/matlab-shan-chu-jie-gou-ti-zhong-de-zi-duan">
+        </link>
+        <updated>2019-10-30T02:51:58.000Z</updated>
+        <content type="html"><![CDATA[<p>s = rmfield(s, field)<br>
+删除单个字段</p>
+<pre><code class="language-matlab">s.a = 1;
+s.b = 2;
+s.c = 3;
+
+field = 'b';
+s = rmfield(s, field)
+</code></pre>
+<p>删除多个字段</p>
+<pre><code class="language-matlab">S.first = 1;
+S.second = 2;
+S.third = 3;
+S.fourth = 4;
+
+fields = {'first', 'fourth'};
+S = rmfield(S, fields)
+</code></pre>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[利用coco api 获取mask并绘制]]></title>
         <id>https://kaluo-zz.github.io/post/li-yong-coco-api-huo-qu-mask-bing-hui-zhi</id>
@@ -427,30 +453,6 @@ torch.Size([64])
         <updated>2019-07-30T08:56:47.000Z</updated>
         <content type="html"><![CDATA[<p>Python脚本输出重定向到文件中时，发现文件内容为空。这是因为python在利用<code>print</code>函数输出信息时，默认是向缓冲区输出，待缓冲区满或者程序结束时才一次性输出。如果我们不需要缓冲，在执行脚本时加上<code>-u</code>参数。</p>
 <p><code>python -u file.py &gt; file.log 2&gt;&amp;1</code></p>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Linux-清理空间]]></title>
-        <id>https://kaluo-zz.github.io/post/linux-qing-li-kong-jian</id>
-        <link href="https://kaluo-zz.github.io/post/linux-qing-li-kong-jian">
-        </link>
-        <updated>2019-07-30T07:30:44.000Z</updated>
-        <content type="html"><![CDATA[<p>使用Linux命令删除垃圾文件：</p>
-<ol>
-<li>删除用户后遗留下来的垃圾文件:<code>find ./ -nouser | xargs rm -rf</code></li>
-</ol>
-<p>使用Linux命令清理缓存：</p>
-<ol>
-<li>清理旧版本的软件缓存：<code>apt-get autoclean</code></li>
-<li>清理所有软件缓存：<code>apt-get clean</code></li>
-<li>删除系统不再使用的孤立软件：``apt-get autoremove</li>
-</ol>
-<p>查看空间大小：</p>
-<ol>
-<li><code>du -sh *</code></li>
-<li><code>du -h --max-depth=1</code></li>
-<li><code>du -h --max-depth=1 | sort -n</code></li>
-</ol>
 ]]></content>
     </entry>
 </feed>
