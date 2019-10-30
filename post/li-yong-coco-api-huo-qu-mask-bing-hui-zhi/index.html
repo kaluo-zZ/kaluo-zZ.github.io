@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" >
 
-<title>ubuntu18.04 | KALUO</title>
+<title>利用coco api 获取mask并绘制 | KALUO</title>
 <meta name="description" content="温故而知新">
 
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
@@ -23,6 +23,7 @@
 
   </head>
   <body>
+  
     <nav class="navbar border fixed split-nav">
   <div class="nav-brand">
     <h3><a href="https://kaluo-zz.github.io">KALUO</a></h3>
@@ -79,48 +80,76 @@
     <div id="top" class="row site">
       <div class="sm-12 md-8 col">
         <div class="paper">
-          <h2 class="current-tag">标签: ubuntu18.04</h2>
-          
-  <article class="article">
-    <h2 class="article-title">
-      <a href="https://kaluo-zz.github.io/post/da-jian-fu-wu-qi-bing-pei-zhi-xiang-guan-huan-jing">搭建服务器并配置相关环境</a>
-    </h2>
-    <p class="article-meta">
-      2019-06-06
-      
-        <a href="https://kaluo-zz.github.io/tag/q7ckOahzm" class="badge secondary">
-          ubuntu18.04
-        </a>
-      
-        <a href="https://kaluo-zz.github.io/tag/-EGjsU52C" class="badge ">
-          服务器环境
-        </a>
-      
-        <a href="https://kaluo-zz.github.io/tag/OX4bnktRr" class="badge success">
-          切换gcc版本
-        </a>
-      
-    </p>
-    <p class="text-lead">
-      
-    </p>
-    <div class="row">
-      <a href="https://kaluo-zz.github.io/post/da-jian-fu-wu-qi-bing-pei-zhi-xiang-guan-huan-jing" class="readmore-link">
-        <button>
-          Read More
-        </button>
-      </a>
-    </div>
-  </article>
+          <article class="article">
+            <h1>利用coco api 获取mask并绘制</h1>
+            <p class="article-meta">
+              2019-10-30
+              
+            </p>
+            
+            <div class="post-content">
+              <p>根据网络预测结果，构造coco格式的标注anns：</p>
+<pre><code>{
+    &quot;image_id&quot;: int,
+    &quot;category_id&quot;: int,
+    &quot;bbox&quot;: [x, y, w, h],
+    &quot;score&quot;: float,
+    &quot;segmentation&quot;: [[], [], ...]
+}
+</code></pre>
+<p>举个例子，假如网络输出的格式为 pred = [xmin, ymin, xmax, ymax, scores, kps, clses]，则</p>
+<pre><code class="language-python">color = [128, 0, 128]
+if pred[4] &gt; thresh:
+    image_id = batch['meta']['img_id'].cpu().numpy()[0]
+    bbox = pred[:4].copy()
+    bbox[2] -= bbox[0]
+    bbox[3] -= bbox[1]
+    bbox_out = list(map(lambda x: float(&quot;{:.2f}&quot;.format(x)), bbox))
+    score = pred[4].copy()
+    kps = pred[5:(5+2*num)].copy()
+    kps = list(map(lambda x: float(&quot;{:.2f}&quot;.format(x)), kps)) # [x, y, x, y, ...]
+    anns_pred = {
+        &quot;image_id&quot;: int(image_id),
+        &quot;category_id&quot;: 1,
+        &quot;bbox&quot;: bbox_out,
+        &quot;score&quot;: float(&quot;{:.2f}&quot;.format(score)),
+        &quot;segmentation&quot;: [kps]
+    }
 
+    mask = coco.annToMask(anns)
+    mask3 = np.ones((mask.shape[0], mask.shape[1], 3), dtype=np.float32)
+    for j in range(3):
+        mask3[:, :, j] = color[j]
+        mask3[:, :, j] *= mask
+    mask3 = mask3.astype(img.type)
+    combined_img = cv2.addWeighted(mask3, 0.8, img, 1, 0)
+</code></pre>
+<p>上面示例只是显示了一个anns的img+mask结果。一张图像中的多个anns可以通过循环遍历来得到最终的mask:</p>
+<pre><code>mask = np.zeros((h, w), dtype=np.float32)
+for i in range(len(preds)):
+    mask = cv2.bitwise_or(mask, coco.annToMask(preds[i]))
+</code></pre>
 
+            </div>
+          </article>
         </div>
-        <div class="row flex-edges">
-  
-  
-</div>
-
+        <div class="paper" data-aos="fade-in">
+          
+            <div class="next-post">
+              <div class="next">
+                下一篇
+              </div>
+              <a href="https://kaluo-zz.github.io/post/gpu-zhuang-tai-jian-ce">
+                <h3 class="post-title">
+                  GPU状态监测
+                </h3>
+              </a>
+            </div>
+          
+        </div>
+        
       </div>
+
       <div class="sm-12 md-4 col sidebar">
   <div class="paper info-container">
     <img src="https://kaluo-zz.github.io/images/avatar.png?v=1572397647125" class="no-responsive avatar">
@@ -275,11 +304,11 @@
     </div>
     <div class="row">
       
-        <a href="https://kaluo-zz.github.io/tag/4VtK6AiAA" class="badge secondary">
+        <a href="https://kaluo-zz.github.io/tag/4VtK6AiAA" class="badge ">
           gpu
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/5i-SZnsCao" class="badge warning">
+        <a href="https://kaluo-zz.github.io/tag/5i-SZnsCao" class="badge secondary">
           gpustat
         </a>
       
@@ -287,23 +316,23 @@
           ubuntu
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/PgVGsZYpu" class="badge success">
+        <a href="https://kaluo-zz.github.io/tag/PgVGsZYpu" class="badge secondary">
           shell
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/XpP7hQ3bK" class="badge success">
+        <a href="https://kaluo-zz.github.io/tag/XpP7hQ3bK" class="badge secondary">
           linux
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/m2uV6SR6-Y" class="badge ">
+        <a href="https://kaluo-zz.github.io/tag/m2uV6SR6-Y" class="badge success">
           命令
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/4K6bnBDuJ" class="badge ">
+        <a href="https://kaluo-zz.github.io/tag/4K6bnBDuJ" class="badge warning">
           latex
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/vf0AuUtmM5" class="badge warning">
+        <a href="https://kaluo-zz.github.io/tag/vf0AuUtmM5" class="badge secondary">
           tikz
         </a>
       
@@ -315,7 +344,7 @@
           cpu
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/qNRCu_hfZ" class="badge ">
+        <a href="https://kaluo-zz.github.io/tag/qNRCu_hfZ" class="badge secondary">
           data布局
         </a>
       
@@ -323,7 +352,7 @@
           卷积核
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/rT7AxA2VY" class="badge ">
+        <a href="https://kaluo-zz.github.io/tag/rT7AxA2VY" class="badge secondary">
           pytorch
         </a>
       
@@ -331,11 +360,11 @@
           重定向
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/F4_bpm-PN1" class="badge secondary">
+        <a href="https://kaluo-zz.github.io/tag/F4_bpm-PN1" class="badge warning">
           后台运行
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/pSlACxuyg" class="badge warning">
+        <a href="https://kaluo-zz.github.io/tag/pSlACxuyg" class="badge ">
           python
         </a>
       
@@ -347,15 +376,15 @@
           windows
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/pYPrc_nOS" class="badge warning">
+        <a href="https://kaluo-zz.github.io/tag/pYPrc_nOS" class="badge ">
           jupyter notebook
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/tMhk8q8aw" class="badge ">
+        <a href="https://kaluo-zz.github.io/tag/tMhk8q8aw" class="badge success">
           TensorRT
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/Pd55hi5zg" class="badge success">
+        <a href="https://kaluo-zz.github.io/tag/Pd55hi5zg" class="badge warning">
           模型压缩
         </a>
       
@@ -367,11 +396,11 @@
           获取梯度
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/-AEi1Fqbq" class="badge secondary">
+        <a href="https://kaluo-zz.github.io/tag/-AEi1Fqbq" class="badge success">
           计算图
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/dESfnJEeE" class="badge secondary">
+        <a href="https://kaluo-zz.github.io/tag/dESfnJEeE" class="badge ">
           Linux
         </a>
       
@@ -383,7 +412,7 @@
           ssh
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/QcjFDTzeM" class="badge warning">
+        <a href="https://kaluo-zz.github.io/tag/QcjFDTzeM" class="badge ">
           autossh
         </a>
       
@@ -391,11 +420,11 @@
           反向代理
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/tVPefYU-g" class="badge secondary">
+        <a href="https://kaluo-zz.github.io/tag/tVPefYU-g" class="badge ">
           服务器
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/bAjW-e_UD" class="badge warning">
+        <a href="https://kaluo-zz.github.io/tag/bAjW-e_UD" class="badge secondary">
           Deformable Convolution
         </a>
       
@@ -403,35 +432,35 @@
           叉积
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/gYv8tBs9s" class="badge success">
+        <a href="https://kaluo-zz.github.io/tag/gYv8tBs9s" class="badge ">
           多边形
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/gKuVi5cQQ" class="badge secondary">
+        <a href="https://kaluo-zz.github.io/tag/gKuVi5cQQ" class="badge warning">
           面积
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/1ViRR-SXR" class="badge secondary">
+        <a href="https://kaluo-zz.github.io/tag/1ViRR-SXR" class="badge warning">
           顺时针
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/-HzodX2-Z" class="badge secondary">
+        <a href="https://kaluo-zz.github.io/tag/-HzodX2-Z" class="badge success">
           逆时针
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/Q-fXnNDSO" class="badge ">
+        <a href="https://kaluo-zz.github.io/tag/Q-fXnNDSO" class="badge success">
           matlab
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/Ib4sWZB8W" class="badge ">
+        <a href="https://kaluo-zz.github.io/tag/Ib4sWZB8W" class="badge secondary">
           json
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/_2vcj6Je3" class="badge secondary">
+        <a href="https://kaluo-zz.github.io/tag/_2vcj6Je3" class="badge warning">
           darknet
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/ZXh7J58dV" class="badge secondary">
+        <a href="https://kaluo-zz.github.io/tag/ZXh7J58dV" class="badge warning">
           函数分析
         </a>
       
@@ -439,11 +468,11 @@
           docker
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/q7ckOahzm" class="badge warning">
+        <a href="https://kaluo-zz.github.io/tag/q7ckOahzm" class="badge secondary">
           ubuntu18.04
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/-EGjsU52C" class="badge secondary">
+        <a href="https://kaluo-zz.github.io/tag/-EGjsU52C" class="badge warning">
           服务器环境
         </a>
       
@@ -457,6 +486,7 @@
     Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <a class="rss" href="https://kaluo-zz.github.io/atom.xml" target="_blank">RSS</a>
   </div>
 </div>
+
 
     </div>
 

@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://kaluo-zz.github.io</id>
     <title>KALUO</title>
-    <updated>2019-10-28T11:47:27.181Z</updated>
+    <updated>2019-10-30T01:07:33.158Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://kaluo-zz.github.io"/>
     <link rel="self" href="https://kaluo-zz.github.io/atom.xml"/>
@@ -10,6 +10,55 @@
     <logo>https://kaluo-zz.github.io/images/avatar.png</logo>
     <icon>https://kaluo-zz.github.io/favicon.ico</icon>
     <rights>All rights reserved 2019, KALUO</rights>
+    <entry>
+        <title type="html"><![CDATA[利用coco api 获取mask并绘制]]></title>
+        <id>https://kaluo-zz.github.io/post/li-yong-coco-api-huo-qu-mask-bing-hui-zhi</id>
+        <link href="https://kaluo-zz.github.io/post/li-yong-coco-api-huo-qu-mask-bing-hui-zhi">
+        </link>
+        <updated>2019-10-30T00:29:17.000Z</updated>
+        <content type="html"><![CDATA[<p>根据网络预测结果，构造coco格式的标注anns：</p>
+<pre><code>{
+    &quot;image_id&quot;: int,
+    &quot;category_id&quot;: int,
+    &quot;bbox&quot;: [x, y, w, h],
+    &quot;score&quot;: float,
+    &quot;segmentation&quot;: [[], [], ...]
+}
+</code></pre>
+<p>举个例子，假如网络输出的格式为 pred = [xmin, ymin, xmax, ymax, scores, kps, clses]，则</p>
+<pre><code class="language-python">color = [128, 0, 128]
+if pred[4] &gt; thresh:
+    image_id = batch['meta']['img_id'].cpu().numpy()[0]
+    bbox = pred[:4].copy()
+    bbox[2] -= bbox[0]
+    bbox[3] -= bbox[1]
+    bbox_out = list(map(lambda x: float(&quot;{:.2f}&quot;.format(x)), bbox))
+    score = pred[4].copy()
+    kps = pred[5:(5+2*num)].copy()
+    kps = list(map(lambda x: float(&quot;{:.2f}&quot;.format(x)), kps)) # [x, y, x, y, ...]
+    anns_pred = {
+        &quot;image_id&quot;: int(image_id),
+        &quot;category_id&quot;: 1,
+        &quot;bbox&quot;: bbox_out,
+        &quot;score&quot;: float(&quot;{:.2f}&quot;.format(score)),
+        &quot;segmentation&quot;: [kps]
+    }
+
+    mask = coco.annToMask(anns)
+    mask3 = np.ones((mask.shape[0], mask.shape[1], 3), dtype=np.float32)
+    for j in range(3):
+        mask3[:, :, j] = color[j]
+        mask3[:, :, j] *= mask
+    mask3 = mask3.astype(img.type)
+    combined_img = cv2.addWeighted(mask3, 0.8, img, 1, 0)
+</code></pre>
+<p>上面示例只是显示了一个anns的img+mask结果。一张图像中的多个anns可以通过循环遍历来得到最终的mask:</p>
+<pre><code>mask = np.zeros((h, w), dtype=np.float32)
+for i in range(len(preds)):
+    mask = cv2.bitwise_or(mask, coco.annToMask(preds[i]))
+</code></pre>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[GPU状态监测]]></title>
         <id>https://kaluo-zz.github.io/post/gpu-zhuang-tai-jian-ce</id>
@@ -400,23 +449,6 @@ torch.Size([64])
 <li><code>du -h --max-depth=1</code></li>
 <li><code>du -h --max-depth=1 | sort -n</code></li>
 </ol>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[数字补零]]></title>
-        <id>https://kaluo-zz.github.io/post/shu-zi-bu-ling</id>
-        <link href="https://kaluo-zz.github.io/post/shu-zi-bu-ling">
-        </link>
-        <updated>2019-07-24T06:25:14.000Z</updated>
-        <content type="html"><![CDATA[<h1 id="python">Python</h1>
-<ul>
-<li><code>zfill()</code>方法返回指定长度的字符串，原字符串右对齐，前面填充0。<code>str.zfill(width)</code></li>
-<li>格式化：<code>&quot;%05d&quot; % n</code>，<code>n</code>为纯数字。</li>
-</ul>
-<h1 id="matlab">Matlab</h1>
-<p><code>num2str(a,'%02d');</code></p>
-<h1 id="c">C++</h1>
-<p><code>sprintf(s, &quot;%04d&quot;, i);</code></p>
 ]]></content>
     </entry>
 </feed>
