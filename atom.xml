@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://kaluo-zz.github.io</id>
     <title>KALUO</title>
-    <updated>2019-10-30T01:08:52.665Z</updated>
+    <updated>2019-10-30T02:50:12.659Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://kaluo-zz.github.io"/>
     <link rel="self" href="https://kaluo-zz.github.io/atom.xml"/>
@@ -38,7 +38,7 @@ if pred[4] &gt; thresh:
     kps = list(map(lambda x: float(&quot;{:.2f}&quot;.format(x)), kps)) # [x, y, x, y, ...]
     anns_pred = {
         &quot;image_id&quot;: int(image_id),
-        &quot;category_id&quot;: 1,
+        &quot;category_id&quot;: 1, # 只是单个类别，person
         &quot;bbox&quot;: bbox_out,
         &quot;score&quot;: float(&quot;{:.2f}&quot;.format(score)),
         &quot;segmentation&quot;: [kps]
@@ -57,6 +57,8 @@ if pred[4] &gt; thresh:
 for i in range(len(preds)):
     mask = cv2.bitwise_or(mask, coco.annToMask(preds[i]))
 </code></pre>
+<p>cv2.addWeighted()代码实例：<br>
+https://www.programcreek.com/python/example/89436/cv2.addWeighted</p>
 ]]></content>
     </entry>
     <entry>

@@ -7,7 +7,7 @@
 <meta name="description" content="温故而知新">
 
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<link rel="shortcut icon" href="https://kaluo-zz.github.io/favicon.ico?v=1572397727923">
+<link rel="shortcut icon" href="https://kaluo-zz.github.io/favicon.ico?v=1572403809302">
 
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
 <link rel="stylesheet" href="https://unpkg.com/papercss@1.6.1/dist/paper.min.css" />
@@ -89,7 +89,7 @@
                   绘制mask
                 </a>
               
-                <a href="https://kaluo-zz.github.io/tag/vA0S58AABV" class="badge secondary">
+                <a href="https://kaluo-zz.github.io/tag/vA0S58AABV" class="badge ">
                   coco
                 </a>
               
@@ -122,7 +122,7 @@ if pred[4] &gt; thresh:
     kps = list(map(lambda x: float(&quot;{:.2f}&quot;.format(x)), kps)) # [x, y, x, y, ...]
     anns_pred = {
         &quot;image_id&quot;: int(image_id),
-        &quot;category_id&quot;: 1,
+        &quot;category_id&quot;: 1, # 只是单个类别，person
         &quot;bbox&quot;: bbox_out,
         &quot;score&quot;: float(&quot;{:.2f}&quot;.format(score)),
         &quot;segmentation&quot;: [kps]
@@ -141,6 +141,8 @@ if pred[4] &gt; thresh:
 for i in range(len(preds)):
     mask = cv2.bitwise_or(mask, coco.annToMask(preds[i]))
 </code></pre>
+<p>cv2.addWeighted()代码实例：<br>
+https://www.programcreek.com/python/example/89436/cv2.addWeighted</p>
 
             </div>
           </article>
@@ -164,7 +166,7 @@ for i in range(len(preds)):
 
       <div class="sm-12 md-4 col sidebar">
   <div class="paper info-container">
-    <img src="https://kaluo-zz.github.io/images/avatar.png?v=1572397727923" class="no-responsive avatar">
+    <img src="https://kaluo-zz.github.io/images/avatar.png?v=1572403809302" class="no-responsive avatar">
     <div class="text-muted">温故而知新</div>
     <div class="social-container">
       
@@ -320,15 +322,15 @@ for i in range(len(preds)):
           绘制mask
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/vA0S58AABV" class="badge secondary">
+        <a href="https://kaluo-zz.github.io/tag/vA0S58AABV" class="badge warning">
           coco
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/pSlACxuyg" class="badge secondary">
+        <a href="https://kaluo-zz.github.io/tag/pSlACxuyg" class="badge success">
           python
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/4VtK6AiAA" class="badge secondary">
+        <a href="https://kaluo-zz.github.io/tag/4VtK6AiAA" class="badge ">
           gpu
         </a>
       
@@ -340,19 +342,19 @@ for i in range(len(preds)):
           ubuntu
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/PgVGsZYpu" class="badge ">
+        <a href="https://kaluo-zz.github.io/tag/PgVGsZYpu" class="badge success">
           shell
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/XpP7hQ3bK" class="badge warning">
+        <a href="https://kaluo-zz.github.io/tag/XpP7hQ3bK" class="badge secondary">
           linux
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/m2uV6SR6-Y" class="badge secondary">
+        <a href="https://kaluo-zz.github.io/tag/m2uV6SR6-Y" class="badge success">
           命令
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/4K6bnBDuJ" class="badge success">
+        <a href="https://kaluo-zz.github.io/tag/4K6bnBDuJ" class="badge warning">
           latex
         </a>
       
@@ -360,23 +362,23 @@ for i in range(len(preds)):
           tikz
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/PzNHh70_8H" class="badge success">
+        <a href="https://kaluo-zz.github.io/tag/PzNHh70_8H" class="badge ">
           绘图
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/lFDvY_rtIK" class="badge secondary">
+        <a href="https://kaluo-zz.github.io/tag/lFDvY_rtIK" class="badge ">
           cpu
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/qNRCu_hfZ" class="badge secondary">
+        <a href="https://kaluo-zz.github.io/tag/qNRCu_hfZ" class="badge success">
           data布局
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/_JunyD00tX" class="badge success">
+        <a href="https://kaluo-zz.github.io/tag/_JunyD00tX" class="badge ">
           卷积核
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/rT7AxA2VY" class="badge warning">
+        <a href="https://kaluo-zz.github.io/tag/rT7AxA2VY" class="badge success">
           pytorch
         </a>
       
@@ -384,11 +386,11 @@ for i in range(len(preds)):
           重定向
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/F4_bpm-PN1" class="badge ">
+        <a href="https://kaluo-zz.github.io/tag/F4_bpm-PN1" class="badge success">
           后台运行
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/eZD1Nf0zT" class="badge warning">
+        <a href="https://kaluo-zz.github.io/tag/eZD1Nf0zT" class="badge secondary">
           visdom
         </a>
       
@@ -396,35 +398,35 @@ for i in range(len(preds)):
           windows
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/pYPrc_nOS" class="badge secondary">
+        <a href="https://kaluo-zz.github.io/tag/pYPrc_nOS" class="badge ">
           jupyter notebook
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/tMhk8q8aw" class="badge warning">
+        <a href="https://kaluo-zz.github.io/tag/tMhk8q8aw" class="badge success">
           TensorRT
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/Pd55hi5zg" class="badge warning">
+        <a href="https://kaluo-zz.github.io/tag/Pd55hi5zg" class="badge success">
           模型压缩
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/WUgomcUCO" class="badge success">
+        <a href="https://kaluo-zz.github.io/tag/WUgomcUCO" class="badge secondary">
           参数冻结
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/_n7xZJOd0" class="badge warning">
+        <a href="https://kaluo-zz.github.io/tag/_n7xZJOd0" class="badge secondary">
           获取梯度
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/-AEi1Fqbq" class="badge warning">
+        <a href="https://kaluo-zz.github.io/tag/-AEi1Fqbq" class="badge secondary">
           计算图
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/dESfnJEeE" class="badge warning">
+        <a href="https://kaluo-zz.github.io/tag/dESfnJEeE" class="badge secondary">
           Linux
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/GIxFYt7GS" class="badge success">
+        <a href="https://kaluo-zz.github.io/tag/GIxFYt7GS" class="badge secondary">
           磁盘挂载
         </a>
       
@@ -432,23 +434,23 @@ for i in range(len(preds)):
           ssh
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/QcjFDTzeM" class="badge secondary">
+        <a href="https://kaluo-zz.github.io/tag/QcjFDTzeM" class="badge ">
           autossh
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/zrgqUYq1I" class="badge secondary">
+        <a href="https://kaluo-zz.github.io/tag/zrgqUYq1I" class="badge ">
           反向代理
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/tVPefYU-g" class="badge warning">
+        <a href="https://kaluo-zz.github.io/tag/tVPefYU-g" class="badge secondary">
           服务器
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/bAjW-e_UD" class="badge secondary">
+        <a href="https://kaluo-zz.github.io/tag/bAjW-e_UD" class="badge ">
           Deformable Convolution
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/5IwuLmF47" class="badge secondary">
+        <a href="https://kaluo-zz.github.io/tag/5IwuLmF47" class="badge success">
           叉积
         </a>
       
@@ -460,43 +462,43 @@ for i in range(len(preds)):
           面积
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/1ViRR-SXR" class="badge secondary">
+        <a href="https://kaluo-zz.github.io/tag/1ViRR-SXR" class="badge success">
           顺时针
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/-HzodX2-Z" class="badge success">
+        <a href="https://kaluo-zz.github.io/tag/-HzodX2-Z" class="badge ">
           逆时针
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/Q-fXnNDSO" class="badge ">
+        <a href="https://kaluo-zz.github.io/tag/Q-fXnNDSO" class="badge secondary">
           matlab
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/Ib4sWZB8W" class="badge warning">
+        <a href="https://kaluo-zz.github.io/tag/Ib4sWZB8W" class="badge secondary">
           json
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/_2vcj6Je3" class="badge success">
+        <a href="https://kaluo-zz.github.io/tag/_2vcj6Je3" class="badge ">
           darknet
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/ZXh7J58dV" class="badge ">
+        <a href="https://kaluo-zz.github.io/tag/ZXh7J58dV" class="badge secondary">
           函数分析
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/5QDLVaWYn" class="badge secondary">
+        <a href="https://kaluo-zz.github.io/tag/5QDLVaWYn" class="badge success">
           docker
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/q7ckOahzm" class="badge ">
+        <a href="https://kaluo-zz.github.io/tag/q7ckOahzm" class="badge secondary">
           ubuntu18.04
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/-EGjsU52C" class="badge warning">
+        <a href="https://kaluo-zz.github.io/tag/-EGjsU52C" class="badge ">
           服务器环境
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/OX4bnktRr" class="badge success">
+        <a href="https://kaluo-zz.github.io/tag/OX4bnktRr" class="badge ">
           切换gcc版本
         </a>
       
