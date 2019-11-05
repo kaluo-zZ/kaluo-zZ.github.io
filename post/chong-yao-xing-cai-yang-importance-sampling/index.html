@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" >
 
-<title>Docker相关命令 | KALUO</title>
+<title>重要性采样（Importance Sampling） | KALUO</title>
 <meta name="description" content="温故而知新">
 
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
@@ -81,24 +81,26 @@
       <div class="sm-12 md-8 col">
         <div class="paper">
           <article class="article">
-            <h1>Docker相关命令</h1>
+            <h1>重要性采样（Importance Sampling）</h1>
             <p class="article-meta">
-              2019-06-06
-              
-                <a href="https://kaluo-zz.github.io/tag/5QDLVaWYn" class="badge success">
-                  docker
-                </a>
+              2019-11-05
               
             </p>
             
             <div class="post-content">
-              <ol>
-<li>查询容器：<code>docker ps -a</code></li>
-<li>终止容器：<code>docker stop $(id)</code></li>
-<li>删除容器：<code>docker rm $(id)</code></li>
-<li>查询镜像：<code>docker images</code></li>
-<li>删除镜像：<code>docker rmi $(id)</code></li>
+              <p><img src="https://kaluo-zz.github.io/post-images/1572963944456.jpg" alt=""><br>
+基础概念：</p>
+<ol>
+<li>累积分布函数(Cumulative Distribution Function, CDF)</li>
+<li>概率密度函数(Probability Distribution Function, PDF)</li>
+<li>采样(Sampling)</li>
+<li>重要性采样(Importance Sampling)</li>
 </ol>
+<p>在计算机中，如何生成符合某种概率密度函数p(x)的样本？<br>
+采样可分为均匀分布采样、离散分布采样、连续分布采样，这里关注连续分布采样。</p>
+<p>如果一个分布的概率密度函数为p(x)，其累积分布函数cdf(x)为连续的严格增函数，且存在逆函数<span class="katex"><span class="katex-mathml"><math><semantics><mrow><msup><mtext>cdf</mtext><mrow><mo>−</mo><mn>1</mn></mrow></msup><mo>(</mo><mi>y</mi><mo>)</mo></mrow><annotation encoding="application/x-tex">\text{cdf}^{-1}(y)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.148448em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord text"><span class="mord">cdf</span></span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8984479999999999em;"><span style="top:-3.14734em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">−</span><span class="mord mtight">1</span></span></span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord mathdefault" style="margin-right:0.03588em;">y</span><span class="mclose">)</span></span></span></span>，那么我们可以利用累积分布函数的逆函数来生成服从该分布的样本。</p>
+<p>假设<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>ξ</mi></mrow><annotation encoding="application/x-tex">\xi</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8888799999999999em;vertical-align:-0.19444em;"></span><span class="mord mathdefault" style="margin-right:0.04601em;">ξ</span></span></span></span>是[0, 1]区间上均与分布的随机变量，则<span class="katex"><span class="katex-mathml"><math><semantics><mrow><msup><mtext>cdf</mtext><mrow><mo>−</mo><mn>1</mn></mrow></msup><mo>(</mo><mi>ξ</mi><mo>)</mo></mrow><annotation encoding="application/x-tex">\text{cdf}^{-1}(\xi)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.148448em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord text"><span class="mord">cdf</span></span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8984479999999999em;"><span style="top:-3.14734em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">−</span><span class="mord mtight">1</span></span></span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord mathdefault" style="margin-right:0.04601em;">ξ</span><span class="mclose">)</span></span></span></span>服从概率密度函数为p(x)的分布。</p>
+<p>但当p(x)非常复杂(比如由神经网络构成)，其累积分布函数的逆函数难以计算，那么就难以直接对p(x)进行采样。这时往往需要使用一些间接的采样策略，这就引入了我们将要介绍的重要性采样。</p>
 
             </div>
           </article>
@@ -109,9 +111,9 @@
               <div class="next">
                 下一篇
               </div>
-              <a href="https://kaluo-zz.github.io/post/da-jian-fu-wu-qi-bing-pei-zhi-xiang-guan-huan-jing">
+              <a href="https://kaluo-zz.github.io/post/matlab-shan-chu-jie-gou-ti-zhong-de-zi-duan">
                 <h3 class="post-title">
-                  搭建服务器并配置相关环境
+                  Matlab删除结构体中的字段
                 </h3>
               </a>
             </div>
@@ -278,19 +280,19 @@
     </div>
     <div class="row">
       
-        <a href="https://kaluo-zz.github.io/tag/6qPaooOHK" class="badge secondary">
+        <a href="https://kaluo-zz.github.io/tag/6qPaooOHK" class="badge ">
           绘制mask
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/vA0S58AABV" class="badge warning">
+        <a href="https://kaluo-zz.github.io/tag/vA0S58AABV" class="badge secondary">
           coco
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/pSlACxuyg" class="badge warning">
+        <a href="https://kaluo-zz.github.io/tag/pSlACxuyg" class="badge success">
           python
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/4VtK6AiAA" class="badge success">
+        <a href="https://kaluo-zz.github.io/tag/4VtK6AiAA" class="badge secondary">
           gpu
         </a>
       
@@ -302,11 +304,11 @@
           ubuntu
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/PgVGsZYpu" class="badge secondary">
+        <a href="https://kaluo-zz.github.io/tag/PgVGsZYpu" class="badge warning">
           shell
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/XpP7hQ3bK" class="badge warning">
+        <a href="https://kaluo-zz.github.io/tag/XpP7hQ3bK" class="badge secondary">
           linux
         </a>
       
@@ -314,67 +316,67 @@
           命令
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/4K6bnBDuJ" class="badge ">
+        <a href="https://kaluo-zz.github.io/tag/4K6bnBDuJ" class="badge secondary">
           latex
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/vf0AuUtmM5" class="badge success">
+        <a href="https://kaluo-zz.github.io/tag/vf0AuUtmM5" class="badge ">
           tikz
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/PzNHh70_8H" class="badge ">
+        <a href="https://kaluo-zz.github.io/tag/PzNHh70_8H" class="badge success">
           绘图
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/lFDvY_rtIK" class="badge ">
+        <a href="https://kaluo-zz.github.io/tag/lFDvY_rtIK" class="badge secondary">
           cpu
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/qNRCu_hfZ" class="badge warning">
+        <a href="https://kaluo-zz.github.io/tag/qNRCu_hfZ" class="badge ">
           data布局
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/_JunyD00tX" class="badge secondary">
+        <a href="https://kaluo-zz.github.io/tag/_JunyD00tX" class="badge success">
           卷积核
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/rT7AxA2VY" class="badge success">
+        <a href="https://kaluo-zz.github.io/tag/rT7AxA2VY" class="badge secondary">
           pytorch
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/yvi1PqtLs" class="badge warning">
+        <a href="https://kaluo-zz.github.io/tag/yvi1PqtLs" class="badge ">
           重定向
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/F4_bpm-PN1" class="badge success">
+        <a href="https://kaluo-zz.github.io/tag/F4_bpm-PN1" class="badge ">
           后台运行
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/eZD1Nf0zT" class="badge secondary">
+        <a href="https://kaluo-zz.github.io/tag/eZD1Nf0zT" class="badge warning">
           visdom
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/9PDDgxnN1" class="badge success">
+        <a href="https://kaluo-zz.github.io/tag/9PDDgxnN1" class="badge ">
           windows
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/pYPrc_nOS" class="badge warning">
+        <a href="https://kaluo-zz.github.io/tag/pYPrc_nOS" class="badge secondary">
           jupyter notebook
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/tMhk8q8aw" class="badge success">
+        <a href="https://kaluo-zz.github.io/tag/tMhk8q8aw" class="badge warning">
           TensorRT
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/Pd55hi5zg" class="badge ">
+        <a href="https://kaluo-zz.github.io/tag/Pd55hi5zg" class="badge warning">
           模型压缩
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/WUgomcUCO" class="badge ">
+        <a href="https://kaluo-zz.github.io/tag/WUgomcUCO" class="badge warning">
           参数冻结
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/_n7xZJOd0" class="badge ">
+        <a href="https://kaluo-zz.github.io/tag/_n7xZJOd0" class="badge warning">
           获取梯度
         </a>
       
@@ -382,19 +384,19 @@
           计算图
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/dESfnJEeE" class="badge success">
+        <a href="https://kaluo-zz.github.io/tag/dESfnJEeE" class="badge warning">
           Linux
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/GIxFYt7GS" class="badge warning">
+        <a href="https://kaluo-zz.github.io/tag/GIxFYt7GS" class="badge success">
           磁盘挂载
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/jzn05sSpT" class="badge success">
+        <a href="https://kaluo-zz.github.io/tag/jzn05sSpT" class="badge secondary">
           ssh
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/QcjFDTzeM" class="badge success">
+        <a href="https://kaluo-zz.github.io/tag/QcjFDTzeM" class="badge ">
           autossh
         </a>
       
@@ -402,11 +404,11 @@
           反向代理
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/tVPefYU-g" class="badge success">
+        <a href="https://kaluo-zz.github.io/tag/tVPefYU-g" class="badge secondary">
           服务器
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/bAjW-e_UD" class="badge warning">
+        <a href="https://kaluo-zz.github.io/tag/bAjW-e_UD" class="badge ">
           Deformable Convolution
         </a>
       
@@ -414,7 +416,7 @@
           叉积
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/gYv8tBs9s" class="badge warning">
+        <a href="https://kaluo-zz.github.io/tag/gYv8tBs9s" class="badge ">
           多边形
         </a>
       
@@ -430,11 +432,11 @@
           逆时针
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/Q-fXnNDSO" class="badge ">
+        <a href="https://kaluo-zz.github.io/tag/Q-fXnNDSO" class="badge success">
           matlab
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/Ib4sWZB8W" class="badge ">
+        <a href="https://kaluo-zz.github.io/tag/Ib4sWZB8W" class="badge secondary">
           json
         </a>
       
@@ -442,11 +444,11 @@
           darknet
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/ZXh7J58dV" class="badge secondary">
+        <a href="https://kaluo-zz.github.io/tag/ZXh7J58dV" class="badge success">
           函数分析
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/5QDLVaWYn" class="badge ">
+        <a href="https://kaluo-zz.github.io/tag/5QDLVaWYn" class="badge success">
           docker
         </a>
       
@@ -454,11 +456,11 @@
           ubuntu18.04
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/-EGjsU52C" class="badge ">
+        <a href="https://kaluo-zz.github.io/tag/-EGjsU52C" class="badge success">
           服务器环境
         </a>
       
-        <a href="https://kaluo-zz.github.io/tag/OX4bnktRr" class="badge warning">
+        <a href="https://kaluo-zz.github.io/tag/OX4bnktRr" class="badge success">
           切换gcc版本
         </a>
       
