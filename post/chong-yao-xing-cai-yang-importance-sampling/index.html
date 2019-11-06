@@ -9,7 +9,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
-<link rel="shortcut icon" href="https://kaluo-zz.github.io/favicon.ico?v=1573000037948">
+<link rel="shortcut icon" href="https://kaluo-zz.github.io/favicon.ico?v=1573001268131">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
 <link rel="stylesheet" href="https://kaluo-zz.github.io/styles/main.css">
 
@@ -30,7 +30,7 @@
   <div class="top-container" data-aos="fade-right">
     <div class="top-header-container">
       <a class="site-title-container" href="https://kaluo-zz.github.io">
-        <img src="https://kaluo-zz.github.io/images/avatar.png?v=1573000037948" class="site-logo">
+        <img src="https://kaluo-zz.github.io/images/avatar.png?v=1573001268131" class="site-logo">
         <h1 class="site-title">KALUO</h1>
       </a>
       <div class="menu-btn" @click="menuVisible = !menuVisible">
@@ -99,7 +99,9 @@
               </div>
             
             <div class="post-content">
-              <p>基础概念：</p>
+              <p>如果一个分布的概率密度函数为p(x)，其累积分布函数cdf(x)为连续的严格增函数，且存在逆函数<span class="katex"><span class="katex-mathml"><math><semantics><mrow><msup><mtext>cdf</mtext><mrow><mo>−</mo><mn>1</mn></mrow></msup><mo>(</mo><mi>y</mi><mo>)</mo></mrow><annotation encoding="application/x-tex">\text{cdf}^{-1}(y)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.148448em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord text"><span class="mord">cdf</span></span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8984479999999999em;"><span style="top:-3.14734em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">−</span><span class="mord mtight">1</span></span></span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord mathdefault" style="margin-right:0.03588em;">y</span><span class="mclose">)</span></span></span></span>，那么我们可以利用累积分布函数的逆函数来生成服从该分布的样本。</p>
+<!-- more -->
+<p>基础概念：</p>
 <ol>
 <li>累积分布函数(Cumulative Distribution Function, CDF)</li>
 <li>概率密度函数(Probability Distribution Function, PDF)</li>
@@ -109,6 +111,7 @@
 <p>在计算机中，如何生成符合某种概率密度函数p(x)的样本？<br>
 采样可分为均匀分布采样、离散分布采样、连续分布采样，这里关注连续分布采样。</p>
 <p>如果一个分布的概率密度函数为p(x)，其累积分布函数cdf(x)为连续的严格增函数，且存在逆函数<span class="katex"><span class="katex-mathml"><math><semantics><mrow><msup><mtext>cdf</mtext><mrow><mo>−</mo><mn>1</mn></mrow></msup><mo>(</mo><mi>y</mi><mo>)</mo></mrow><annotation encoding="application/x-tex">\text{cdf}^{-1}(y)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.148448em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord text"><span class="mord">cdf</span></span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8984479999999999em;"><span style="top:-3.14734em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">−</span><span class="mord mtight">1</span></span></span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord mathdefault" style="margin-right:0.03588em;">y</span><span class="mclose">)</span></span></span></span>，那么我们可以利用累积分布函数的逆函数来生成服从该分布的样本。</p>
+<p>(能够计算样本的概率密度函数值p(x)，不表示能够产生符合概率密度函数p(x)的样本。)</p>
 <p>假设<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>ξ</mi></mrow><annotation encoding="application/x-tex">\xi</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8888799999999999em;vertical-align:-0.19444em;"></span><span class="mord mathdefault" style="margin-right:0.04601em;">ξ</span></span></span></span>是[0, 1]区间上均与分布的随机变量，则<span class="katex"><span class="katex-mathml"><math><semantics><mrow><msup><mtext>cdf</mtext><mrow><mo>−</mo><mn>1</mn></mrow></msup><mo>(</mo><mi>ξ</mi><mo>)</mo></mrow><annotation encoding="application/x-tex">\text{cdf}^{-1}(\xi)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.148448em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord text"><span class="mord">cdf</span></span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8984479999999999em;"><span style="top:-3.14734em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">−</span><span class="mord mtight">1</span></span></span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord mathdefault" style="margin-right:0.04601em;">ξ</span><span class="mclose">)</span></span></span></span>服从概率密度函数为p(x)的分布。</p>
 <p>但当p(x)非常复杂(比如由神经网络构成)，其累积分布函数的逆函数难以计算，那么就难以直接对p(x)进行采样。这时往往需要使用一些间接的采样策略，这就引入了我们将要介绍的重要性采样。</p>
 
