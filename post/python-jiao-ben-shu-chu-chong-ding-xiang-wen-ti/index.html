@@ -7,126 +7,65 @@
 <meta name="description" content="温故而知新">
 
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<link rel="shortcut icon" href="https://kaluo-zz.github.io/favicon.ico?v=1572964161690">
 
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
-<link rel="stylesheet" href="https://unpkg.com/papercss@1.6.1/dist/paper.min.css" />
+<link rel="shortcut icon" href="https://kaluo-zz.github.io/favicon.ico?v=1573000037948">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
 <link rel="stylesheet" href="https://kaluo-zz.github.io/styles/main.css">
 
 
-<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
 
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
 
 <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
 
 
+
   </head>
   <body>
-  
-    <nav class="navbar border fixed split-nav">
-  <div class="nav-brand">
-    <h3><a href="https://kaluo-zz.github.io">KALUO</a></h3>
-  </div>
-  <div class="collapsible">
-    <input id="collapsible1" type="checkbox" name="collapsible1">
-    <button>
-      <label for="collapsible1">
-        <div class="bar1"></div>
-        <div class="bar2"></div>
-        <div class="bar3"></div>
-      </label>
-    </button>
-    <div class="collapsible-body">
-      <ul class="inline">
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://kaluo-zz.github.io">
+        <img src="https://kaluo-zz.github.io/images/avatar.png?v=1573000037948" class="site-logo">
+        <h1 class="site-title">KALUO</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
         
-          <li>
-            
-              <a href="/" class="menu">
-                首页
-              </a>
-            
-          </li>
+          <a href="/" class="site-nav">
+            首页
+          </a>
         
-          <li>
-            
-              <a href="/archives" class="menu">
-                归档
-              </a>
-            
-          </li>
+      
         
-          <li>
-            
-              <a href="/tags" class="menu">
-                标签
-              </a>
-            
-          </li>
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
         
-          <li>
-            
-              <a href="/post/about" class="menu">
-                关于
-              </a>
-            
-          </li>
+      
         
-      </ul>
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于
+          </a>
+        
+      
     </div>
   </div>
-</nav>
-
-    <div id="top" class="row site">
-      <div class="sm-12 md-8 col">
-        <div class="paper">
-          <article class="article">
-            <h1>Python脚本输出重定向问题</h1>
-            <p class="article-meta">
-              2019-07-30
-              
-                <a href="https://kaluo-zz.github.io/tag/yvi1PqtLs" class="badge success">
-                  重定向
-                </a>
-              
-                <a href="https://kaluo-zz.github.io/tag/F4_bpm-PN1" class="badge success">
-                  后台运行
-                </a>
-              
-                <a href="https://kaluo-zz.github.io/tag/pSlACxuyg" class="badge warning">
-                  python
-                </a>
-              
-            </p>
-            
-            <div class="post-content">
-              <p>Python脚本输出重定向到文件中时，发现文件内容为空。这是因为python在利用<code>print</code>函数输出信息时，默认是向缓冲区输出，待缓冲区满或者程序结束时才一次性输出。如果我们不需要缓冲，在执行脚本时加上<code>-u</code>参数。</p>
-<p><code>python -u file.py &gt; file.log 2&gt;&amp;1</code></p>
-
-            </div>
-          </article>
-        </div>
-        <div class="paper" data-aos="fade-in">
-          
-            <div class="next-post">
-              <div class="next">
-                下一篇
-              </div>
-              <a href="https://kaluo-zz.github.io/post/linux-qing-li-kong-jian">
-                <h3 class="post-title">
-                  Linux-清理空间
-                </h3>
-              </a>
-            </div>
-          
-        </div>
-        
-      </div>
-
-      <div class="sm-12 md-4 col sidebar">
-  <div class="paper info-container">
-    <img src="https://kaluo-zz.github.io/images/avatar.png?v=1572964161690" class="no-responsive avatar">
-    <div class="text-muted">温故而知新</div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
     <div class="social-container">
       
         
@@ -140,339 +79,61 @@
         
       
     </div>
-  </div>
-  <div class="paper">
-    <div class="sidebar-title">
-      最新文章
+    <div class="site-description">
+      温故而知新
     </div>
-    <div class="row">
-      <ul>
-        
-          
-            <li>
-              <a href="https://kaluo-zz.github.io/post/chong-yao-xing-cai-yang-importance-sampling">重要性采样（Importance Sampling）</a>
-            </li>
-          
-        
-          
-            <li>
-              <a href="https://kaluo-zz.github.io/post/matlab-shan-chu-jie-gou-ti-zhong-de-zi-duan">Matlab删除结构体中的字段</a>
-            </li>
-          
-        
-          
-            <li>
-              <a href="https://kaluo-zz.github.io/post/li-yong-coco-api-huo-qu-mask-bing-hui-zhi">利用coco api 获取mask并绘制</a>
-            </li>
-          
-        
-          
-            <li>
-              <a href="https://kaluo-zz.github.io/post/gpu-zhuang-tai-jian-ce">GPU状态监测</a>
-            </li>
-          
-        
-          
-            <li>
-              <a href="https://kaluo-zz.github.io/post/python-zhi-shang-san-jiao-ju-zhen">Python之上三角矩阵</a>
-            </li>
-          
-        
-          
-            <li>
-              <a href="https://kaluo-zz.github.io/post/pytorch-zhi-gather-li-jie">Pytorch之gather理解</a>
-            </li>
-          
-        
-          
-            <li>
-              <a href="https://kaluo-zz.github.io/post/linux-zhi-shell-ming-ling">Linux之shell命令</a>
-            </li>
-          
-        
-          
-            <li>
-              <a href="https://kaluo-zz.github.io/post/tikz-hui-tu">Tikz绘图</a>
-            </li>
-          
-        
-          
-            <li>
-              <a href="https://kaluo-zz.github.io/post/ubuntu-zhi-cha-kan-cpu-shi-yong-qing-kuang">Ubuntu之查看CPU使用情况</a>
-            </li>
-          
-        
-          
-            <li>
-              <a href="https://kaluo-zz.github.io/post/pytorch-zhi-weightdata">Pytorch之weight.data</a>
-            </li>
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-      </ul>
+    <div class="site-footer">
+      Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <a class="rss" href="https://kaluo-zz.github.io/atom.xml" target="_blank">RSS</a>
     </div>
-  </div>
-  <div class="paper">
-    <div class="sidebar-title">
-      标签列表
-    </div>
-    <div class="row">
-      
-        <a href="https://kaluo-zz.github.io/tag/6qPaooOHK" class="badge ">
-          绘制mask
-        </a>
-      
-        <a href="https://kaluo-zz.github.io/tag/vA0S58AABV" class="badge success">
-          coco
-        </a>
-      
-        <a href="https://kaluo-zz.github.io/tag/pSlACxuyg" class="badge warning">
-          python
-        </a>
-      
-        <a href="https://kaluo-zz.github.io/tag/4VtK6AiAA" class="badge success">
-          gpu
-        </a>
-      
-        <a href="https://kaluo-zz.github.io/tag/5i-SZnsCao" class="badge secondary">
-          gpustat
-        </a>
-      
-        <a href="https://kaluo-zz.github.io/tag/cjY55A-Pe" class="badge ">
-          ubuntu
-        </a>
-      
-        <a href="https://kaluo-zz.github.io/tag/PgVGsZYpu" class="badge ">
-          shell
-        </a>
-      
-        <a href="https://kaluo-zz.github.io/tag/XpP7hQ3bK" class="badge ">
-          linux
-        </a>
-      
-        <a href="https://kaluo-zz.github.io/tag/m2uV6SR6-Y" class="badge secondary">
-          命令
-        </a>
-      
-        <a href="https://kaluo-zz.github.io/tag/4K6bnBDuJ" class="badge success">
-          latex
-        </a>
-      
-        <a href="https://kaluo-zz.github.io/tag/vf0AuUtmM5" class="badge ">
-          tikz
-        </a>
-      
-        <a href="https://kaluo-zz.github.io/tag/PzNHh70_8H" class="badge success">
-          绘图
-        </a>
-      
-        <a href="https://kaluo-zz.github.io/tag/lFDvY_rtIK" class="badge success">
-          cpu
-        </a>
-      
-        <a href="https://kaluo-zz.github.io/tag/qNRCu_hfZ" class="badge secondary">
-          data布局
-        </a>
-      
-        <a href="https://kaluo-zz.github.io/tag/_JunyD00tX" class="badge secondary">
-          卷积核
-        </a>
-      
-        <a href="https://kaluo-zz.github.io/tag/rT7AxA2VY" class="badge secondary">
-          pytorch
-        </a>
-      
-        <a href="https://kaluo-zz.github.io/tag/yvi1PqtLs" class="badge warning">
-          重定向
-        </a>
-      
-        <a href="https://kaluo-zz.github.io/tag/F4_bpm-PN1" class="badge secondary">
-          后台运行
-        </a>
-      
-        <a href="https://kaluo-zz.github.io/tag/eZD1Nf0zT" class="badge ">
-          visdom
-        </a>
-      
-        <a href="https://kaluo-zz.github.io/tag/9PDDgxnN1" class="badge ">
-          windows
-        </a>
-      
-        <a href="https://kaluo-zz.github.io/tag/pYPrc_nOS" class="badge warning">
-          jupyter notebook
-        </a>
-      
-        <a href="https://kaluo-zz.github.io/tag/tMhk8q8aw" class="badge warning">
-          TensorRT
-        </a>
-      
-        <a href="https://kaluo-zz.github.io/tag/Pd55hi5zg" class="badge success">
-          模型压缩
-        </a>
-      
-        <a href="https://kaluo-zz.github.io/tag/WUgomcUCO" class="badge secondary">
-          参数冻结
-        </a>
-      
-        <a href="https://kaluo-zz.github.io/tag/_n7xZJOd0" class="badge warning">
-          获取梯度
-        </a>
-      
-        <a href="https://kaluo-zz.github.io/tag/-AEi1Fqbq" class="badge success">
-          计算图
-        </a>
-      
-        <a href="https://kaluo-zz.github.io/tag/dESfnJEeE" class="badge secondary">
-          Linux
-        </a>
-      
-        <a href="https://kaluo-zz.github.io/tag/GIxFYt7GS" class="badge secondary">
-          磁盘挂载
-        </a>
-      
-        <a href="https://kaluo-zz.github.io/tag/jzn05sSpT" class="badge secondary">
-          ssh
-        </a>
-      
-        <a href="https://kaluo-zz.github.io/tag/QcjFDTzeM" class="badge ">
-          autossh
-        </a>
-      
-        <a href="https://kaluo-zz.github.io/tag/zrgqUYq1I" class="badge secondary">
-          反向代理
-        </a>
-      
-        <a href="https://kaluo-zz.github.io/tag/tVPefYU-g" class="badge ">
-          服务器
-        </a>
-      
-        <a href="https://kaluo-zz.github.io/tag/bAjW-e_UD" class="badge secondary">
-          Deformable Convolution
-        </a>
-      
-        <a href="https://kaluo-zz.github.io/tag/5IwuLmF47" class="badge secondary">
-          叉积
-        </a>
-      
-        <a href="https://kaluo-zz.github.io/tag/gYv8tBs9s" class="badge ">
-          多边形
-        </a>
-      
-        <a href="https://kaluo-zz.github.io/tag/gKuVi5cQQ" class="badge warning">
-          面积
-        </a>
-      
-        <a href="https://kaluo-zz.github.io/tag/1ViRR-SXR" class="badge secondary">
-          顺时针
-        </a>
-      
-        <a href="https://kaluo-zz.github.io/tag/-HzodX2-Z" class="badge success">
-          逆时针
-        </a>
-      
-        <a href="https://kaluo-zz.github.io/tag/Q-fXnNDSO" class="badge secondary">
-          matlab
-        </a>
-      
-        <a href="https://kaluo-zz.github.io/tag/Ib4sWZB8W" class="badge success">
-          json
-        </a>
-      
-        <a href="https://kaluo-zz.github.io/tag/_2vcj6Je3" class="badge secondary">
-          darknet
-        </a>
-      
-        <a href="https://kaluo-zz.github.io/tag/ZXh7J58dV" class="badge success">
-          函数分析
-        </a>
-      
-        <a href="https://kaluo-zz.github.io/tag/5QDLVaWYn" class="badge secondary">
-          docker
-        </a>
-      
-        <a href="https://kaluo-zz.github.io/tag/q7ckOahzm" class="badge success">
-          ubuntu18.04
-        </a>
-      
-        <a href="https://kaluo-zz.github.io/tag/-EGjsU52C" class="badge warning">
-          服务器环境
-        </a>
-      
-        <a href="https://kaluo-zz.github.io/tag/OX4bnktRr" class="badge secondary">
-          切换gcc版本
-        </a>
-      
-    </div>
-  </div>
-  <div class="paper">
-    Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <a class="rss" href="https://kaluo-zz.github.io/atom.xml" target="_blank">RSS</a>
   </div>
 </div>
 
 
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">Python脚本输出重定向问题</h2>
+            <div class="post-date">2019-07-30</div>
+            
+            <div class="post-content">
+              <p>Python脚本输出重定向到文件中时，发现文件内容为空。这是因为python在利用<code>print</code>函数输出信息时，默认是向缓冲区输出，待缓冲区满或者程序结束时才一次性输出。如果我们不需要缓冲，在执行脚本时加上<code>-u</code>参数。</p>
+<p><code>python -u file.py &gt; file.log 2&gt;&amp;1</code></p>
+
+            </div>
+            
+              <div class="tag-container">
+                
+                  <a href="https://kaluo-zz.github.io/tag/yvi1PqtLs" class="tag">
+                    重定向
+                  </a>
+                
+                  <a href="https://kaluo-zz.github.io/tag/F4_bpm-PN1" class="tag">
+                    后台运行
+                  </a>
+                
+                  <a href="https://kaluo-zz.github.io/tag/pSlACxuyg" class="tag">
+                    python
+                  </a>
+                
+              </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://kaluo-zz.github.io/post/linux-qing-li-kong-jian">
+                  <h3 class="post-title">
+                    Linux-清理空间
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+
+          </div>
+
+        </div>
+      </div>
     </div>
 
     <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
@@ -482,6 +143,13 @@
 AOS.init();
 
 hljs.initHighlightingOnLoad()
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
 
 </script>
 
