@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" >
 
-<title>简单多边形顺逆时针判断 | KALUO</title>
+<title>Ubuntu18.04安装Torch | KALUO</title>
 <meta name="description" content="温故而知新">
 
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
@@ -92,45 +92,28 @@
       <div class="main-container">
         <div class="content-container" data-aos="fade-up">
           <div class="post-detail">
-            <h2 class="post-title">简单多边形顺逆时针判断</h2>
-            <div class="post-date">2019-06-15</div>
+            <h2 class="post-title">Ubuntu18.04安装Torch</h2>
+            <div class="post-date">2019-11-13</div>
             
             <div class="post-content">
-              <p>方法1：利用向量叉积求多边形面积，判断多边形面积正负。<br>
-方法2：取多边形最左边一点，判断和之前和之后点构成的向量的叉积符号。</p>
+              <p>基本流程按照<a href="http://torch.ch/docs/getting-started.html">官网</a>介绍的安装即可。<br>
+安装过程中出现了两个问题：</p>
+<ol>
+<li>gcc版本太高。电脑gcc版本为gcc-7，降低版本号到gcc-6即可。</li>
+<li>error: &quot;more than one operator &quot;==&quot; matches these operands&quot;：原因是cuda和torch的头文件都提供了相同的重载运算符，在命令行中输入<pre><code class="language-bash"> export TORCH_NVCC_FLAGS=&quot;-D__CUDA_NO_HALF_OPERATORS__&quot;
+</code></pre>
+</li>
+</ol>
+<p>禁止使用cuda头文件编译torch即可。后继续使用<code>./install.sh</code>安装。</p>
 
             </div>
-            
-              <div class="tag-container">
-                
-                  <a href="https://kaluo-zz.github.io/tag/5IwuLmF47" class="tag">
-                    叉积
-                  </a>
-                
-                  <a href="https://kaluo-zz.github.io/tag/gYv8tBs9s" class="tag">
-                    多边形
-                  </a>
-                
-                  <a href="https://kaluo-zz.github.io/tag/gKuVi5cQQ" class="tag">
-                    面积
-                  </a>
-                
-                  <a href="https://kaluo-zz.github.io/tag/1ViRR-SXR" class="tag">
-                    顺时针
-                  </a>
-                
-                  <a href="https://kaluo-zz.github.io/tag/-HzodX2-Z" class="tag">
-                    逆时针
-                  </a>
-                
-              </div>
             
             
               <div class="next-post">
                 <div class="next">下一篇</div>
-                <a href="https://kaluo-zz.github.io/post/matlab-du-qu-bing-jie-xi-json-ge-shi-wen-jian">
+                <a href="https://kaluo-zz.github.io/post/chong-yao-xing-cai-yang-importance-sampling">
                   <h3 class="post-title">
-                    Matlab相关命令
+                    重要性采样（Importance Sampling）
                   </h3>
                 </a>
               </div>
