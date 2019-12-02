@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://kaluo-zz.github.io</id>
     <title>KALUO</title>
-    <updated>2019-11-13T13:45:21.880Z</updated>
+    <updated>2019-12-02T08:08:37.185Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://kaluo-zz.github.io"/>
     <link rel="self" href="https://kaluo-zz.github.io/atom.xml"/>
@@ -10,6 +10,16 @@
     <logo>https://kaluo-zz.github.io/images/avatar.png</logo>
     <icon>https://kaluo-zz.github.io/favicon.ico</icon>
     <rights>All rights reserved 2019, KALUO</rights>
+    <entry>
+        <title type="html"><![CDATA[Labelme标注格式转coco格式]]></title>
+        <id>https://kaluo-zz.github.io/post/labelme-biao-zhu-ge-shi-zhuan-coco-ge-shi</id>
+        <link href="https://kaluo-zz.github.io/post/labelme-biao-zhu-ge-shi-zhuan-coco-ge-shi">
+        </link>
+        <updated>2019-12-02T08:05:15.000Z</updated>
+        <content type="html"><![CDATA[<p>github<a href="https://github.com/wucng/TensorExpand/tree/master/TensorExpand/Object%20detection/Data_interface/MSCOCO">链接</a><br>
+一些注意事项<a href="https://blog.csdn.net/weixin_43081805/article/details/88534397">-&gt;</a></p>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Ubuntu18.04安装Torch]]></title>
         <id>https://kaluo-zz.github.io/post/ubuntu1804-an-zhuang-torch</id>
@@ -370,18 +380,6 @@ ultra thin 的选项，对于分辨率不高的普通显示器，可能不能正
 </code></pre>
 <p>参考：<br>
 https://www.lfhacks.com/tech/tikz-1</p>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Ubuntu之查看CPU使用情况]]></title>
-        <id>https://kaluo-zz.github.io/post/ubuntu-zhi-cha-kan-cpu-shi-yong-qing-kuang</id>
-        <link href="https://kaluo-zz.github.io/post/ubuntu-zhi-cha-kan-cpu-shi-yong-qing-kuang">
-        </link>
-        <updated>2019-08-14T01:34:03.000Z</updated>
-        <content type="html"><![CDATA[<ol>
-<li>系统自带：top</li>
-<li>安装htop，<code>apt-get install htop</code></li>
-</ol>
 ]]></content>
     </entry>
 </feed>
