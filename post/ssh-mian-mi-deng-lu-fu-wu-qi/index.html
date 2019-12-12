@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" >
 
-<title>ssh | KALUO</title>
+<title>ssh免密登录服务器 | KALUO</title>
 <meta name="description" content="温故而知新">
 
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
@@ -91,28 +91,39 @@
 
       <div class="main-container">
         <div class="content-container" data-aos="fade-up">
-          <h2 class="current-tag">标签: ssh</h2>
-          
-            <article class="post-item">
-              <div class="left">
-                <a href="https://kaluo-zz.github.io/post/wai-wang-lian-jie-nei-wang-fu-wu-qi">
-                  <h2 class="post-title">外网连接内网服务器</h2>
-                </a>
-                <div class="post-date">
-                  2019-06-23
-                </div>
-                <div class="post-abstract">
-                  
-                </div>
-              </div>
-              
-            </article>
-          
+          <div class="post-detail">
+            <h2 class="post-title">ssh免密登录服务器</h2>
+            <div class="post-date">2019-12-12</div>
+            
+            <div class="post-content">
+              <ol>
+<li>在本地机器上产生公钥私钥对<pre><code>ssh-keygen
+</code></pre>
+</li>
+<li>将公钥复制到远程服务器上<pre><code>ssh-copy-id -i .ssh/id_rsa.pub username@192.168.0.224
+</code></pre>
+</li>
+<li>免密登录<pre><code>ssh username@192.168.0.244
+</code></pre>
+</li>
+</ol>
 
-          <div class="pagination-container">
-  
-  
-</div>
+            </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://kaluo-zz.github.io/post/labelme-biao-zhu-ge-shi-zhuan-coco-ge-shi">
+                  <h3 class="post-title">
+                    Labelme标注格式转coco格式
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+
+          </div>
 
         </div>
       </div>
