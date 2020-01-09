@@ -2,14 +2,32 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://kaluo-zz.github.io</id>
     <title>KALUO</title>
-    <updated>2019-12-12T09:34:01.661Z</updated>
+    <updated>2020-01-09T08:41:25.013Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://kaluo-zz.github.io"/>
     <link rel="self" href="https://kaluo-zz.github.io/atom.xml"/>
     <subtitle>温故而知新</subtitle>
     <logo>https://kaluo-zz.github.io/images/avatar.png</logo>
     <icon>https://kaluo-zz.github.io/favicon.ico</icon>
-    <rights>All rights reserved 2019, KALUO</rights>
+    <rights>All rights reserved 2020, KALUO</rights>
+    <entry>
+        <title type="html"><![CDATA[Pytorch常用函数（一直更新）]]></title>
+        <id>https://kaluo-zz.github.io/post/pytorch-chang-yong-han-shu-yi-zhi-geng-xin</id>
+        <link href="https://kaluo-zz.github.io/post/pytorch-chang-yong-han-shu-yi-zhi-geng-xin">
+        </link>
+        <updated>2020-01-07T12:58:32.000Z</updated>
+        <content type="html"><![CDATA[<ol>
+<li>
+<p>torch.topk(input, k, dim=None, largest=True, sorted=True, out=None) -&gt; (Tensor, LongTensor)<br>
+沿着dim指定维度返回输入input中k个最大值。如果不指定dim，默认input最后一维。如果largest为False，则返回最小的k个值。<br>
+返回一个元组（values, indices），其中indices是原始输入张量input中dim维度的选取值的下标。如果sorted为True，返回的k个值将被排序。</p>
+<pre><code>batch, cat, height, width = scores.size()
+topk_scores, topk_inds = torch.topk(scores.view(batch, cat, -1), K)
+</code></pre>
+</li>
+</ol>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[ssh免密登录服务器]]></title>
         <id>https://kaluo-zz.github.io/post/ssh-mian-mi-deng-lu-fu-wu-qi</id>
@@ -264,24 +282,6 @@ array([[1., 1., 1., 0., 0.],
 </code></pre>
 <p>首先，我们要知道index的各个维度（除dim指定的维度外）的大小必须和input相同。比如，input维度是[3, 4, 3, 3]，若指定dim=1，则index的维度为[3, n, 3, 3]（n为指定的正整数）。index的维度就是gather函数输出数据的维度。</p>
 <p>index[0, 0, 0, 0]表示在位置(0, 0, 0, 0)处的值（假如为3），将此值用以替换index[0, 0, 0, 0]的dim=1处，得[0, 3, 0, 0]，则表示提取input[0, 3, 0, 0]处的值放在out[0, 0, 0, 0]处。</p>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Linux之shell命令]]></title>
-        <id>https://kaluo-zz.github.io/post/linux-zhi-shell-ming-ling</id>
-        <link href="https://kaluo-zz.github.io/post/linux-zhi-shell-ming-ling">
-        </link>
-        <updated>2019-08-16T11:56:13.000Z</updated>
-        <content type="html"><![CDATA[<ol>
-<li>去除文本中的空行</li>
-</ol>
-<pre><code>sed -i '/^$/d' loss.txt
-</code></pre>
-<ol start="2">
-<li>提取文本中的第几列数据</li>
-</ol>
-<pre><code>cat segnet_0.log | awk '{print $22}' &gt; loss.txt
-</code></pre>
 ]]></content>
     </entry>
 </feed>

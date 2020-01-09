@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" >
 
-<title>Linux静默安装matlab2019a | KALUO</title>
+<title>Pytorch常用函数（一直更新） | KALUO</title>
 <meta name="description" content="温故而知新">
 
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
@@ -92,38 +92,21 @@
       <div class="main-container">
         <div class="content-container" data-aos="fade-up">
           <div class="post-detail">
-            <h2 class="post-title">Linux静默安装matlab2019a</h2>
-            <div class="post-date">2019-07-18</div>
+            <h2 class="post-title">Pytorch常用函数（一直更新）</h2>
+            <div class="post-date">2020-01-07</div>
+            
+              <div class="feature-container" style="background-image: url('https://kaluo-zz.github.io/post-images/pytorch-chang-yong-han-shu-yi-zhi-geng-xin.jpg')">
+              </div>
             
             <div class="post-content">
               <ol>
 <li>
-<p>下载<a href="http://zbh.ustc.edu.cn/zbh.php">matlab2019a</a>及其安装密钥；</p>
-</li>
-<li>
-<p>安装</p>
-</li>
-</ol>
-<pre><code>sudo mkdir /media/matlab
-sudo /media/matlab/install -mode silent -fileInstallationKey key -agreeToLicense yes -licensePath /home/lab/network.lic -destinationFolder /usr/local/matlab2019a
-sudo umount -l /media/matlab
+<p>torch.topk(input, k, dim=None, largest=True, sorted=True, out=None) -&gt; (Tensor, LongTensor)<br>
+沿着dim指定维度返回输入input中k个最大值。如果不指定dim，默认input最后一维。如果largest为False，则返回最小的k个值。<br>
+返回一个元组（values, indices），其中indices是原始输入张量input中dim维度的选取值的下标。如果sorted为True，返回的k个值将被排序。</p>
+<pre><code>batch, cat, height, width = scores.size()
+topk_scores, topk_inds = torch.topk(scores.view(batch, cat, -1), K)
 </code></pre>
-<ol start="3">
-<li><code>sudo vi ~/.bashrc</code></li>
-</ol>
-<pre><code>alias matlab='/usr/local/matlab2019a/bin/matlab'
-</code></pre>
-<ol start="4">
-<li><code>sudo vi /etc/bash.bashrc</code></li>
-</ol>
-<pre><code>export PATH=/usr/local/matlab2019a/bin${PATH:+:${PATH}}
-</code></pre>
-<ol start="5">
-<li>
-<p><code>source ~/.bashrc</code></p>
-</li>
-<li>
-<p><code>matlab</code></p>
 </li>
 </ol>
 
@@ -132,9 +115,9 @@ sudo umount -l /media/matlab
             
               <div class="next-post">
                 <div class="next">下一篇</div>
-                <a href="https://kaluo-zz.github.io/post/pytorch-ke-shi-hua-zhi-visdom">
+                <a href="https://kaluo-zz.github.io/post/ssh-mian-mi-deng-lu-fu-wu-qi">
                   <h3 class="post-title">
-                    Pytorch可视化之Visdom
+                    ssh免密登录服务器
                   </h3>
                 </a>
               </div>
