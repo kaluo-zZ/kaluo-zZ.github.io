@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://kaluo-zz.github.io</id>
     <title>KALUO</title>
-    <updated>2020-01-09T08:41:25.013Z</updated>
+    <updated>2020-06-01T06:15:54.774Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://kaluo-zz.github.io"/>
     <link rel="self" href="https://kaluo-zz.github.io/atom.xml"/>
@@ -10,6 +10,63 @@
     <logo>https://kaluo-zz.github.io/images/avatar.png</logo>
     <icon>https://kaluo-zz.github.io/favicon.ico</icon>
     <rights>All rights reserved 2020, KALUO</rights>
+    <entry>
+        <title type="html"><![CDATA[Ubuntu18.04安装cuda10.1和cudnn7.6.1]]></title>
+        <id>https://kaluo-zz.github.io/post/ubuntu1804-an-zhuang-cuda101-he-cudnn761</id>
+        <link href="https://kaluo-zz.github.io/post/ubuntu1804-an-zhuang-cuda101-he-cudnn761">
+        </link>
+        <updated>2020-06-01T05:59:13.000Z</updated>
+        <content type="html"><![CDATA[<p>安装前准备：cuda_10.1.168_418.67_linux.run和cudnn-10.1-linux-x64-v7.6.1.34.tgz</p>
+<ol>
+<li><code>sudo sh cuda_10.1.168_418.67_linux.run</code></li>
+<li><code>vi ~/.bashrc</code>: 写入<pre><code class="language-shell">export PATH=$PATH:/usr/local/cuda-10.1/bin
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/cuda-10.1/lib64
+export CUDA_HOME='/usr/local/cuda-10.1'
+</code></pre>
+</li>
+<li><code>source ~/.bashrc</code></li>
+<li>测试安装是否成功：<code>nvcc -V</code>:<pre><code class="language-shell"> nvcc: NVIDIA (R) Cuda compiler driver
+ Copyright (c) 2005-2019 NVIDIA Corporation
+ Built on Wed_Apr_24_19:10:27_PDT_2019
+ Cuda compilation tools, release 10.1, V10.1.168
+</code></pre>
+</li>
+<li>解压：<code>tar -xvf cudnn-10.1-linux-x64-v7.6.1.34.tgz</code></li>
+<li>执行命令：<pre><code class="language-shell">sudo cp cuda/include/cudnn.h /usr/local/cuda/include/
+sudo cp cuda/lib64/libcudnn* /usr/local/cuda/lib64/
+sudo chmod a+r /usr/local/cuda/include/cudnn.h
+sudo chmod a+r /usr/local/cuda/lib64/libcudnn*
+</code></pre>
+</li>
+<li>测试是否安装成功：<code>cat /usr/local/cuda/include/cudnn.h | grep CUDNN_MAJOR -A 2</code><pre><code>#define CUDNN_MAJOR 7
+#define CUDNN_MINOR 6
+#define CUDNN_PATCHLEVEL 1
+--
+#define CUDNN_VERSION (CUDNN_MAJOR * 1000 + CUDNN_MINOR * 100 + CUDNN_PATCHLEVEL)
+
+#include &quot;driver_types.h&quot;
+(base) ys3@ys3-X10SRA-Invalid-entry-length-16-Fixed-up-to-11:~$ nvcc -V
+nvcc: NVIDIA (R) Cuda compiler driver
+Copyright (c) 2005-2019 NVIDIA Corporation
+Built on Wed_Apr_24_19:10:27_PDT_2019
+Cuda compilation tools, release 10.1, V10.1.168
+```shell
+</code></pre>
+</li>
+</ol>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Ubuntu设置网关]]></title>
+        <id>https://kaluo-zz.github.io/post/ubuntu-she-zhi-wang-guan</id>
+        <link href="https://kaluo-zz.github.io/post/ubuntu-she-zhi-wang-guan">
+        </link>
+        <updated>2020-05-30T02:16:36.000Z</updated>
+        <content type="html"><![CDATA[<p>临时设置网关192.168.0.1:</p>
+<pre><code>sudo route add default gw 192.168.0.1
+</code></pre>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Pytorch常用函数（一直更新）]]></title>
         <id>https://kaluo-zz.github.io/post/pytorch-chang-yong-han-shu-yi-zhi-geng-xin</id>
@@ -210,78 +267,6 @@ https://www.programcreek.com/python/example/89436/cv2.addWeighted</p>
 <li>安装：pip install gpustat</li>
 <li>查看：gpustat</li>
 </ol>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Python之上三角矩阵]]></title>
-        <id>https://kaluo-zz.github.io/post/python-zhi-shang-san-jiao-ju-zhen</id>
-        <link href="https://kaluo-zz.github.io/post/python-zhi-shang-san-jiao-ju-zhen">
-        </link>
-        <updated>2019-09-15T06:38:40.000Z</updated>
-        <content type="html"><![CDATA[<h1 id="numpytrium-k0">numpy.triu(m, k=0)</h1>
-<blockquote>
-<p>Upper triangle of an array.</p>
-<p>Return a copy of a matrix with the elements below the k-th diagonal zeroed.</p>
-</blockquote>
-<p>例子:</p>
-<pre><code>np.triu(np.ones(5), 0)
-array([[1., 1., 1., 1., 1.],
-       [0., 1., 1., 1., 1.],
-       [0., 0., 1., 1., 1.],
-       [0., 0., 0., 1., 1.],
-       [0., 0., 0., 0., 1.]])
-&gt;&gt;&gt; np.triu(np.ones(5), 1)
-array([[0., 1., 1., 1., 1.],
-       [0., 0., 1., 1., 1.],
-       [0., 0., 0., 1., 1.],
-       [0., 0., 0., 0., 1.],
-       [0., 0., 0., 0., 0.]])
-&gt;&gt;&gt; np.triu(np.ones(5), 2)
-array([[0., 0., 1., 1., 1.],
-       [0., 0., 0., 1., 1.],
-       [0., 0., 0., 0., 1.],
-       [0., 0., 0., 0., 0.],
-       [0., 0., 0., 0., 0.]])
-&gt;&gt;&gt; np.triu(np.ones(5), 3)
-array([[0., 0., 0., 1., 1.],
-       [0., 0., 0., 0., 1.],
-       [0., 0., 0., 0., 0.],
-       [0., 0., 0., 0., 0.],
-       [0., 0., 0., 0., 0.]])
-&gt;&gt;&gt; np.triu(np.ones(5)) - np.triu(np.ones(5), 3)
-array([[1., 1., 1., 0., 0.],
-       [0., 1., 1., 1., 0.],
-       [0., 0., 1., 1., 1.],
-       [0., 0., 0., 1., 1.],
-       [0., 0., 0., 0., 1.]])
-&gt;&gt;&gt; mask = np.triu(np.ones(5)) - np.triu(np.ones(5), 3)
-&gt;&gt;&gt; mask
-array([[1., 1., 1., 0., 0.],
-       [0., 1., 1., 1., 0.],
-       [0., 0., 1., 1., 1.],
-       [0., 0., 0., 1., 1.],
-       [0., 0., 0., 0., 1.]])
-&gt;&gt;&gt; mask[3, 0:1] = 1
-&gt;&gt;&gt; mask[4, 0:2] = 1
-&gt;&gt;&gt; mask
-array([[1., 1., 1., 0., 0.],
-       [0., 1., 1., 1., 0.],
-       [0., 0., 1., 1., 1.],
-       [1., 0., 0., 1., 1.],
-       [1., 1., 0., 0., 1.]])
-</code></pre>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Pytorch之gather理解]]></title>
-        <id>https://kaluo-zz.github.io/post/pytorch-zhi-gather-li-jie</id>
-        <link href="https://kaluo-zz.github.io/post/pytorch-zhi-gather-li-jie">
-        </link>
-        <updated>2019-08-19T12:22:27.000Z</updated>
-        <content type="html"><![CDATA[<pre><code>torch.gather(input, dim, index, out=None, sparse_grad=False) → Tensor
-</code></pre>
-<p>首先，我们要知道index的各个维度（除dim指定的维度外）的大小必须和input相同。比如，input维度是[3, 4, 3, 3]，若指定dim=1，则index的维度为[3, n, 3, 3]（n为指定的正整数）。index的维度就是gather函数输出数据的维度。</p>
-<p>index[0, 0, 0, 0]表示在位置(0, 0, 0, 0)处的值（假如为3），将此值用以替换index[0, 0, 0, 0]的dim=1处，得[0, 3, 0, 0]，则表示提取input[0, 3, 0, 0]处的值放在out[0, 0, 0, 0]处。</p>
 ]]></content>
     </entry>
 </feed>

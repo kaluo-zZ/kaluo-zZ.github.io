@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" >
 
-<title>Distance Transform | KALUO</title>
+<title>Ubuntu设置网关 | KALUO</title>
 <meta name="description" content="温故而知新">
 
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
@@ -92,56 +92,22 @@
       <div class="main-container">
         <div class="content-container" data-aos="fade-up">
           <div class="post-detail">
-            <h2 class="post-title">Distance Transform</h2>
-            <div class="post-date">2019-07-08</div>
+            <h2 class="post-title">Ubuntu设置网关</h2>
+            <div class="post-date">2020-05-30</div>
             
             <div class="post-content">
-              <p>Distance Transform</p>
-<p>现在有这样一种需求，产生由点构成的曲线段的热图。如何产生呢？</p>
-<p>首先介绍一下Distance transform。距离变换提供了图像中点的分离的度量，它处理的对象是二值图像。其基本思想是每个像素值赋值为其与最近的背景像素点之间的距离（常用的距离度量是欧式距离和曼哈顿距离）。</p>
-<p>下面以一张图像为例。从上到下分别是原图、原图+轮廓点、轮廓点、经过距离变换后的图和经过标准化和阈值化后图。这样就得到了由轮廓点产生的边界线热图。</p>
-<p><img src="https://kaluo-zz.github.io/post-images/1562725172655.png" alt=""><br>
-<img src="https://kaluo-zz.github.io/post-images/1562725181225.png" alt=""><br>
-<img src="https://kaluo-zz.github.io/post-images/1562725185714.png" alt=""><br>
-<img src="https://kaluo-zz.github.io/post-images/1562725226765.png" alt=""><br>
-<img src="https://kaluo-zz.github.io/post-images/1562725230518.png" alt=""></p>
-<p>步骤如下：</p>
-<ol>
-<li>
-<p>获取图像轮廓点；</p>
-</li>
-<li>
-<p>得到与原图大小一样的二值图像B，轮廓点对应位置为0，其余位置为1；</p>
-</li>
-<li>
-<p>使用<code>scipy.ndimage.distance_transform</code>函数来转换二值图像B，得到结果D；</p>
-</li>
-<li>
-<p>将D中的最大值减去D中的每一个元素；</p>
-</li>
-<li>
-<p>对D进行标准化；</p>
-</li>
-<li>
-<p>利用对D中的每个像素进行处理。</p>
-</li>
-</ol>
-<p class='katex-block katex-error' title='Error: Expected node of type ordgroup, but got node of type text'>   M(x, y) = \left\{
-   \begin{array}
-   	\text{exp}(-\frac{D(x, y)^2}{2\sigma^2}), &amp;\text{if}\; D(x, y) &lt; 3\sigma \\
-   	0, &amp;\text{otherwise}
-   \end{array}
-   \right.
-</p>
+              <p>临时设置网关192.168.0.1:</p>
+<pre><code>sudo route add default gw 192.168.0.1
+</code></pre>
 
             </div>
             
             
               <div class="next-post">
                 <div class="next">下一篇</div>
-                <a href="https://kaluo-zz.github.io/post/python-shu-xing-fang-wen">
+                <a href="https://kaluo-zz.github.io/post/pytorch-chang-yong-han-shu-yi-zhi-geng-xin">
                   <h3 class="post-title">
-                    Python属性访问
+                    Pytorch常用函数（一直更新）
                   </h3>
                 </a>
               </div>
